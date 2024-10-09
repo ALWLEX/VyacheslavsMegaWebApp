@@ -358,3 +358,26 @@ horizontal_scroller_content {
 .donation_subtitle {
     margin: 40px 0;
 }
+
+.block_mini {
+    display: flex;
+    gap: 10px 40px;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 20px 0;
+}
+
+.link_icon {
+    height: 30px;
+    margin-right: 10px;
+    object-fit: contain;
+}
+
+.iconed_link {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+}
