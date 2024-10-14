@@ -64,6 +64,10 @@ body {
     background-color: #222;
 }
 
+body.lock {
+    overflow: hidden;
+}
+
 .container {
     display: flex;
     flex-direction: column;
