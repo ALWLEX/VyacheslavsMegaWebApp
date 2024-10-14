@@ -5,6 +5,7 @@ using Microsoft.Extensions.Hosting.Internal;
 using VyacheslavsMegaServer.Areas.Admin.Models;
 using VyacheslavsMegaServer.Data.Entities;
 using VyacheslavsMegaServer.Data.Repositories;
+using VyacheslavsMegaServer.Service;
 
 namespace VyacheslavsMegaServer.Areas.Admin.Controllers
 {
@@ -12,12 +13,12 @@ namespace VyacheslavsMegaServer.Areas.Admin.Controllers
     public class PartnersEditorController : Controller
     {
         private readonly PartnersInfoRepository _partnersInfoRepository;
-        private readonly IWebHostEnvironment _hostEnvironment;
+        private readonly ImageManager _imageManager;
 
-        public PartnersEditorController(PartnersInfoRepository partnersInfoRepository, IWebHostEnvironment hostEnvironment)
+        public PartnersEditorController(PartnersInfoRepository partnersInfoRepository, ImageManager imageManager)
         {
             _partnersInfoRepository = partnersInfoRepository;
-            _hostEnvironment = hostEnvironment;
+            _imageManager = imageManager;
         }
 
         public async Task<IActionResult> Index()
@@ -38,26 +39,14 @@ namespace VyacheslavsMegaServer.Areas.Admin.Controllers
         {
             if (!ModelState.IsValid) return View(model);
 
-            string uniqueFileName = string.Empty;
             if (partnerLogoImage != null) 
             {
-                string uploaderFileName = partnerLogoImage.FileName.ToLower();
-                uniqueFileName = string.Concat(
-                    Guid.NewGuid(),
-                    uploaderFileName.Substring(uploaderFileName.LastIndexOf('.')));
-                using (FileStream imageStream = new FileStream(
-                    Path.Combine(_hostEnvironment.WebRootPath, "img", "partners", uniqueFileName), 
-                    FileMode.Create))
-                {
-                    await partnerLogoImage.CopyToAsync(imageStream);
-                }
+                string newImageName = await _imageManager.SaveUniqueFileName(Partner.LOGOS_DIR, partnerLogoImage);
                 if (!string.IsNullOrEmpty(model.LogoFileName))
                 {
-                    FileInfo oldImage = new FileInfo(Path.Combine(_hostEnvironment.WebRootPath, "img", "partners", model.LogoFileName));
-                    if (oldImage.Exists) oldImage.Delete();
-                }
-                
-                model.LogoFileName = uniqueFileName;
+                    _imageManager.RemoveImage(Partner.LOGOS_DIR, model.LogoFileName);
+                } 
+                model.LogoFileName = newImageName;
             }
             await _partnersInfoRepository.SavePartner(model);
 
@@ -68,7 +57,7 @@ namespace VyacheslavsMegaServer.Areas.Admin.Controllers
         {
             Partner partnerToRemove = await _partnersInfoRepository.GetPartnerById(partnerId);
             await _partnersInfoRepository.RemovePartnerById(partnerId);
-            new FileInfo(Path.Combine(_hostEnvironment.WebRootPath, "img", "partners", partnerToRemove.LogoFileName)).Delete();
+            _imageManager.RemoveImage(Partner.LOGOS_DIR, partnerToRemove.LogoFileName);
             return RedirectToAction(nameof(Index));
         }
 

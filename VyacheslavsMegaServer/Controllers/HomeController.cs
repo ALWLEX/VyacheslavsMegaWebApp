@@ -12,13 +12,15 @@ namespace VyacheslavsMegaServer.Controllers
         private readonly PartnersInfoRepository _partnersInfoRepository;
         private readonly ContactsInfoRepository _contactsInfoRepository;
         private readonly DonationCardsRepository _cardsRepository;
+        private readonly ServerMediaLinksRepository _mediaLinksRepository;
 
-        public HomeController(MainPageRepository mainPageRepository, PartnersInfoRepository partnersInfoRepository, ContactsInfoRepository contactsInfoRepository, DonationCardsRepository cardsRepository)
+        public HomeController(MainPageRepository mainPageRepository, PartnersInfoRepository partnersInfoRepository, ContactsInfoRepository contactsInfoRepository, DonationCardsRepository cardsRepository, ServerMediaLinksRepository mediaLinksRepository)
         {
             _mainPageRepository = mainPageRepository;
             _contactsInfoRepository = contactsInfoRepository;
             _partnersInfoRepository = partnersInfoRepository;
             _cardsRepository = cardsRepository;
+            _mediaLinksRepository = mediaLinksRepository;
         }
 
         public async Task<IActionResult> Index()
@@ -27,7 +29,8 @@ namespace VyacheslavsMegaServer.Controllers
             {
                 MainPageData = await _mainPageRepository.GetMainPageData(),
                 Creator = await _contactsInfoRepository.GetContactById(1),
-                PartnersData = await _partnersInfoRepository.GetAllPartners()
+                PartnersData = await _partnersInfoRepository.GetAllPartners(),
+                MediaLinks = await _mediaLinksRepository.GetAllLinks(),
             };
             ViewBag.PageTitle = model.MainPageData.PageTitle;
             ViewBag.Keywords = model.MainPageData.MetatagKeywords;

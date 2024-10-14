@@ -3,6 +3,7 @@
     "http": {
       "commandName": "Project",
       "launchBrowser": true,
+      "launchUrl": "admin/ServerMediaEditor",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },

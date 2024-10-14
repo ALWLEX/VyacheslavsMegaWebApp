@@ -48,12 +48,22 @@
     </a>
 </div>
 
-<div class="block_mini minecraft_font font_size_normal white">
-    <div class="iconed_link">
-        <img class="link_icon" src="~/img/linksIcons/5968756.png" />
-        <a href="https://discord.gg/XXXmz7QC">Discord</a>
+@if (Model.MediaLinks.Any())
+{
+    <div class="block_mini minecraft_font font_size_normal white">
+        @foreach (ServerMediaLink link in Model.MediaLinks.Where(l => l.ShowLink))
+        {
+            <div class="iconed_link">
+                @if (link.HasLogo)
+                {
+                    <img class="link_icon" src="~/@link.LogoFullPath
+                    " />
+                }
+                <p>@link.Description<a href="@link.Url">@link.Content</a></p>
+            </div>
+        }
     </div>
-</div>
+}
 
 <div class="block_standart about" id="about">
     <div class="container">

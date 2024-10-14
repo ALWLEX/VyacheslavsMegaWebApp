@@ -51,6 +51,8 @@ internal class Program
         builder.Services.AddTransient<ContactsInfoRepository>();
         builder.Services.AddTransient<PartnersInfoRepository>();
         builder.Services.AddTransient<DonationCardsRepository>();
+        builder.Services.AddTransient<ServerMediaLinksRepository>();
+        builder.Services.AddTransient<ImageManager>();
 
         var app = builder.Build();
 

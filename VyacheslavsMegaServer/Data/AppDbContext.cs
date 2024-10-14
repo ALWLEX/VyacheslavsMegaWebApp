@@ -23,6 +23,7 @@ namespace VyacheslavsMegaServer.Data
         public DbSet<Partner> Partners { get; set; }
         public DbSet<PartnerLink> PartnerLinks { get; set; }
         public DbSet<DonationCard> DonationCards { get; set; }
+        public DbSet<ServerMediaLink> ServerMediaLinks { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

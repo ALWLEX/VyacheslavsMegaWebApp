@@ -7,6 +7,8 @@ namespace VyacheslavsMegaServer.Data.Entities
 {
     public class Partner : EntityBase
     {
+        public const string LOGOS_DIR = "partners";
+
         [MaxLength(50)]
         [Display(Name = "Название партнёра")]
         public string Name { get; set; }
@@ -28,7 +30,7 @@ namespace VyacheslavsMegaServer.Data.Entities
 
         [NotMapped]
         [ValidateNever]
-        public string LogoFullPath => "img/partners/" + LogoFileName;
+        public string LogoFullPath => Path.Combine("img", LOGOS_DIR, LogoFileName);
 
         [NotMapped]
         [ValidateNever]

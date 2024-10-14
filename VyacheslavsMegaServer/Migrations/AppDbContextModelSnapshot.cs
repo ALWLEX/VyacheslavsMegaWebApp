@@ -147,16 +147,16 @@ namespace VyacheslavsMegaServer.Migrations
                         {
                             Id = "d4bc75a9-ca48-45aa-a3f2-2ea5886ce303",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "0edbdebc-d1f4-4dd6-8e58-8c102a0bc050",
+                            ConcurrencyStamp = "fb9362d5-9546-42fa-b80d-e58543f8610d",
                             Email = "vya4slav4617@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "VYA4SLAV4617@GMAIL.COM",
                             NormalizedUserName = "EVRAY",
-                            PasswordHash = "AQAAAAIAAYagAAAAEMe+mWxc/AdSiFOR1L+OJj69oqOvxu5SJgG6EyggWi+ExqBuEw4GnZBAjnXAFAxp1A==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEM1e5jtkfFggvRxckdMm5OkNU8WdZrAnm7TA9GFMiiG2a59TfoXUdc0LUYARr5tvog==",
                             PhoneNumber = "+7 (705) 806 3101",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "b6231d23-1948-4d6d-9c97-c54e75dfec47",
+                            SecurityStamp = "5b47b990-4aff-4a47-8e7a-80122463a0c7",
                             TwoFactorEnabled = false,
                             UserName = "Evray"
                         });
@@ -505,6 +505,36 @@ namespace VyacheslavsMegaServer.Migrations
                     b.HasIndex("PartnerId");
 
                     b.ToTable("PartnerLinks");
+                });
+
+            modelBuilder.Entity("VyacheslavsMegaServer.Data.Entities.ServerMediaLink", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnOrder(0);
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("LogoFileName")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<bool>("ShowLink")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ServerMediaLinks");
                 });
 
             modelBuilder.Entity("VyacheslavsMegaServer.Data.Entities.UserReport", b =>

@@ -1,0 +1,65 @@
+﻿@model ServerMediaLink
+
+<div class="block_big_first first_slide">
+    <div class="container">
+        <div class="intro_container">
+            <form asp-area="Admin" asp-controller="ServerMediaEditor" asp-action="LinkDetails" method="post" enctype="multipart/form-data">
+                <div asp-validation-summary="All" class="form_error mc_form_font_standart"></div>
+                <input type="hidden" asp-for="Id" readonly />
+                <input type="hidden" asp-for="LogoFileName" readonly />
+                <div class="form_part_left_aligment">
+                    <label class="element_label mc_form_font_standart" asp-for="Url"></label>
+                    <input class="mc_text_input_space mc_form_font_standart wide_element labeled_element"
+                           asp-for="Url" />
+                </div>
+                <div class="form_part_left_aligment form_next_block">
+                    <label class="element_label mc_form_font_standart" asp-for="Content"></label>
+                    <input class="mc_text_input_space mc_form_font_standart wide_element labeled_element"
+                           asp-for="Content" />
+                </div>
+                <div class="form_part_left_aligment form_next_block">
+                    <label class="element_label mc_form_font_standart" asp-for="Description"></label>
+                    <input class="mc_text_input_space mc_form_font_standart wide_element labeled_element"
+                           asp-for="Description" />
+                </div>
+                <div class="form_part_left_aligment form_next_block">
+                    <label class="element_label mc_form_font_standart" asp-for="LogoFileName"></label>
+                    <div class="mc_text_input_space wide_element labeled_element">
+                        @if (Model.HasLogo)
+                        {
+                            <img class="form_image_200" src="~/@Model.LogoFullPath" id="imagePreview" />
+                        }
+                        else
+                        {
+                            <img class="form_image_200" id="imagePreview" style="display:none" />
+                        }
+                        <input class="mc_form_font_standart"
+                               type="file"
+                               accept="image/*"
+                               name="linkIcon"
+                               id="linkIcon"
+                               onchange="previewImage(event)" />
+                    </div>
+                </div>
+                <div class="form_part_left_aligment form_next_block">
+                    <label class="element_label mc_form_font_standart mc_checkbox_container" asp-for="ShowLink">
+                        @Html.DisplayNameFor(x => x.ShowLink)
+                        <input asp-for="ShowLink" /><br>
+                        <span class="mc_checkbox"></span>
+                    </label>
+                </div>
+
+                <div class="form_part_center_aligment form_next_block">
+                    <button class="mc_button wide_element" type="submit">
+                        <span class="mc_button_title mc_form_font_standart">Сохранить</span>
+                    </button>
+                </div>
+                <div class="form_next_block">
+                    <a asp-area="Admin" asp-controller="ServerMediaEditor" asp-action="Index" class="white mc_form_font_standart">Назад</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="~/js/form_image_previewer.js"></script>

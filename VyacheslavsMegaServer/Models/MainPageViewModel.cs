@@ -7,6 +7,8 @@ namespace VyacheslavsMegaServer.Models
     public class MainPageViewModel
     {
         public MainPageData MainPageData { get; set; }
+
+        public List<ServerMediaLink> MediaLinks { get; set; }
         
         public List<Partner> PartnersData { get; set; }
         
