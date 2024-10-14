@@ -1,4 +1,9 @@
-﻿.mc_text_input_space {
+﻿input:-webkit-autofill {
+    -webkit-box-shadow:0 0 0 50px black inset !important;
+    -webkit-text-fill-color: #e0e0e0 !important;
+}
+
+.mc_text_input_space {
     /*Use with mc_form_font_standart*/
     background-color: rgba(0, 0, 0, 0.9);
     color: #e0e0e0;
