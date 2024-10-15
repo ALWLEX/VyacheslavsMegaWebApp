@@ -48,7 +48,7 @@
     </a>
 </div>
 
-@if (Model.MediaLinks.Any())
+@if (Model.MediaLinks.Any(l => l.ShowLink))
 {
     <div class="block_mini minecraft_font font_size_normal white">
         @foreach (ServerMediaLink link in Model.MediaLinks.Where(l => l.ShowLink))
