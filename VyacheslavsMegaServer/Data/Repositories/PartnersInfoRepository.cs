@@ -12,6 +12,11 @@ namespace VyacheslavsMegaServer.Data.Repositories
             return await DB.Partners.ToListAsync() ?? new List<Partner>();
         }
 
+        public async Task<List<Partner>> GetAllPartnersRandomly()
+        {
+            return (await GetAllPartners()).OrderBy(p => new Random().Next(int.MaxValue)).ToList();
+        }
+
         public async Task<Partner> GetPartnerById(int id)
         {
             return await DB.Partners.FirstAsync(p => p.Id == id);

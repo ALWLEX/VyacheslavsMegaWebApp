@@ -29,7 +29,7 @@ namespace VyacheslavsMegaServer.Controllers
             {
                 MainPageData = await _mainPageRepository.GetMainPageData(),
                 Creator = await _contactsInfoRepository.GetContactById(1),
-                PartnersData = await _partnersInfoRepository.GetAllPartners(),
+                PartnersData = await _partnersInfoRepository.GetAllPartnersRandomly(),
                 MediaLinks = await _mediaLinksRepository.GetAllLinks(),
             };
             ViewBag.PageTitle = model.MainPageData.PageTitle;

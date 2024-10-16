@@ -122,13 +122,16 @@
                                         <h3 class="partner_title">@partner.Name</h3>
                                         <p class="partner_subtitle">@partner.Subtitle</p>
                                         <p>@partner.Description</p>
-                                        <p>Контакты партнёра:</p>
-                                        <ul>
-                                            @foreach (PartnerLink link in partner.Links)
-                                            {
-                                                <li class="higher_li">@link.Description<a class="white" href="@Html.Raw(link.Url)">@link.Content</a></li>
-                                            }
-                                        </ul>
+                                        @if (partner.Links.Any())
+                                        {
+                                            <p>Контакты партнёра:</p>
+                                            <ul>
+                                                @foreach (PartnerLink link in partner.Links)
+                                                {
+                                                    <li class="higher_li">@link.Description<a class="white" href="@Html.Raw(link.Url)">@link.Content</a></li>
+                                                }
+                                            </ul>
+                                        }
                                     </div>
                                 </div>
                             </div>
