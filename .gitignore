@@ -361,3 +361,6 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+/VyacheslavsMegaServer/wwwroot/img/linkIcons
+/VyacheslavsMegaServer/wwwroot/img/partners
