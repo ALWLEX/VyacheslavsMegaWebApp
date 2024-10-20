@@ -1,0 +1,58 @@
+﻿@model FooterViewModel
+
+<div class="footer minecraft_font">
+    <div class="container">
+        <div class="footer_container">
+            <div class="footer_author_info">
+                <h3 class="footer_h3">Создатель сервера</h3>
+                <p>
+                    Сервер является некоммерческим проектом компании "Vyacheslav's engineering company" под
+                    руководством Вячеслава
+                </p>
+            </div>
+            <div class="footer_server_status">
+                <h3 class="footer_h3">Состояние сервера</h3>
+                @if (!Model.IsServerOnline.HasValue)
+                {
+                    <p>Состояние сервера сейчас неизвестно</p>
+                }
+                else
+                {
+                    @if (Model.IsServerOnline.Value)
+                    {
+                        <p>
+                            Сервер онлайн!
+                            <img class="server_status_icon" src="~/img/serverStatusIcons/OnlineIcon.png">
+                        </p>
+                        <p>Игроков на сервере: @Model.OnlinePlayers/@Model.MaxPlayers</p>
+                    }
+                    else
+                    {
+                        <p>
+                            Сервер оффлайн!
+                            <img class="server_status_icon" src="~/img/serverStatusIcons/OfflineIcon.png">
+                        </p>
+                        <p>Игроков на сервере: 0</p>
+                    }
+                }
+                
+            </div>
+            <div class="footer_project_media">
+                <h3 class="footer_h3">Соц. сети проекта:</h3>
+                @foreach (ServerMediaLink link in Model.ServerMediaLinks.Where(l => l.ShowLink))
+                {
+                    <div class="iconed_link">
+                        <img class="link_icon" src="~/@link.LogoFullPath" />
+                        <p><a href="@link.Url">@link.Content</a></p>
+                    </div>
+                }
+            </div>
+            <div class="footer_center_row">
+                <p>У тебя всё ещё какие-то проблемы? Обратись в раздел <a href="/#contacts">контактов</a></p>
+            </div>
+            <div class="footer_bottom">
+                <p>Vyacheslav's engineering company, г. Костанай</p>
+            </div>
+        </div>
+    </div>
+</div>

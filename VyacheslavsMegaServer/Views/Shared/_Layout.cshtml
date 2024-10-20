@@ -15,6 +15,11 @@
     <main>
         @RenderBody()
     </main>
+
+    <footer>
+        @await Component.InvokeAsync("Footer")
+    </footer>
+
     <script src="~/js/burger-menu.js"></script>
 </body>
 

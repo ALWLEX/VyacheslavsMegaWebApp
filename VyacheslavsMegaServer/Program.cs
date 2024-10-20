@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting.Internal;
 using System.Configuration;
 using VyacheslavsMegaServer.Data;
+using VyacheslavsMegaServer.Data.JSON.Repositories;
 using VyacheslavsMegaServer.Data.Repositories;
 using VyacheslavsMegaServer.Service;
 
@@ -17,7 +18,8 @@ internal class Program
 
         configurationBuilder.AddJsonFile("appsettings.json")
             .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
-            .Build().Bind("Project", new ProjectConfig());
+            .Build()
+            .Bind("Project", new ProjectConfig());
         _configuration = configurationBuilder.Build();
 
         // Add services to the container.
@@ -53,6 +55,7 @@ internal class Program
         builder.Services.AddTransient<DonationCardsRepository>();
         builder.Services.AddTransient<ServerMediaLinksRepository>();
         builder.Services.AddTransient<ImageManager>();
+        builder.Services.AddTransient<MCServerStatRepository>();
 
         var app = builder.Build();
 
