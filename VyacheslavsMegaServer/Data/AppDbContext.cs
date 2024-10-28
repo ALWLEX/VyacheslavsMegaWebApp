@@ -101,6 +101,8 @@ namespace VyacheslavsMegaServer.Data
                 Title = "Открой для себя мир Minecraft с\r\nVyacheslav's mega server",
                 YellowHint = "Теперь с модами",
                 ServerAddress = "109.248.157.54:25565",
+                DownloadButtonTitle = "Скачать",
+                DownloadButtonUrl = "",
                 Description = "На сервере установлена сборка интересных модов. Этот модпак превращает Minecraft в сложное и увлекательное приключение с множеством новых возможностей.\r\nПогружайтесь в новые приключения с:\r\n\r\nУлучшенным ИИ мобов и механикой боя\r\nОбширными новыми биомами для исследования\r\nРазнообразными и опасными новыми мобами\r\nПродвинутой магией и зачарованиями\r\nИ многим другим",
                 MetatagDescription = "Мега сервер Вячеслава",
                 MetatagKeywords = "Minecraft, server, Вячеслав, мега, сервер",

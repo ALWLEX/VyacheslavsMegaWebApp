@@ -147,16 +147,16 @@ namespace VyacheslavsMegaServer.Migrations
                         {
                             Id = "d4bc75a9-ca48-45aa-a3f2-2ea5886ce303",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "fb9362d5-9546-42fa-b80d-e58543f8610d",
+                            ConcurrencyStamp = "fb32f4c4-4818-4552-b612-1ef123381062",
                             Email = "vya4slav4617@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "VYA4SLAV4617@GMAIL.COM",
                             NormalizedUserName = "EVRAY",
-                            PasswordHash = "AQAAAAIAAYagAAAAEM1e5jtkfFggvRxckdMm5OkNU8WdZrAnm7TA9GFMiiG2a59TfoXUdc0LUYARr5tvog==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEGjjumFWurs7EYSLTqwtbUvaMdfmTKbngWaDVnK9bGfrFWPDdLebPsI+So6dV+yVmg==",
                             PhoneNumber = "+7 (705) 806 3101",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "5b47b990-4aff-4a47-8e7a-80122463a0c7",
+                            SecurityStamp = "53ba61f4-c0d8-48bd-a661-b5743e7561a6",
                             TwoFactorEnabled = false,
                             UserName = "Evray"
                         });
@@ -387,6 +387,17 @@ namespace VyacheslavsMegaServer.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("varchar(1000)");
 
+                    b.Property<string>("DownloadButtonTitle")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("DownloadButtonUrl")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<bool>("DownloadLocalResource")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<string>("ErrorMessage")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -433,6 +444,9 @@ namespace VyacheslavsMegaServer.Migrations
                         {
                             Id = 1,
                             Description = "На сервере установлена сборка интересных модов. Этот модпак превращает Minecraft в сложное и увлекательное приключение с множеством новых возможностей.\r\nПогружайтесь в новые приключения с:\r\n\r\nУлучшенным ИИ мобов и механикой боя\r\nОбширными новыми биомами для исследования\r\nРазнообразными и опасными новыми мобами\r\nПродвинутой магией и зачарованиями\r\nИ многим другим",
+                            DownloadButtonTitle = "Скачать",
+                            DownloadButtonUrl = "",
+                            DownloadLocalResource = false,
                             ErrorMessage = "",
                             MetatagDescription = "Мега сервер Вячеслава",
                             MetatagKeywords = "Minecraft, server, Вячеслав, мега, сервер",

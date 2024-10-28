@@ -8,6 +8,7 @@
             <h1 class="title">Содержание главной страницы</h1><br>
             <form asp-area="Admin" asp-controller="MainPageEditor" asp-action="EditMainPage" class="center_element">
                 <div asp-validation-summary="All" class="form_error mc_form_font_standart"></div>
+                <!--Title-->
                 <div class="form_part_left_aligment">
                     <label class="element_label mc_form_font_standart" asp-for="Title"></label>
                     <input class="mc_text_input_space mc_form_font_standart wide_element labeled_element" asp-for="Title" />
@@ -16,6 +17,23 @@
                     <label class="element_label mc_form_font_standart" asp-for="YellowHint"></label>
                     <input class="mc_text_input_space mc_form_font_standart wide_element labeled_element" asp-for="YellowHint" /><br>
                 </div>
+
+                <!--Download button-->
+                <div class="form_part_left_aligment form_next_block">
+                    <label class="element_label mc_form_font_standart" asp-for="DownloadButtonTitle"></label>
+                    <input class="mc_text_input_space mc_form_font_standart wide_element labeled_element" asp-for="DownloadButtonTitle" /><br>
+                </div>
+                <div class="form_part_left_aligment form_next_block">
+                    <label class="element_label mc_form_font_standart" asp-for="DownloadButtonUrl"></label>
+                    <input class="mc_text_input_space mc_form_font_standart wide_element labeled_element" asp-for="DownloadButtonUrl" /><br>
+                </div>
+                <div class="form_part_left_aligment form_next_block">
+                    <label class="element_label mc_form_font_standart mc_checkbox_container" asp-for="DownloadLocalResource">
+                        @Html.DisplayNameFor(x => x.DownloadLocalResource)
+                        <input asp-for="DownloadLocalResource" /><br>
+                        <span class="mc_checkbox"></span>
+                    </label>
+                </div>
                 <div class="form_part_left_aligment form_next_block">
                     <label class="element_label mc_form_font_standart mc_checkbox_container" asp-for="ShowDownloadButton">
                         @Html.DisplayNameFor(x => x.ShowDownloadButton)
@@ -23,6 +41,8 @@
                         <span class="mc_checkbox"></span>
                     </label>
                 </div>
+
+                <!--Error message-->
                 <div class="form_part_left_aligment form_next_block">
                     <label class="element_label mc_form_font_standart" asp-for="ErrorMessage"></label>
                     <input class="mc_text_input_space mc_form_font_standart wide_element labeled_element" asp-for="ErrorMessage" />
@@ -34,14 +54,20 @@
                         <span class="mc_checkbox"></span>
                     </label>
                 </div>
+
+                <!--Server address-->
                 <div class="form_part_left_aligment form_next_block">
                     <label class="element_label mc_form_font_standart" asp-for="ServerAddress"></label>
                     <input class="mc_text_input_space mc_form_font_standart wide_element labeled_element" asp-for="ServerAddress" /><br>
                 </div>
+
+                <!--Description-->
                 <div class="form_part_left_aligment form_next_block">
                     <label class="element_label mc_form_font_standart" asp-for="Description"></label>
                     <textarea class="mc_text_input_space mc_form_font_standart mc_textarea labeled_element" id="description" asp-for="Description" ></textarea><br>
                 </div>
+
+                <!--Metas-->
                 <div class="form_part_left_aligment form_next_block">
                     <label class="element_label mc_form_font_standart" asp-for="PageTitle"></label>
                     <input class="mc_text_input_space mc_form_font_standart wide_element labeled_element" asp-for="PageTitle" /><br>
@@ -54,6 +80,7 @@
                     <label class="element_label mc_form_font_standart" asp-for="MetatagKeywords"></label>
                     <input class="mc_text_input_space mc_form_font_standart wide_element labeled_element" asp-for="MetatagKeywords" /><br>
                 </div>
+
                 <div class="form_part_center_aligment form_next_block">
                     <button class="mc_button  wide_element" type="submit">
                         <span class="mc_button_title mc_form_font_standart">Сохранить</span>

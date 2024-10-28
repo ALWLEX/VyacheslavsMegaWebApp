@@ -18,11 +18,22 @@
             }
             @if (Model.MainPageData.ShowDownloadButton)
             {
-                <a href="~/downloads/Vyacheslav's Mega Server.zip">
-                    <button class="mc_button download_pack_link_button">
-                        <span class="mc_button_title mc_form_font_standart">Скачать сборку</span>
-                    </button>
-                </a>
+                @if (Model.MainPageData.DownloadLocalResource)
+                {
+                    <a href="~/@Model.MainPageData.DownloadButtonUrl">
+                        <button class="mc_button download_pack_link_button">
+                            <span class="mc_button_title mc_form_font_standart">@Model.MainPageData.DownloadButtonTitle</span>
+                        </button>
+                    </a>
+                }
+                else
+                {
+                    <a href="@Model.MainPageData.DownloadButtonUrl">
+                        <button class="mc_button download_pack_link_button">
+                            <span class="mc_button_title mc_form_font_standart">@Model.MainPageData.DownloadButtonTitle</span>
+                        </button>
+                    </a>
+                } 
             }
             <h2 class="subtitle">IP-адрес сервера: @Model.MainPageData.ServerAddress</h2>
         </div>
