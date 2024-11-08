@@ -371,6 +371,7 @@ horizontal_scroller_content {
     align-items: center;
     flex-wrap: wrap;
     padding: 20px 0;
+    background: #111;
 }
 
 .link_icon {
