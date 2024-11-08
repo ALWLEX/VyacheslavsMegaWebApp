@@ -3,6 +3,7 @@
     "http": {
       "commandName": "Project",
       "launchBrowser": true,
+      "launchUrl": "admin/UserManagement",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },

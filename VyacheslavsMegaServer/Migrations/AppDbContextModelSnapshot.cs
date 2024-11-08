@@ -53,6 +53,12 @@ namespace VyacheslavsMegaServer.Migrations
                             Id = "db158bac-48d4-47c3-a6b0-c6d8b5c9ee55",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = "03d4ba1e-afef-4e77-849d-295bd86148db",
+                            Name = "Moderator",
+                            NormalizedName = "MODERATOR"
                         });
                 });
 
@@ -147,16 +153,16 @@ namespace VyacheslavsMegaServer.Migrations
                         {
                             Id = "d4bc75a9-ca48-45aa-a3f2-2ea5886ce303",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "fb32f4c4-4818-4552-b612-1ef123381062",
+                            ConcurrencyStamp = "932c242a-61fa-4fa6-8cf6-d8474089f3ec",
                             Email = "vya4slav4617@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "VYA4SLAV4617@GMAIL.COM",
                             NormalizedUserName = "EVRAY",
-                            PasswordHash = "AQAAAAIAAYagAAAAEGjjumFWurs7EYSLTqwtbUvaMdfmTKbngWaDVnK9bGfrFWPDdLebPsI+So6dV+yVmg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEDUHF5y++2bQziyGnqwzKXBVe68/jRqx28a+N5fTGaJ+8NP/XqyIxzQUe/TXb6oFBw==",
                             PhoneNumber = "+7 (705) 806 3101",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "53ba61f4-c0d8-48bd-a661-b5743e7561a6",
+                            SecurityStamp = "001a8bd8-f8c4-409b-8e08-92f4dacdc426",
                             TwoFactorEnabled = false,
                             UserName = "Evray"
                         });

@@ -56,6 +56,13 @@ namespace VyacheslavsMegaServer.Data
                 NormalizedName = "ADMIN"
             });
 
+            modelBuilder.Entity<IdentityRole>().HasData(new IdentityRole()
+            {
+                Id = "03d4ba1e-afef-4e77-849d-295bd86148db",
+                Name = "Moderator",
+                NormalizedName = "MODERATOR"
+            });
+
             modelBuilder.Entity<IdentityUserRole<string>>().HasData(new IdentityUserRole<string>()
             {
                 RoleId = "db158bac-48d4-47c3-a6b0-c6d8b5c9ee55",
