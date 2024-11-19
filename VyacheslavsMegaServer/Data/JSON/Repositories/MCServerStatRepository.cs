@@ -11,8 +11,16 @@ namespace VyacheslavsMegaServer.Data.JSON.Repositories
             MCServerStat.MCServerStat? MCServerStat;
             using (HttpClient apiHttpClient = new HttpClient())
             {
-                HttpResponseMessage response = await apiHttpClient.GetAsync(MCServerStatApiUrl);
-                response.EnsureSuccessStatusCode();
+                HttpResponseMessage response;
+                try
+                {
+                    response = await apiHttpClient.GetAsync(MCServerStatApiUrl);
+                    response.EnsureSuccessStatusCode();
+                }
+                catch (Exception ex)
+                {
+                    return null;
+                }
 
                 string jsonResponse = await response.Content.ReadAsStringAsync();
 
