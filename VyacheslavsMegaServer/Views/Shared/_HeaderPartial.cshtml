@@ -1,7 +1,17 @@
-﻿<div class="container">
+﻿@using Microsoft.AspNetCore.Identity
+@using VyacheslavsMegaServer.Data.Repositories
+@inject UserManager<IdentityUser> _userManager;
+
+@{
+    IdentityUser? user = await _userManager.GetUserAsync(User);
+    bool isAdmin = user is null ? false : await _userManager.IsInRoleAsync(user, IdentityRepository.ADMIN_ROLE);
+}
+
+
+<div class="container">
     <div class="header_inner">
         <a href="/">
-            <img class="logo" src="~/img/logo_text.svg">
+            <img class="logo" src="~/img/logo_text.svg" />
         </a>
 
         <nav class="nav">
@@ -9,6 +19,24 @@
             <a asp-area="" asp-controller="Home" asp-action="DonationPage">Пожертвования</a>
             <a asp-area="" asp-controller="UserReports" asp-action="New">Сообщить о неисправности</a>
             <a href="/#contacts">Контакты</a>
+            @if(user is null){
+                <a class="account" asp-area="" asp-controller="Account" asp-action="Login">Вход</a>
+            }
+            else
+            {
+                <div class="dropdown">
+                    <a class="account">@user.UserName</a>
+                    <img class="dropdown_arrow" src="~/img/dropdown_arrow.gif" />
+                    <div class="dropdown-content">
+                        <a href="#">Настройки профиля</a>
+                        @if (isAdmin)
+                        {
+                            <a asp-area="Admin" asp-controller="Home" asp-action="Index">Панель администратора</a>
+                        }
+                        <a asp-area="" asp-controller="Account" asp-action="Logout">Выйти</a>
+                    </div>
+                </div>
+            }
         </nav>
         <div class="burger">
             <span></span>

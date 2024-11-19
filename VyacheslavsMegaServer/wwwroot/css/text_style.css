@@ -92,6 +92,10 @@ ul li {
     color: #FFFFA0;
 }
 
+a.account {
+    text-decoration: underline;
+}
+
 .align_left {
     text-align: left;
 }
