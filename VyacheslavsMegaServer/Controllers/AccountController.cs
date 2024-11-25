@@ -82,5 +82,25 @@ namespace VyacheslavsMegaServer.Controllers
             await _signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
         }
+
+        [Authorize]
+        public IActionResult AccountSettings()
+        {
+            return View();
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                IdentityUser currentUser = await _userManager.GetUserAsync(User);
+                await _userManager.ChangePasswordAsync(currentUser, model.OldPassword, model.NewPassword);
+                return RedirectToAction(nameof(AccountSettings));
+            }
+            
+            return View(nameof(AccountSettings), model);
+        }
     }
 }

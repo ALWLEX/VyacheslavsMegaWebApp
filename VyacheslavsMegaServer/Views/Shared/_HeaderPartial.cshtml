@@ -28,7 +28,7 @@
                     <a class="account">@user.UserName</a>
                     <img class="dropdown_arrow" src="~/img/dropdown_arrow.gif" />
                     <div class="dropdown-content">
-                        <a href="#">Настройки профиля</a>
+                        <a asp-area="" asp-controller="Account" asp-action="AccountSettings">Настройки профиля</a>
                         @if (isAdmin)
                         {
                             <a asp-area="Admin" asp-controller="Home" asp-action="Index">Панель администратора</a>

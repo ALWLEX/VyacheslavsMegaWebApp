@@ -1,0 +1,30 @@
+﻿@model ChangePasswordViewModel
+
+<div class="block_standart first_slide login">
+    <div class="container">
+        <div class="intro_container">
+            <h1 class="title">Настройки аккаунта</h1><br>
+            <h2 class="subtitle">Смена пароля</h2>
+            <form asp-area="" asp-controller="Account" asp-action="ChangePassword" class="center_element form_small" method="post">
+                <div asp-validation-summary="All" class="form_error mc_form_font_standart"></div>
+                <div class="form_part_left_aligment">
+                    <label class="element_label mc_form_font_standart" asp-for="OldPassword"></label><br>
+                    <input class="mc_text_input_space mc_form_font_standart wide_element labeled_element" asp-for="OldPassword" /><br>
+                </div>
+                <div class="form_part_left_aligment form_next_block">
+                    <label class="element_label mc_form_font_standart" asp-for="NewPassword"></label><br>
+                    <input class="mc_text_input_space mc_form_font_standart wide_element labeled_element" asp-for="NewPassword" /><br>
+                </div>
+                <div class="form_part_left_aligment form_next_block">
+                    <label class="element_label mc_form_font_standart" asp-for="ConfirmPassword"></label><br>
+                    <input class="mc_text_input_space mc_form_font_standart wide_element labeled_element" asp-for="ConfirmPassword" /><br>
+                </div>
+                <div class="form_part_center_aligment form_next_block">
+                    <button class="mc_button wide_element" type="submit">
+                        <span class="mc_button_title mc_form_font_standart">Сохранить пароль</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
