@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Net.Http;
+using System.Text.Json;
 using VyacheslavsMegaServer.Service;
 
 namespace VyacheslavsMegaServer.Data.JSON.Repositories
@@ -11,6 +12,10 @@ namespace VyacheslavsMegaServer.Data.JSON.Repositories
             MCServerStat.MCServerStat? MCServerStat;
             using (HttpClient apiHttpClient = new HttpClient())
             {
+                //User-Agent is required by API
+                apiHttpClient.DefaultRequestHeaders.Add("User-Agent", "Vyacheslav's mega server web app");
+                apiHttpClient.DefaultRequestHeaders.Add("Accept", "application/json");
+                
                 HttpResponseMessage response;
                 try
                 {
