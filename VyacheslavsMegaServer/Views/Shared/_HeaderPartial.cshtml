@@ -9,36 +9,36 @@
 
 
 <div class="container">
-    <div class="header_inner">
+    <div class="header-inner">
         <a href="/">
-            <img class="logo" src="~/img/logo_text.svg" />
+            <img class="header__logo" src="~/img/logo_text.svg" />
         </a>
 
-        <nav class="nav">
-            <a href="/">Главная</a>
-            <a asp-area="" asp-controller="Home" asp-action="DonationPage">Пожертвования</a>
-            <a asp-area="" asp-controller="UserReports" asp-action="New">Сообщить о неисправности</a>
-            <a href="/#contacts">Контакты</a>
+        <nav class="header__menu">
+            <a class="header__menu-link" href="/">Главная</a>
+            <a class="header__menu-link" asp-area="" asp-controller="Home" asp-action="DonationPage">Пожертвования</a>
+            <a class="header__menu-link" asp-area="" asp-controller="UserReports" asp-action="New">Сообщить о неисправности</a>
+            <a class="header__menu-link" href="/#contacts">Контакты</a>
             @if(user is null){
-                <a class="account" asp-area="" asp-controller="Account" asp-action="Login">Вход</a>
+                <a class="header__menu-link header__menu-link--account" asp-area="" asp-controller="Account" asp-action="Login">Вход</a>
             }
             else
             {
-                <div class="dropdown">
-                    <a class="account">@user.UserName</a>
-                    <img class="dropdown_arrow" src="~/img/dropdown_arrow.gif" />
-                    <div class="dropdown-content">
-                        <a asp-area="" asp-controller="Account" asp-action="AccountSettings">Настройки профиля</a>
+                <div class="header__dropdown">
+                    <a class="header__menu-link header__dropdown-title header__menu-link--account">@user.UserName</a>
+                    <img class="header__dropdown-arrow" src="~/img/dropdown_arrow.gif" />
+                    <div class="header__dropdown-content">
+                        <a class="header__menu-link header__dropdown-content-link" asp-area="" asp-controller="Account" asp-action="AccountSettings">Настройки профиля</a>
                         @if (isAdmin)
                         {
-                            <a asp-area="Admin" asp-controller="Home" asp-action="Index">Панель администратора</a>
+                            <a class="header__menu-link header__dropdown-content-link" asp-area="Admin" asp-controller="Home" asp-action="Index">Панель администратора</a>
                         }
-                        <a asp-area="" asp-controller="Account" asp-action="Logout">Выйти</a>
+                        <a class="header__menu-link header__dropdown-content-link" asp-area="" asp-controller="Account" asp-action="Logout">Выйти</a>
                     </div>
                 </div>
             }
         </nav>
-        <div class="burger">
+        <div class="header__burger">
             <span></span>
             <span></span>
             <span></span>
