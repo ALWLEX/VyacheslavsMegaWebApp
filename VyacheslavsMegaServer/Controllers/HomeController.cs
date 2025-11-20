@@ -13,14 +13,16 @@ namespace VyacheslavsMegaServer.Controllers
         private readonly ContactsInfoRepository _contactsInfoRepository;
         private readonly DonationCardsRepository _cardsRepository;
         private readonly ServerMediaLinksRepository _mediaLinksRepository;
+        private readonly FundGoalRepository _fundGoalRepository;
 
-        public HomeController(MainPageRepository mainPageRepository, PartnersInfoRepository partnersInfoRepository, ContactsInfoRepository contactsInfoRepository, DonationCardsRepository cardsRepository, ServerMediaLinksRepository mediaLinksRepository)
+        public HomeController(MainPageRepository mainPageRepository, PartnersInfoRepository partnersInfoRepository, ContactsInfoRepository contactsInfoRepository, DonationCardsRepository cardsRepository, ServerMediaLinksRepository mediaLinksRepository, FundGoalRepository fundGoalRepository)
         {
             _mainPageRepository = mainPageRepository;
             _contactsInfoRepository = contactsInfoRepository;
             _partnersInfoRepository = partnersInfoRepository;
             _cardsRepository = cardsRepository;
             _mediaLinksRepository = mediaLinksRepository;
+            _fundGoalRepository = fundGoalRepository;
         }
 
         public async Task<IActionResult> Index()
@@ -42,7 +44,11 @@ namespace VyacheslavsMegaServer.Controllers
         {
             DonationPageViewModel model = new DonationPageViewModel()
             {
-                DonationCards = await _cardsRepository.GetAllCards()
+                DonationCards = await _cardsRepository.GetAllCards(),
+                Goal = _fundGoalRepository.GetCurrentGoal(),
+                FundAmount = await _fundGoalRepository.GetFundState(),
+                LastTransactions = await _fundGoalRepository.GetLastTransaction(4)
+
             };
             return View(model);
         }

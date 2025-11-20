@@ -30,6 +30,76 @@
     </div>
 </div>
 
+<div class="block_standart donation_fund">
+    <div class="container">
+        <div class="section">
+            <h2 class="minecraft_font section_header">Наша цель</h2>
+
+            <p class="section_text font_size_normal">Текущая цель: @Model.Goal.Name</p>
+
+            <div class="mc-xp-container">
+                <div id="xpText" class="mc-xp-text">0/100</div>
+                <div id="xpBar" class="mc-xp-bar"></div>
+
+                <input id="fundCurrent" type="hidden" value="@Model.FundAmount" />
+                <input id="goalPrice" type="hidden" value="@Model.Goal.Price"/>
+            </div>
+
+            <p class="section_text font_size_normal">Последние транзакции:</p>
+
+            <table class="mc_form_font_standart white mc_table wide_element">
+                <tr class="tr_header">
+                    <td>Сумма</td>
+                    <td>От кого/куда</td>
+                    <td>Доп. информация</td>
+                </tr>
+                @if (Model.LastTransactions.Count == 0)
+                {
+                    <tr class="tr_header">
+                        <td colspan="3">Транзакций пока не было</td>
+                    </tr>
+                }
+                else
+                {
+                    foreach (FundTransaction transaction in Model.LastTransactions)
+                    {
+                        <tr>
+                            <td> @(transaction.Type == TransactionType.Income ? "+" : "-")@transaction.Amount</td>
+                            <td>@transaction.Reason</td>
+                            <td>@transaction.Note</td>
+                        </tr>
+                    }
+                }
+            </table>
+
+            <script>
+                let current = document.getElementById("fundCurrent").value;
+                let max = document.getElementById("goalPrice").value;
+
+                const cellCount = 20; 
+                const xpBar = document.getElementById("xpBar");
+
+                xpBar.innerHTML = ""; // очистить
+
+                // Сколько ячеек нужно заполнить
+                let filledCells = Math.round((current / max) * cellCount);
+
+                // Создаем 20 клеток
+                for (let i = 0; i < cellCount; i++) {
+                    let cell = document.createElement("div");
+                    cell.className = "mc-xp-cell";
+                    if (i < filledCells) cell.classList.add("mc-xp-cell-filled");
+                    xpBar.appendChild(cell);
+                }
+
+                // Обновление текста
+                document.getElementById("xpText").textContent = current.toLocaleString('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " / " + (max == 0 ? "Не определено" : max.toLocaleString('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+            </script>
+
+        </div>
+    </div>
+</div>
+
 <div class="block_standart donation_attention" id="attention">
     <div class="container">
         <div class="section">

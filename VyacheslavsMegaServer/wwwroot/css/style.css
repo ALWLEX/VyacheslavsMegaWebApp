@@ -345,6 +345,12 @@ horizontal_scroller_content {
     background-repeat: no-repeat;
 }
 
+.donation_fund {
+    background: url(../img/backgrounds/donation_fund.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
 .donation_attention {
     background: url(../img/backgrounds/donation_attention.jpg);
     background-repeat: no-repeat;

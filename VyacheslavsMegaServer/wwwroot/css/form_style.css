@@ -2,6 +2,7 @@
 @import url("mc_form_elements/mc_text_input_elements.css");
 @import url("mc_form_elements/mc_checkbox.css");
 @import url("mc_form_elements/mc_listbox.css");
+@import url("mc_form_elements/mc_progress_bar.css");
 
 .mc_form_font_standart {
     font-family: minecraft;

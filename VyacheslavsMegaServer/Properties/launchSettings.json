@@ -3,6 +3,7 @@
     "http": {
       "commandName": "Project",
       "launchBrowser": true,
+      "launchUrl": "Home/DonationPage",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
