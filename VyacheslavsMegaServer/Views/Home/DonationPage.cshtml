@@ -64,7 +64,7 @@
                     foreach (FundTransaction transaction in Model.LastTransactions)
                     {
                         <tr>
-                            <td> @(transaction.Type == TransactionType.Income ? "+" : "-")@transaction.Amount</td>
+                            <td>@transaction.Amount</td>
                             <td>@transaction.Reason</td>
                             <td>@transaction.Note</td>
                         </tr>

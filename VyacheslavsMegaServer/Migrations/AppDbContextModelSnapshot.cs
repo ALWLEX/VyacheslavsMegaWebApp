@@ -153,16 +153,16 @@ namespace VyacheslavsMegaServer.Migrations
                         {
                             Id = "d4bc75a9-ca48-45aa-a3f2-2ea5886ce303",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "bbcf503b-20c3-4121-872a-6e9faf8c6b5f",
+                            ConcurrencyStamp = "96d9e72d-56b0-4313-b0d6-5753616a2ffd",
                             Email = "vya4slav4617@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "VYA4SLAV4617@GMAIL.COM",
                             NormalizedUserName = "EVRAY",
-                            PasswordHash = "AQAAAAIAAYagAAAAECGGEUylN02GEy8QFN3dI0aajPYYDIfD7JOA4O05Z5r2YxQwOi2q/g8rEUDb1PCbEw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEJKB91on5Zts5FGHaXgynbTlYrjN72EEFGw2zTjQlVbyJLzYfYbt+d3cjA/c4Y9BUA==",
                             PhoneNumber = "+7 (705) 806 3101",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "a9b446b9-1c2c-4e6f-ad7d-986bbc2f3186",
+                            SecurityStamp = "03f1268f-a02b-482e-baa5-4c52707defd5",
                             TwoFactorEnabled = false,
                             UserName = "Evray"
                         });
@@ -420,9 +420,6 @@ namespace VyacheslavsMegaServer.Migrations
                         .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("varchar(255)");
-
-                    b.Property<int>("Type")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 

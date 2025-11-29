@@ -7,6 +7,6 @@ namespace VyacheslavsMegaServer.Data.Entities
         public DateTime SnapshotDate { get; private set; }
 
         [Column(TypeName = "decimal(10,2)")]
-        public decimal Balance { get; private set; }
+        public decimal Balance { get; set; }
     }
 }

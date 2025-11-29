@@ -1,0 +1,46 @@
+﻿@model FundManagementViewModel
+
+<div class="block_big_first">
+    <div class="container">
+        <div class="intro_container">
+            <h1 class="title">Управление фондом</h1>
+            <br />
+            <!--
+            <form asp-area="Admin" asp-controller="FundManagement" asp-action="Index" method="post">
+                <div class="form_part_left_aligment">
+                    <label class="element_label mc_form_font_standart" asp-for="DateStart"></label>
+                    <input class="mc_text_input_space mc_form_font_standart wide_element labeled_element"
+                           asp-for="DateStart" />
+                </div>
+            </form>
+            -->
+
+            <div class="table_container">
+                <table class="mc_form_font_standart white mc_table wide_element">
+                    <tr class="tr_header">
+                        <td>Сумма</td>
+                        <td>Дата</td>
+                        <td>От кого/куда</td>
+                        <td colspan="2">Действия</td>
+                    </tr>
+                    @foreach(FundTransaction transaction in Model.FundTransactions)
+                    {
+                        <tr>
+                            <td>@transaction.Amount</td>
+                            <td>@transaction.Date</td>
+                            <td>@transaction.Reason</td>
+                            <td>Редактировать</td>
+                            <td>Удалить</td>
+                        </tr>
+                    }
+                    <tr class="tr_header">
+                        <td colspan="6"><a asp-action="">Добавить транзакцию</a></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="form_next_block">
+                <a href="/admin" class="white mc_form_font_standart">Назад</a>
+            </div>
+        </div>
+    </div>
+</div>

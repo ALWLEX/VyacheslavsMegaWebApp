@@ -57,7 +57,7 @@ internal class Program
         builder.Services.AddTransient<ImageManager>();
         builder.Services.AddTransient<MCServerStatRepository>();
         builder.Services.AddTransient<IdentityRepository>();
-        builder.Services.AddTransient<FundGoalRepository>();
+        builder.Services.AddTransient<FundRepository>();
 
         var app = builder.Build();
 

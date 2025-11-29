@@ -13,9 +13,9 @@ namespace VyacheslavsMegaServer.Controllers
         private readonly ContactsInfoRepository _contactsInfoRepository;
         private readonly DonationCardsRepository _cardsRepository;
         private readonly ServerMediaLinksRepository _mediaLinksRepository;
-        private readonly FundGoalRepository _fundGoalRepository;
+        private readonly FundRepository _fundGoalRepository;
 
-        public HomeController(MainPageRepository mainPageRepository, PartnersInfoRepository partnersInfoRepository, ContactsInfoRepository contactsInfoRepository, DonationCardsRepository cardsRepository, ServerMediaLinksRepository mediaLinksRepository, FundGoalRepository fundGoalRepository)
+        public HomeController(MainPageRepository mainPageRepository, PartnersInfoRepository partnersInfoRepository, ContactsInfoRepository contactsInfoRepository, DonationCardsRepository cardsRepository, ServerMediaLinksRepository mediaLinksRepository, FundRepository fundGoalRepository)
         {
             _mainPageRepository = mainPageRepository;
             _contactsInfoRepository = contactsInfoRepository;
