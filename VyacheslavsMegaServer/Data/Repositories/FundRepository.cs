@@ -18,11 +18,6 @@ namespace VyacheslavsMegaServer.Data.Repositories
             return lastSnapshot.Balance + await DB.FundTransactions.Where(t => t.Date > lastSnapshot.SnapshotDate).SumAsync(t => t.Amount);
         }
 
-        public Goal? GetCurrentGoal()
-        {
-            return DB.Goals.AsEnumerable().MaxBy(g => g.Date);
-        }
-
         public async Task<List<FundTransaction>> GetLastTransaction(int count)
         {
             return await DB.FundTransactions.OrderByDescending(t => t.Date).Take(count).ToListAsync();
@@ -80,8 +75,20 @@ namespace VyacheslavsMegaServer.Data.Repositories
         public async Task RemoveTransactionById(int id)
         {
             FundTransaction transaction = await GetTransactionById(id);
-            DB.FundTransactions.Remove(transaction);
-            await DB.SaveChangesAsync();
+            using (var DBTransaction = DB.Database.BeginTransaction())
+            {
+                try
+                {
+                    DB.FundTransactions.Remove(transaction);
+                    await DB.SaveChangesAsync();
+                    await recalcSnapshotsByTransaction(transaction, TransactionState.Removed);
+                    await DBTransaction.CommitAsync();
+                }
+                catch (Exception ex)
+                {
+                    DBTransaction.Rollback();
+                }
+            }
         }
 
         private IQueryable<FundSnapshot> getFundSnapshotsAfterDate(DateTime date)
