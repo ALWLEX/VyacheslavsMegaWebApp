@@ -29,12 +29,12 @@
                             <td>@transaction.Amount</td>
                             <td>@transaction.Date</td>
                             <td>@transaction.Reason</td>
-                            <td>Редактировать</td>
-                            <td>Удалить</td>
+                            <td><a asp-action="TransactionDetails" asp-route-transactionId="@transaction.Id">Редактировать</a></td>
+                            <td><a asp-action="RemoveTransaction" asp-route-transactionId="@transaction.Id" onclick="confirmNavigation(event)">Удалить</a></td>
                         </tr>
                     }
                     <tr class="tr_header">
-                        <td colspan="6"><a asp-action="">Добавить транзакцию</a></td>
+                        <td colspan="6"><a asp-action="TransactionDetails">Добавить транзакцию</a></td>
                     </tr>
                 </table>
             </div>

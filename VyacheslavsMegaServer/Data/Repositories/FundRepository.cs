@@ -54,6 +54,7 @@ namespace VyacheslavsMegaServer.Data.Repositories
                         FundTransaction oldTransaction = await GetTransactionById(transaction.Id);
                         if (transaction.Amount == oldTransaction.Amount && transaction.Date == oldTransaction.Date) 
                         {
+                            DB.Entry(oldTransaction).State = EntityState.Detached;
                             DB.Entry(transaction).State = EntityState.Modified;
                         }
                         else

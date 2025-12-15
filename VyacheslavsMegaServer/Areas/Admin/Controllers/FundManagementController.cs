@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using VyacheslavsMegaServer.Areas.Admin.Models;
+using VyacheslavsMegaServer.Data.Entities;
 using VyacheslavsMegaServer.Data.Repositories;
 
 namespace VyacheslavsMegaServer.Areas.Admin.Controllers
@@ -26,6 +27,27 @@ namespace VyacheslavsMegaServer.Areas.Admin.Controllers
         {
             model.FundTransactions = await _fundRepository.GetTransactionsByDate(model.DateStart, model.DateEnd);
             return View(model);
+        }
+
+        public async Task<IActionResult> TransactionDetails(int? transactionId)
+        {
+            if (transactionId == null) 
+                return View(new FundTransaction());
+            return View(await _fundRepository.GetTransactionById(transactionId.Value));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> TransactionDetails(FundTransaction model)
+        {
+            if (!ModelState.IsValid) return View(model);
+            await _fundRepository.SaveTransaction(model);
+            return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> RemoveTransaction(int transactionId)
+        {
+            await _fundRepository.RemoveTransactionById(transactionId);
+            return RedirectToAction(nameof(Index));
         }
     }
 }

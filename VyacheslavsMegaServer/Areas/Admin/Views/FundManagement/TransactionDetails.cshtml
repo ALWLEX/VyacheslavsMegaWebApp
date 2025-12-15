@@ -1,0 +1,73 @@
+﻿@model FundTransaction
+
+
+<div class="block_big_first">
+    <div class="container">
+        <div class="form-container">
+            <form class="form" asp-area="Admin" asp-controller="FundManagement" asp-action="TransactionDetails" method="post">
+
+                <div class="form__header">
+                    <h2 class="form__title">@(Model.Id == 0 ? "Добавление" : "Редактирование") транзакции</h2>
+                </div>
+
+                <input type="hidden" asp-for="Id" readonly />
+
+                <div class="form__body">
+
+                    <div class="form__validation-summary" asp-validation-summary="All"></div>
+
+                    <div class="form-group">
+                        <label class="form-group__label" asp-for="Reason"></label>
+
+                        <div class="form-group__control">
+                            <div class="field field_type_text">
+                                <input class="field__input" asp-for="Reason">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-group__label" asp-for="Date"></label>
+
+                        <div class="form-group__control">
+                            <div class="field field_type_text">
+                                <input class="field__input" asp-for="Date">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-group__label" asp-for="Amount"></label>
+
+                        <div class="form-group__control">
+                            <div class="field field_type_text">
+                                <input class="field__input" asp-for="Amount">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-group__label" asp-for="Note"></label>
+
+                        <div class="form-group__control">
+                            <div class="field field_type_text">
+                                <textarea class="field__input" rows="4" asp-for="Note"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="form__footer">
+                    <button class="mc_button wide_element" type="submit">
+                        <span class="mc_button_title mc_form_font_standart">Сохранить</span>
+                    </button>
+
+                    <a asp-area="Admin" asp-controller="FundManagement" asp-action="Index" class="back-navigation">Назад</a>
+                </div>
+
+            </form>
+            
+        </div>
+    </div>
+</div>

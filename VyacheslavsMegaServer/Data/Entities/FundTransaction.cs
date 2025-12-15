@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace VyacheslavsMegaServer.Data.Entities
 {
@@ -12,10 +13,11 @@ namespace VyacheslavsMegaServer.Data.Entities
     public class FundTransaction : Base.EntityBase
     {
         [Display(Name = "Дата")]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-ddTHH:mm:ss}", ApplyFormatInEditMode = true)]
         public DateTime Date { get; set; } = DateTime.Now;
 
         [MaxLength(255)]
-        [Display(Name = "Причина")]
+        [Display(Name = "Причина транзакции")]
         public string Reason { get; set; }
 
         [Column(TypeName = "decimal(10,2)")]
@@ -23,6 +25,6 @@ namespace VyacheslavsMegaServer.Data.Entities
         public decimal Amount { get; set; }
 
         [Display(Name = "Доп. информация")]
-        public string Note { get; set; }
+        public string? Note { get; set; }
     }
 }
