@@ -13,16 +13,18 @@ namespace VyacheslavsMegaServer.Controllers
         private readonly ContactsInfoRepository _contactsInfoRepository;
         private readonly DonationCardsRepository _cardsRepository;
         private readonly ServerMediaLinksRepository _mediaLinksRepository;
-        private readonly FundRepository _fundGoalRepository;
+        private readonly FundRepository _fundRepository;
+        private readonly GoalRepository _goalRepository;
 
-        public HomeController(MainPageRepository mainPageRepository, PartnersInfoRepository partnersInfoRepository, ContactsInfoRepository contactsInfoRepository, DonationCardsRepository cardsRepository, ServerMediaLinksRepository mediaLinksRepository, FundRepository fundGoalRepository)
+        public HomeController(MainPageRepository mainPageRepository, PartnersInfoRepository partnersInfoRepository, ContactsInfoRepository contactsInfoRepository, DonationCardsRepository cardsRepository, ServerMediaLinksRepository mediaLinksRepository, FundRepository fundRepository, GoalRepository goalRepository)
         {
             _mainPageRepository = mainPageRepository;
             _contactsInfoRepository = contactsInfoRepository;
             _partnersInfoRepository = partnersInfoRepository;
             _cardsRepository = cardsRepository;
             _mediaLinksRepository = mediaLinksRepository;
-            _fundGoalRepository = fundGoalRepository;
+            _fundRepository = fundRepository;
+            _goalRepository = goalRepository;
         }
 
         public async Task<IActionResult> Index()
@@ -45,9 +47,9 @@ namespace VyacheslavsMegaServer.Controllers
             DonationPageViewModel model = new DonationPageViewModel()
             {
                 DonationCards = await _cardsRepository.GetAllCards(),
-                Goal = _fundGoalRepository.GetCurrentGoal(),
-                FundAmount = await _fundGoalRepository.GetFundState(),
-                LastTransactions = await _fundGoalRepository.GetLastTransaction(4)
+                Goal = _goalRepository.GetCurrentGoal(),
+                FundAmount = await _fundRepository.GetFundState(),
+                LastTransactions = await _fundRepository.GetLastTransaction(4)
 
             };
             return View(model);

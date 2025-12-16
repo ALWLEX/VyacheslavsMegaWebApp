@@ -23,7 +23,17 @@ namespace VyacheslavsMegaServer.Data.Entities
         [Display(Name = "Выполнена")]
         public bool IsCompleted { get; set; }
 
-        public DateTime Date { get; set; }
+        private bool _isCurrent;
+
+        [Display(Name = "Текущая")]
+        public bool IsCurrent 
+        {
+            get { return _isCurrent && !IsCompleted; }    
+            set { _isCurrent = value; }
+        }
+
+        [Display(Name = "Дата постановки")]
+        public DateOnly Date { get; set; } = DateOnly.FromDateTime(DateTime.Today);
 
         [ValidateNever]
         [Display(Name = "Логотип")]

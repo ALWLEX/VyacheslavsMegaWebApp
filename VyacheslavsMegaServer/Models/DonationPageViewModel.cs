@@ -13,7 +13,7 @@ namespace VyacheslavsMegaServer.Models
         {
             get
             {
-                return _goal is null ? new Goal() { Name = "пока нет, но всё ещё есть мелкие расходы)", Date = DateTime.Now} : _goal;
+                return _goal is null ? new Goal() { Name = "пока нет, но всё ещё есть мелкие расходы)"} : _goal;
             }
             set { _goal = value; }
         }

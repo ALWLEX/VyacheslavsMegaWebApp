@@ -153,16 +153,16 @@ namespace VyacheslavsMegaServer.Migrations
                         {
                             Id = "d4bc75a9-ca48-45aa-a3f2-2ea5886ce303",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "96d9e72d-56b0-4313-b0d6-5753616a2ffd",
+                            ConcurrencyStamp = "b4d40c6d-dbcb-4a78-9992-cd59e11ed78b",
                             Email = "vya4slav4617@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "VYA4SLAV4617@GMAIL.COM",
                             NormalizedUserName = "EVRAY",
-                            PasswordHash = "AQAAAAIAAYagAAAAEJKB91on5Zts5FGHaXgynbTlYrjN72EEFGw2zTjQlVbyJLzYfYbt+d3cjA/c4Y9BUA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEJZaBTMzCLAgGAFrc3rsSmzH4m+79fuX7YCCs/EoHwh7bsjObpGOtM/cc5qIOVAHPA==",
                             PhoneNumber = "+7 (705) 806 3101",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "03f1268f-a02b-482e-baa5-4c52707defd5",
+                            SecurityStamp = "ec0415b2-922d-495a-a96e-1666fb398fa6",
                             TwoFactorEnabled = false,
                             UserName = "Evray"
                         });
@@ -413,7 +413,6 @@ namespace VyacheslavsMegaServer.Migrations
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Note")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Reason")
@@ -433,8 +432,8 @@ namespace VyacheslavsMegaServer.Migrations
                         .HasColumnType("int")
                         .HasColumnOrder(0);
 
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime(6)");
+                    b.Property<DateOnly>("Date")
+                        .HasColumnType("date");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -442,6 +441,9 @@ namespace VyacheslavsMegaServer.Migrations
                         .HasColumnType("varchar(255)");
 
                     b.Property<bool>("IsCompleted")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("IsCurrent")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("LogoFileName")

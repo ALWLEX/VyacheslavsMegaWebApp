@@ -58,6 +58,7 @@ internal class Program
         builder.Services.AddTransient<MCServerStatRepository>();
         builder.Services.AddTransient<IdentityRepository>();
         builder.Services.AddTransient<FundRepository>();
+        builder.Services.AddTransient<GoalRepository>();
 
         var app = builder.Build();
 

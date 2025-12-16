@@ -1,0 +1,34 @@
+﻿using Microsoft.EntityFrameworkCore;
+using VyacheslavsMegaServer.Data.Entities;
+
+namespace VyacheslavsMegaServer.Data.Repositories
+{
+    public class GoalRepository : Base.RepositoryBase
+    {
+        public Goal? GetCurrentGoal()
+        {
+            return DB.Goals.Where(g => g.IsCurrent).OrderBy(g => g.Date).FirstOrDefault();
+        }
+
+        public async Task<Goal> GetGoalById(int id)
+        {
+            return await DB.Goals.FirstAsync(g => g.Id == id);
+        }
+
+        public async Task SaveGoal(Goal goal)
+        {
+            if (goal.Id == 0)
+                DB.Entry(goal).State = EntityState.Added;
+            else
+                DB.Entry(goal.Id).State = EntityState.Modified;
+
+            await DB.SaveChangesAsync();
+        }
+
+        public async Task RemoveGoalById(int id)
+        {
+            DB.Goals.Remove(new Goal { Id = id });
+            await DB.SaveChangesAsync();
+        }
+    }
+}
