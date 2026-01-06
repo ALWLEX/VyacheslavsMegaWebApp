@@ -5,7 +5,7 @@
       "launchBrowser": true,
       "launchUrl": "admin/goalmanagement",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Staging"
       },
       "dotnetRunMessages": true,
       "applicationUrl": "http://localhost:5044"

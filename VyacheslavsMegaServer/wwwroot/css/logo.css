@@ -1,0 +1,19 @@
+﻿.logo {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 5px;
+}
+
+.logo__image {
+    height: 80px;
+}
+
+.logo__text {
+    font-family: 'minecraft-title';
+    line-height: 1.4;
+
+    background: linear-gradient(37deg,rgba(150, 115, 11, 1) 0%, rgba(255, 233, 69, 1) 50%, rgba(198, 158, 70, 1) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
