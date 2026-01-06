@@ -1,0 +1,49 @@
+﻿@model GoalManagementViewModel
+
+<div class="block_big_first">
+    <div class="container">
+        <div class="intro_container">
+            <h1 class="title">Управление целями</h1>
+            <br />
+
+            <div class="table_container">
+                <table class="mc_form_font_standart white mc_table wide_element">
+                    <tr class="tr_header">
+                        <td>Название</td>
+                        <td>Цена</td>
+                        <td>Текущая</td>
+                        <td>Выполнена</td>
+                        <td colspan="2">Действия</td>
+                    </tr>
+                    @foreach (Goal goal in Model.Goals)
+                    {
+                        <tr>
+                            <td>@goal.Name</td>
+                            <td>@goal.Price</td>
+                            <td>
+                                <label class="mc-checkbox">
+                                    <input class="mc-checkbox__input" type="checkbox" checked="@goal.IsCurrent" disabled/>
+                                    <span class="mc-checkbox__box"></span>
+                                </label>
+                            </td>
+                            <td>
+                                <label class="mc-checkbox">
+                                    <input class="mc-checkbox__input" type="checkbox" checked="@goal.IsCompleted" disabled/>
+                                    <span class="mc-checkbox__box"></span>
+                                </label>
+                            </td>
+                            <td><a asp-action="GoalDetails" asp-route-goalId="@goal.Id">Редактировать</a></td>
+                            <td><a asp-action="RemoveGoal" asp-route-goalId="@goal.Id">Удалить</a></td>
+                        </tr>
+                    }
+                    <tr class="tr_header">
+                        <td colspan="6"><a asp-action="GoalDetails">Добавить цель</a></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="form_next_block">
+                <a href="/admin" class="white mc_form_font_standart">Назад</a>
+            </div>
+        </div>
+    </div>
+</div>

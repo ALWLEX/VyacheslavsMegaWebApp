@@ -1,0 +1,159 @@
+﻿@model Goal
+
+<div class="block_big_first">
+    <div class="container">
+        <div class="form-container">
+            <form class="form" asp-area="Admin" asp-controller="GoalManagement" asp-action="GoalDetails" method="post" enctype="multipart/form-data">
+
+                <div class="form__header">
+                    <h2 class="form__title">@(Model.Id == 0 ? "Добавление" : "Редактирование") цели</h2>
+                </div>
+
+                <input type="hidden" asp-for="Id" readonly />
+                <input type="hidden" asp-for="LogoFileName" readonly />
+
+                <div class="form__body">
+
+                    <div class="form__validation-summary" asp-validation-summary="All"></div>
+
+                    <div class="form-group">
+                        <label class="form-group__label" asp-for="Name"></label>
+
+                        <div class="form-group__control">
+                            <div class="field field_type_text">
+                                <input class="field__input" asp-for="Name">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-group__label" asp-for="Price"></label>
+
+                        <div class="form-group__control">
+                            <div class="field field_type_text">
+                                <input class="field__input" asp-for="Price">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-group__label" asp-for="Date"></label>
+
+                        <div class="form-group__control">
+                            <div class="field field_type_text">
+                                <input class="field__input" asp-for="Date">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Состояния цели</label>
+                        <div class="form__row">
+                            <div class="form-group form-group_size_50">
+                                <div class="form-group__control">
+                                    <label class="mc-checkbox">
+                                        <input class="mc-checkbox__input" asp-for="IsCurrent">
+                                        <span class="mc-checkbox__box"></span>
+                                        <span class="mc-checkbox__label">@Html.DisplayNameFor(x => x.IsCurrent)</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="form-group form-group_size_50">
+                                <div class="form-group__control">
+                                    <label class="mc-checkbox">
+                                        <input class="mc-checkbox__input" asp-for="IsCompleted">
+                                        <span class="mc-checkbox__box"></span>
+                                        <span class="mc-checkbox__label">@Html.DisplayNameFor(x => x.IsCompleted)</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-group__label" asp-for="Description"></label>
+
+                        <div class="form-group__control">
+                            <div class="field field_type_text">
+                                <textarea class="field__input" rows="4" asp-for="Description"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-group__label" asp-for="LogoFileName"></label>
+
+                        <div class="mc-file">
+
+                            <div class="mc-file__preview">
+                                @if (Model.HasLogo)
+                                {
+                                    <img src="~/@Model.LogoFullPath" id="imagePreview" />
+                                }
+                                else
+                                {
+                                    <img id="imagePreview" style="display:none" />
+                                }
+                            </div>
+
+                            <div class="mc-file__controls">
+
+                                <input class="mc-file__input"
+                                       type="file"
+                                       accept="image/*"
+                                       name="goalLogoImage"
+                                       id="goalLogoImage"
+                                       onchange="previewImage(event)" />
+
+                                <button class="mc-button mc-button--wide"
+                                        type="button"
+                                        onclick="document.getElementById('goalLogoImage').click()">
+                                    <span class="mc-button__title">Выбрать файл</span>
+                                </button>
+
+                                <div class="mc-file__filename" id="fileName">
+                                    Файл не выбран
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="form__footer">
+                    <button class="mc-button mc-button--wide" type="submit">
+                        <span class="mc-button__title">Сохранить</span>
+                    </button>
+
+                    <a asp-area="Admin" asp-controller="GoalManagement" asp-action="Index" class="back-navigation">Назад</a>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<!--<script src="~/js/form_image_previewer.js"></script>-->
+
+<script>
+    function previewImage(event) {
+        const input = event.target;
+        const preview = document.getElementById('imagePreview');
+        const fileName = document.getElementById('fileName');
+
+        if (!input.files || !input.files[0]) return;
+
+        const file = input.files[0];
+        fileName.textContent = file.name;
+
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            preview.src = e.target.result;
+            preview.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+    }
+</script>

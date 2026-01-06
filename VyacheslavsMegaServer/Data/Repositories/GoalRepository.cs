@@ -5,6 +5,11 @@ namespace VyacheslavsMegaServer.Data.Repositories
 {
     public class GoalRepository : Base.RepositoryBase
     {
+        public async Task<List<Goal>> GetAllGoals()
+        {
+            return await DB.Goals.ToListAsync();
+        }
+
         public Goal? GetCurrentGoal()
         {
             return DB.Goals.Where(g => g.IsCurrent).OrderBy(g => g.Date).FirstOrDefault();
@@ -20,14 +25,15 @@ namespace VyacheslavsMegaServer.Data.Repositories
             if (goal.Id == 0)
                 DB.Entry(goal).State = EntityState.Added;
             else
-                DB.Entry(goal.Id).State = EntityState.Modified;
+                DB.Entry(goal).State = EntityState.Modified;
 
             await DB.SaveChangesAsync();
         }
 
         public async Task RemoveGoalById(int id)
         {
-            DB.Goals.Remove(new Goal { Id = id });
+            Goal goal = await GetGoalById(id);
+            DB.Goals.Remove(goal);
             await DB.SaveChangesAsync();
         }
     }

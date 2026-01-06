@@ -29,19 +29,19 @@ namespace VyacheslavsMegaServer.Data.Entities
         public bool IsCurrent 
         {
             get { return _isCurrent && !IsCompleted; }    
-            set { _isCurrent = value; }
+            set { _isCurrent = value && !IsCompleted; }
         }
 
         [Display(Name = "Дата постановки")]
-        public DateOnly Date { get; set; } = DateOnly.FromDateTime(DateTime.Today);
+        public DateTime Date { get; set; } = DateTime.Today;
 
         [ValidateNever]
         [Display(Name = "Логотип")]
-        public string LogoFileName { get; set; }
+        public string? LogoFileName { get; set; }
 
         [NotMapped]
         [ValidateNever]
-        public string LogoFullPath => Path.Combine("img", LOGOS_DIR, LogoFileName);
+        public string? LogoFullPath => Path.Combine("img", LOGOS_DIR, LogoFileName);
 
         [NotMapped]
         [ValidateNever]

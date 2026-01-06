@@ -3,7 +3,7 @@
     "http": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "Admin/FundManagement",
+      "launchUrl": "admin/goalmanagement",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },

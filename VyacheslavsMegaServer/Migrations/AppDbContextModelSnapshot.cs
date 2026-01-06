@@ -153,16 +153,16 @@ namespace VyacheslavsMegaServer.Migrations
                         {
                             Id = "d4bc75a9-ca48-45aa-a3f2-2ea5886ce303",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "b4d40c6d-dbcb-4a78-9992-cd59e11ed78b",
+                            ConcurrencyStamp = "271bc70d-03c9-467a-acaa-cfb094664433",
                             Email = "vya4slav4617@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "VYA4SLAV4617@GMAIL.COM",
                             NormalizedUserName = "EVRAY",
-                            PasswordHash = "AQAAAAIAAYagAAAAEJZaBTMzCLAgGAFrc3rsSmzH4m+79fuX7YCCs/EoHwh7bsjObpGOtM/cc5qIOVAHPA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAELDf/qOuQX2XwSq+i0yCz2/4H96EyU1x130n3FNMST2GxFwzvZNNTOdirVcAVXXkyg==",
                             PhoneNumber = "+7 (705) 806 3101",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "ec0415b2-922d-495a-a96e-1666fb398fa6",
+                            SecurityStamp = "022680bc-5a50-48a9-a45f-f520b6317944",
                             TwoFactorEnabled = false,
                             UserName = "Evray"
                         });
@@ -432,8 +432,8 @@ namespace VyacheslavsMegaServer.Migrations
                         .HasColumnType("int")
                         .HasColumnOrder(0);
 
-                    b.Property<DateOnly>("Date")
-                        .HasColumnType("date");
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -447,7 +447,6 @@ namespace VyacheslavsMegaServer.Migrations
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("LogoFileName")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Name")
