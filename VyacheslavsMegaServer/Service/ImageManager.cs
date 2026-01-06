@@ -14,7 +14,7 @@
             string uploadedFileName = image.FileName.ToLower();
             string uploadedFileType = uploadedFileName.Substring(uploadedFileName.LastIndexOf('.'));
             string uniqueFileName = string.Concat(Guid.NewGuid(), uploadedFileType);
-            string directoryPath = Path.Combine(_hostEnvironment.WebRootPath, "img", pathInImg);
+            string directoryPath = Path.Combine(_hostEnvironment.WebRootPath, "uploaded-resources", "img", pathInImg);
 
             if (!new DirectoryInfo(directoryPath).Exists) 
                 Directory.CreateDirectory(directoryPath);
@@ -31,7 +31,7 @@
 
         public void RemoveImage(string pathInImg, string fileName)
         {
-            FileInfo image = new FileInfo(Path.Combine(_hostEnvironment.WebRootPath, "img", pathInImg, fileName));
+            FileInfo image = new FileInfo(Path.Combine(_hostEnvironment.WebRootPath, "uploaded-resources", "img", pathInImg, fileName));
             if (image.Exists) image.Delete();
         }
     }

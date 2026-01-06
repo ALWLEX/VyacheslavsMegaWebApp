@@ -33,7 +33,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\img\partners\" />
+    <Folder Include="wwwroot\uploaded-resources\img\partners\" />
   </ItemGroup>
 
   <ItemGroup>

@@ -18,7 +18,7 @@ namespace VyacheslavsMegaServer.Data.Entities
 
         [NotMapped]
         [ValidateNever]
-        public string LogoFullPath => Path.Combine("img", LOGOS_DIR, LogoFileName);
+        public string LogoFullPath => Path.Combine("uploaded-resources/img", LOGOS_DIR, LogoFileName);
 
         [NotMapped]
         [ValidateNever]
