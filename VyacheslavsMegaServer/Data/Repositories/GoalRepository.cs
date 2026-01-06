@@ -10,9 +10,9 @@ namespace VyacheslavsMegaServer.Data.Repositories
             return await DB.Goals.ToListAsync();
         }
 
-        public Goal? GetCurrentGoal()
+        public async Task<Goal?> GetCurrentGoal()
         {
-            return DB.Goals.Where(g => g.IsCurrent).OrderBy(g => g.Date).FirstOrDefault();
+            return await DB.Goals.Where(g => g.IsCurrent).OrderBy(g => g.Date).FirstOrDefaultAsync();
         }
 
         public async Task<Goal> GetGoalById(int id)

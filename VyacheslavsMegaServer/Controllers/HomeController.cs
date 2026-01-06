@@ -47,9 +47,9 @@ namespace VyacheslavsMegaServer.Controllers
             DonationPageViewModel model = new DonationPageViewModel()
             {
                 DonationCards = await _cardsRepository.GetAllCards(),
-                Goal = _goalRepository.GetCurrentGoal(),
+                Goal = await _goalRepository.GetCurrentGoal(),
                 FundAmount = await _fundRepository.GetFundState(),
-                LastTransactions = await _fundRepository.GetLastTransaction(4)
+                LastTransactions = await _fundRepository.GetLastTransaction(3)
 
             };
             return View(model);
