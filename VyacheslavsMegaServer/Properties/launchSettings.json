@@ -3,7 +3,6 @@
     "http": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "admin/goalmanagement",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Staging"
       },

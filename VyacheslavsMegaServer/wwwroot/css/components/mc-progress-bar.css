@@ -1,0 +1,110 @@
+﻿.mc-bar {
+    padding-top: 26px;
+    width: fit-content;
+    position: relative;
+    text-align: center;
+}
+
+/* Текст уровня */
+.mc-bar__text {
+    position: absolute;
+    top: 1px;
+    z-index: 1;
+    width: 100%;
+    color: #7dfc1f;
+
+    font-size: 26px;
+    text-align: center;
+    text-shadow:
+        -2px 0 black,
+        2px 0 black,
+        0 -2px black,
+        0 2px black,
+        -2px -2px black,
+        2px -2px black,
+        -2px 2px black,
+        2px 2px black;
+}
+
+/* Полоска – набор клеток */
+.mc-bar__progress {
+    display: grid;
+    grid-template-columns: repeat(20, 1fr);
+    gap: 1px;
+    width: fit-content;
+    padding: 1px;
+
+    background: #000;
+    border-radius: 6px;
+}
+
+.mc-bar__cell:last-child {
+    border-top-right-radius: inherit;
+    border-bottom-right-radius: inherit;
+}
+
+.mc-bar__cell:first-child {
+    border-top-left-radius: inherit;
+    border-bottom-left-radius: inherit;
+}
+
+/* Ячейка полоски – пустая */
+.mc-bar__cell {
+    height: 18px;
+    width: 35px;
+
+    background: #182617;
+    background: radial-gradient(circle, rgba(24, 38, 23, 1) 0%, rgba(57, 77, 48, 1) 100%);
+    filter: contrast(150%) saturate(120%) blur(0.5px);
+    border: 1px solid #000;
+}
+
+/* Заполненная ячейка */
+.mc-bar__cell--filled {
+    background: #4E6630;
+    background: linear-gradient(0deg, rgba(78, 102, 48, 1) 0%, rgba(155, 221, 111, 1) 50%, rgba(78, 102, 48, 1) 100%);
+}
+
+@media (max-width: 768px) {
+    .mc-bar__cell {
+        height: 15px;
+        width: 30px;
+        border: 1px solid #000;
+    }
+
+    .mc-bar__text {
+        font-size: 24px;
+        top: 0px;
+    }
+}
+
+@media (max-width: 426px) {
+    .mc-bar {
+        padding-top: 26px;
+    }
+
+    .mc-bar__cell {
+        height: 8px;
+        width: 15px;
+        border: 0px;
+    }
+
+    .mc-bar__text {
+        font-size: 20px;
+    }
+}
+
+@media (max-width: 320px) {
+    .mc-bar {
+        padding-top: 20px;
+    }
+
+    .mc-bar__cell {
+        height: 7px;
+        width: 12px;
+    }
+
+    .mc-bar__text {
+        font-size: 16px;
+    }
+}

@@ -1,0 +1,10 @@
+.block--report {
+    background-image: url(../../img/backgrounds/report_form.jpg);
+    background-repeat: no-repeat;
+}
+
+.report_form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}

@@ -1,0 +1,268 @@
+/*
+
+    Intro
+
+*/
+.intro {
+    height: 100vh;
+    min-height: 620px;
+    max-height: 1000px;
+
+    background-image: url(../../img/backgrounds/intro1.jpg);
+    background-repeat: no-repeat;
+}
+
+.intro__container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    height: 100%;
+    padding: 20px 0;
+}
+
+.intro__title-container {
+    height: fit-content;
+    width: 100%;
+    max-width: 1000px;
+    margin: auto;
+
+    text-align: center;
+}
+
+.intro__title {
+    font-family: minecraft-title;
+    font-size: var(--h1-font-size);
+    line-height: var(--standart-line-height);
+
+    text-shadow: 5px 5px #000;
+    color: var(--h1-text-color);
+}
+
+.intro__title::after {
+    position: absolute;
+
+    width: fit-content;
+    margin: 0;
+    block-size: fit-content;
+    z-index: 2;
+
+    font-family: minecraft;
+    font-size: var(--normal-font-size);
+
+    text-shadow: 2px 2px #3f3f3f;
+    color: yellow;
+
+    animation: title-pulse 1s infinite;
+}
+
+@keyframes title-pulse {
+    0% {
+        transform: rotate(-19.5deg) translate(-110px, -10px) scale(1);
+    }
+
+    50% {
+        transform: rotate(-19.5deg) translate(-110px, -10px) scale(1.1);
+    }
+
+    100% {
+        transform: rotate(-19.5deg) translate(-110px, -10px) scale(1);
+    }
+}
+
+.intro__info-container {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.intro__info-block {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    border-radius: 20px;
+    width: 100%;
+
+    padding: 30px;
+    background: var(--dark-background);
+}
+
+.intro__info-block--shrink {
+    max-width: 500px;
+}
+
+.intro__info-title {
+    margin-bottom: 15px;
+}
+
+.intro__info-text {
+    margin: 0;
+}
+
+.intro__info-text--error {
+    display: none;
+    color: red;
+}
+
+.block--about {
+    background-image: url(../../img/backgrounds/about.jpg);
+    background-repeat: no-repeat;
+}
+
+/*
+
+    Contacts
+
+*/
+.block--contacts {
+    background-image: url(../../img/backgrounds/contacts.jpg);
+    background-repeat: no-repeat;
+}
+
+.contact {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.contact__image {
+    height: 400px;
+    max-width: 300px;
+}
+
+/*
+
+    Partners
+
+*/
+.block--partners {
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.1) 100%), url(../../img/backgrounds/partners.jpg);
+    background-repeat: no-repeat;
+}
+
+.horizontal-scroller--index {
+    min-height: 400px;
+}
+
+.partner-card {
+    display: flex;
+    flex: none;
+    flex-direction: row;
+    width: 100%;
+    height: fit-content;
+    padding: 20px;
+}
+
+.partner-card__logo {
+    max-width: 200px;
+    width: 100%;
+    max-height: 100%;
+    height: fit-content;
+    vertical-align: top;
+
+    object-fit: contain;
+}
+
+.partner-card__text-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: fit-content;
+}
+
+.partner-card__line {
+    display: block;
+    width: 2px;
+    margin: 0 20px;
+
+    background-color: var(--text-color);
+
+    content: "";
+}
+
+.partner-card__title {
+    text-align: center;
+}
+
+.partner-card__subtitle {
+    margin: 5px 0 20px;
+
+    text-align: center;
+    font-size: 12px;
+}
+
+.partner-card__text {
+    margin-bottom: 0;
+}
+
+
+@media (max-width: 768px) {
+    .intro {
+        height: unset;
+    }
+
+    .intro__title-container {
+        margin: 40px auto;
+
+        overflow: hidden;
+    }
+
+    .intro__title::after {
+        left: 75%;
+
+        width: 50%;
+        max-width: 250px;
+
+        text-align: center;
+    }
+
+    .intro__info-container {
+        flex-direction: column;
+    }
+
+    .intro__info-block--shrink {
+        max-width: unset;
+    }
+
+    .intro__info-block {
+        padding: 20px;
+        border-radius: 15px;
+    }
+
+    .intro__info-title {
+        margin-bottom: 10px;
+    }
+
+    .contact {
+        display: block
+    }
+
+    .contact__image {
+        display: block;
+        max-height: 250px;
+        margin: auto;
+    }
+
+    .partner-card {
+        flex-direction: column-reverse;
+    }
+
+    .partner-card__subtitle {
+        margin-bottom: 10px;
+    }
+
+    .partner-card__logo {
+        display: block;
+        max-width: 200px;
+        max-height: 200px;
+        margin: 0 auto;
+    }
+
+    .partner-card__line {
+        height: 2px;
+        width: 90%;
+        margin: 5px auto 15px;
+    }
+}

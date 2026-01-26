@@ -3,6 +3,8 @@
     flex-direction: row;
     align-items: center;
     gap: 5px;
+
+    text-shadow: none;
 }
 
 .logo__image {
@@ -11,9 +13,12 @@
 
 .logo__text {
     font-family: 'minecraft-title';
+    font-size: 16px;
     line-height: 1.4;
+    text-wrap-mode: nowrap;
 
-    background: linear-gradient(37deg,rgba(150, 115, 11, 1) 0%, rgba(255, 233, 69, 1) 50%, rgba(198, 158, 70, 1) 100%);
+    background: linear-gradient(37deg, rgba(150, 115, 11, 1) 0%, rgba(255, 233, 69, 1) 50%, rgba(198, 158, 70, 1) 100%);
+    background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }

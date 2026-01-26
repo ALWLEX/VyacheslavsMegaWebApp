@@ -1,0 +1,27 @@
+.block--donation-intro {
+    background: url(../../img/backgrounds/donation_intro.jpg);
+    background-repeat: no-repeat;
+}
+
+.donation-intro__cards-container {
+    margin: 0 auto;
+}
+
+.block--donation-fund {
+    background: url(../../img/backgrounds/donation_fund.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.donation-fund__bar {
+    margin: 0 auto;
+}
+
+.donation-fund__table {
+    width: 100%;
+}
+
+.block--donation-attention {
+    background: url(../../img/backgrounds/donation_attention.jpg);
+    background-repeat: no-repeat;
+}

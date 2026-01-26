@@ -1,0 +1,53 @@
+﻿.mc-button {
+    background: #999 url('../../img/bgbtn.png') center / cover;
+    image-rendering: pixelated;
+    border: 2px solid #000;
+    cursor: pointer;
+    padding: 0;
+    line-height: var(--standart-line-height);
+}
+
+.mc-button:active {
+    box-shadow: inset -2px -4px #0004, inset 2px 2px #FFF5;
+}
+
+.mc-button__title:hover {
+    background: rgba(100, 100, 255, 0.45);
+    text-shadow: 2px 2px #202013CC;
+    color: #FFFFA0;
+}
+
+.mc-button__title {
+    display: block;
+    height: 100%;
+    width: 100%;
+    padding: 8px 20px;
+    color: #DDD;
+    text-shadow: 2px 2px #000A;
+    box-shadow: inset -2px -4px #0006, inset 2px 2px #FFF7;
+
+    font-family: minecraft;
+    font-optical-sizing: auto;
+
+    font-style: normal;
+    letter-spacing: 1px;
+    word-spacing: 3px;
+}
+
+.mc-button:disabled {
+    background: #333 url('../../img/bgbtn_dis.png') center / cover;
+}
+
+.mc-button:disabled span.mc-button__title {
+    box-shadow: none;
+    color: #AAAAAA;
+    text-shadow: 2px 2px #2A2A2A;
+}
+
+.mc-button:disabled span.mc-button__title:hover {
+    background: none;
+}
+
+.mc-button--wide {
+    width: 100%;
+}

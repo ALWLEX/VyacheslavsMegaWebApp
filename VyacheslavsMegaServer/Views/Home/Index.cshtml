@@ -1,106 +1,107 @@
 ﻿@model MainPageViewModel
 
-<div class="block_standart intro first_slide" id="intro">
+<!-- Page css -->
+<link rel="stylesheet" href="~/css/pages/index.css" />
+<link rel="stylesheet" href="~/css/components/mc-button.css" />
+<link rel="stylesheet" href="~/css/components/horizontal-scroller.css" />
+
+<div class="intro" id="intro">
     <div class="container">
-        <div class="intro_container">
-            <div>
+
+        <div class="intro__container">
+            <div class="intro__title-container">
                 <style>
-                    .title::after{
+                    .intro__title::after {
                         content: "@Html.Raw(Model.MainPageData.YellowHint)";
                     }
                 </style>
-                <h1 class="title">@Html.Raw(@Model.MainPageData.Title)</h1>
+                <h1 class="intro__title">@Html.Raw(@Model.MainPageData.Title)</h1>
             </div>
-            <hr class="hr_intro" />
-            @if (Model.MainPageData.ShowErrorMessage)
-            {
-                <p class="minecraft_font font_size_normal error">@Model.MainPageData.ErrorMessage</p>
-            }
-            @if (Model.MainPageData.ShowDownloadButton)
-            {
-                @if (Model.MainPageData.DownloadLocalResource)
-                {
-                    <a href="~/@Model.MainPageData.DownloadButtonUrl">
-                        <button class="mc_button download_pack_link_button">
-                            <span class="mc_button_title mc_form_font_standart">@Model.MainPageData.DownloadButtonTitle</span>
-                        </button>
-                    </a>
-                }
-                else
-                {
-                    <a href="@Model.MainPageData.DownloadButtonUrl">
-                        <button class="mc_button download_pack_link_button">
-                            <span class="mc_button_title mc_form_font_standart">@Model.MainPageData.DownloadButtonTitle</span>
-                        </button>
-                    </a>
-                } 
-            }
-            <h2 class="subtitle">IP-адрес сервера: @Model.MainPageData.ServerAddress</h2>
+
+            <div class="intro__info-container">
+                <div class="intro__info-block intro__info-block--shrink">
+                    <h3 class="intro__info-title">Состояние сервера</h3>
+
+                    @if (Model.MainPageData.ShowErrorMessage)
+                    {
+                        <p class="intro__info-text intro__info-text--error">@Model.MainPageData.ErrorMessage</p>
+                    }
+                    <p class="intro__info-text">IP: @Model.MainPageData.ServerAddress</p>
+                    <p class="intro__info-text">Версия: 1.21.11</p>
+                    <p class="intro__info-text">Игроков онлайн: 09/11</p>
+                </div>
+
+                <div class="intro__info-block">
+                    <h3 class="intro__info-title">Полезные ресурсы</h3>
+                    @if (Model.MainPageData.ShowDownloadButton)
+                    {
+                        @if (Model.MainPageData.DownloadLocalResource)
+                        {
+                            <a href="~/@Model.MainPageData.DownloadButtonUrl">
+                                <button class="mc-button mc-button--wide" type="button">
+                                    <span class="mc-button__title">@Model.MainPageData.DownloadButtonTitle</span>
+                                </button>
+                            </a>
+                        }
+                        else
+                        {
+                            <a href="@Model.MainPageData.DownloadButtonUrl">
+                                <button class="mc-button mc-button--wide" type="button">
+                                    <span class="mc-button__title">@Model.MainPageData.DownloadButtonTitle</span>
+                                </button>
+                            </a>
+                        }
+                    }
+                </div>
+            </div>
         </div>
+
     </div>
-    <a href="#about">
-        <div class="scroll_down">
-            <div class="arrow_group">
-                <div class="arrow_down"></div>
-                <div class="arrow_down"></div>
-                <div class="arrow_down"></div>
-            </div>
-            <div class="arrow_group">
-                <div class="arrow_down"></div>
-                <div class="arrow_down"></div>
-                <div class="arrow_down"></div>
-            </div>
-            <div class="arrow_group">
-                <div class="arrow_down"></div>
-                <div class="arrow_down"></div>
-                <div class="arrow_down"></div>
-            </div>
-        </div>
-    </a>
 </div>
 
 @if (Model.MediaLinks.Any(l => l.ShowLink))
 {
-    <div class="block_mini minecraft_font font_size_normal white">
+    <div class="block-stripe">
         @foreach (ServerMediaLink link in Model.MediaLinks.Where(l => l.ShowLink))
         {
-            <div class="iconed_link">
-                @if (link.HasLogo)
-                {
-                    <img class="link_icon" src="~/@link.LogoFullPath
-                    " />
-                }
-                <p>@link.Description<a href="@link.Url">@link.Content</a></p>
-            </div>
+        <div class="iconed-link">
+            @if (link.HasLogo)
+            {
+                <img class="iconed-link__icon" src="~/@link.LogoFullPath" />
+            }
+            <a href="@link.Url">@link.Content</a>
+        </div>
         }
     </div>
 }
 
-<div class="block_standart about" id="about">
+<div class="block block--about" id="about">
     <div class="container">
         <div class="section">
-            <h2 class="minecraft_font section_header">О проекте</h2>
-            <div class="minecraft_font font_size_normal white">@Html.Raw(Model.MainPageData.Description)</div>
-            <p class="minecraft_font font_size_normal section_text">
+            <h2 class="section__header">О проекте</h2>
+            <p>
+                @Html.Raw(Model.MainPageData.Description)
+            </p>
+            <p>
                 Присоединяйтесь к нам по адресу @Model.MainPageData.ServerAddress и станьте частью нашего мира!
             </p>
         </div>
     </div>
 </div>
 
-<div class="block_standart contacts" id="contacts">
+<div class="block block--contacts" id="contacts">
     <div class="container">
         <div class="section">
-            <h2 class="minecraft_font section_header">Контакты</h2>
-            <div class="contacts_inner">
-                <img class="contacts_image" src="~/img/Evray.png" />
-                <div class="minecraft_font font_size_normal white">
-                    <p>Вячеслав (Evray), создатель и администратор сервера:</p>
+            <h2 class="section__header">Контакты</h2>
+            <div class="contact">
+                <img class="contact__image" src="~/img/Evray.png" />
+                <div>
+                    <p>Вячеслав (Evray), создатель и администратор сервера</p>
                     <ul>
                         @foreach (ContactLink link in Model.Creator.Links)
                         {
                             <li>@link.Description<a class="white" href="@Html.Raw(link.Url)">@link.Content</a></li>
-                        } 
+                        }
                     </ul>
                 </div>
             </div>
@@ -110,51 +111,57 @@
 
 @if (Model.PartnersData.Any(p => p.ShowPartner))
 {
-    <div class="block_standart partners">
+    <div class="block block--partners">
         <div class="container">
             <div class="section">
-                <h2 class="minecraft_font section_header">Наши партнёры</h2>
-                <div class="horizontal_scroller">
-                    <div class="horizontal_scroller_arrow_container btn_start" id="HScrollerToStart">
-                        <div class="horizontal_scroller_arrow_left"></div>
-                        <div class="horizontal_scroller_arrow_left"></div>
+                <h2 class="section__header">Наши партнёры</h2>
+                <div class="horizontal-scroller horizontal-scroller--index">
+                    <div class="horizontal-scroller__arrow-container horizontal-scroller__arrow-container--start"
+                    id="HScrollerToStart">
+                        <div class="horizontal-scroller__arrow-left"></div>
+                        <div class="horizontal-scroller__arrow-left"></div>
                     </div>
-                    <div class="horizontal_scroller_arrow_container btn_prev" id="HScrollerPrev">
-                        <div class="horizontal_scroller_arrow_left"></div>
+                    <div class="horizontal-scroller__arrow-container horizontal-scroller__arrow-container--prev"
+                    id="HScrollerPrev">
+                        <div class="horizontal-scroller__arrow-left"></div>
                     </div>
 
-                    <div class="horizontal_scroller_content" id="HScrollerContent">
+                    <div class="horizontal-scroller__content" id="HScrollerContent">
+
                         @foreach (Partner partner in Model.PartnersData.Where(p => p.ShowPartner))
                         {
-                            <div class="partner_block">
-                                <img class="partner_logo" src="~/@partner.LogoFullPath" />
-                                <div class="partner_text_container">
-                                    <div class="minecraft_font font_size_normal white wide_element">
-                                        <h3 class="partner_title">@partner.Name</h3>
-                                        <p class="partner_subtitle">@partner.Subtitle</p>
-                                        <p>@partner.Description</p>
-                                        @if (partner.Links.Any())
-                                        {
-                                            <p>Контакты партнёра:</p>
-                                            <ul>
-                                                @foreach (PartnerLink link in partner.Links)
-                                                {
-                                                    <li class="higher_li">@link.Description<a class="white" href="@Html.Raw(link.Url)">@link.Content</a></li>
-                                                }
-                                            </ul>
-                                        }
-                                    </div>
+                            <div class="partner-card">
+                                <img class="partner-card__logo" src="~/@partner.LogoFullPath" />
+                                <span class="partner-card__line"></span>
+                                <div class="partner-card__text-container">
+
+                                    <h3 class="partner-card__title">@partner.Name</h3>
+                                    <p class="partner-card__subtitle">@partner.Subtitle</p>
+                                    <p class="partner-card__text">@partner.Description</p>
+
+                                    @if (partner.Links.Any())
+                                    {
+                                        <p class="partner-card__text">Контакты партнёра:</p>
+                                        <ul>
+                                            @foreach (PartnerLink link in partner.Links)
+                                            {
+                                                <li>@link.Description<a class="white" href="@Html.Raw(link.Url)">@link.Content</a></li>
+                                            }
+                                        </ul>
+                                    }
                                 </div>
                             </div>
                         }
                     </div>
 
-                    <div class="horizontal_scroller_arrow_container btn_next" id="HScrollerNext">
-                        <div class="horizontal_scroller_arrow_right"></div>
+                    <div class="horizontal-scroller__arrow-container horizontal-scroller__arrow-container--next"
+                    id="HScrollerNext">
+                        <div class="horizontal-scroller__arrow-right"></div>
                     </div>
-                    <div class="horizontal_scroller_arrow_container btn_end" id="HScrollerToEnd">
-                        <div class="horizontal_scroller_arrow_right"></div>
-                        <div class="horizontal_scroller_arrow_right"></div>
+                    <div class="horizontal-scroller__arrow-container horizontal-scroller__arrow-container--end"
+                    id="HScrollerToEnd">
+                        <div class="horizontal-scroller__arrow-right"></div>
+                        <div class="horizontal-scroller__arrow-right"></div>
                     </div>
                 </div>
             </div>
@@ -162,40 +169,4 @@
     </div>
 }
 
-<script>
-    const content = document.getElementById("HScrollerContent");
-    const first = document.getElementById("HScrollerToStart");
-    const prev = document.getElementById("HScrollerPrev");
-    const next = document.getElementById("HScrollerNext");
-    const last = document.getElementById("HScrollerToEnd");
-
-    function goToSlide(index) {
-        content.scrollLeft = index * content.offsetWidth;
-    }
-
-    function getCurrentSlideIndex() {
-        return Math.round(content.scrollLeft / content.offsetWidth);
-    }
-
-    first.addEventListener('click', () => {
-        goToSlide(0);
-    });
-
-    next.addEventListener('click', () => {
-        let currentSlideIndex = getCurrentSlideIndex();
-        if (currentSlideIndex == content.children.length - 1) 
-            return;
-        goToSlide(currentSlideIndex + 1);
-    });
-
-    prev.addEventListener('click', () => {
-        let currentSlideIndex = getCurrentSlideIndex();
-        if (currentSlideIndex == 0)
-            return;
-        goToSlide(currentSlideIndex - 1);
-    });
-
-    last.addEventListener('click', () => {
-        goToSlide(content.children.length - 1);
-    });
-</script>
+<script src="~/js/horizontalScroller.js"></script>

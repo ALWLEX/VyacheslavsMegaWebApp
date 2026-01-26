@@ -1,12 +1,12 @@
-﻿.horizontal_scroller {
-	display: grid;
+﻿.horizontal-scroller {
+    display: grid;
     grid-template-columns: 50px 50px auto 50px 50px;
     gap: 10px;
     grid-auto-flow: column;
     flex: 1;
 }
 
-.horizontal_scroller_arrow_container {
+.horizontal-scroller__arrow-container {
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -15,35 +15,37 @@
     cursor: pointer;
 }
 
-.horizontal_scroller_arrow_left, 
-.horizontal_scroller_arrow_right
-{
+.horizontal-scroller__arrow-left,
+.horizontal-scroller__arrow-right {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
 }
 
-.horizontal_scroller_arrow_container:hover .horizontal_scroller_arrow_right::before,
-.horizontal_scroller_arrow_container:hover .horizontal_scroller_arrow_right::after,
-.horizontal_scroller_arrow_container:hover .horizontal_scroller_arrow_left::before,
-.horizontal_scroller_arrow_container:hover .horizontal_scroller_arrow_left::after{
+.horizontal-scroller__arrow-container:hover .horizontal-scroller__arrow-right::before,
+.horizontal-scroller__arrow-container:hover .horizontal-scroller__arrow-right::after,
+.horizontal-scroller__arrow-container:hover .horizontal-scroller__arrow-left::before,
+.horizontal-scroller__arrow-container:hover .horizontal-scroller__arrow-left::after {
     background-color: white;
     transition: 0.3s;
 }
 
-.horizontal_scroller_content {
+.horizontal-scroller__content {
     display: flex;
+
+    background: rgba(0, 0, 0, 0.4);
+
     scroll-behavior: smooth;
     overflow-x: scroll;
 }
 
-.horizontal_scroller_content::-webkit-scrollbar{
+.horizontal-scroller__content::-webkit-scrollbar {
     display: none;
 }
 
-.horizontal_scroller_arrow_right::before, 
-.horizontal_scroller_arrow_right::after {
+.horizontal-scroller__arrow-right::before,
+.horizontal-scroller__arrow-right::after {
     content: "";
     display: block;
     width: 7px;
@@ -54,16 +56,16 @@
     margin: 0 5px;
 }
 
-.horizontal_scroller_arrow_right::before {
+.horizontal-scroller__arrow-right::before {
     transform: rotate(-7deg) translate(0, 4.5px);
 }
 
-.horizontal_scroller_arrow_right::after {
+.horizontal-scroller__arrow-right::after {
     transform: rotate(7deg) translate(0, -4.5px);
 }
 
-.horizontal_scroller_arrow_left::before, 
-.horizontal_scroller_arrow_left::after {
+.horizontal-scroller__arrow-left::before,
+.horizontal-scroller__arrow-left::after {
     content: "";
     display: block;
     width: 7px;
@@ -74,65 +76,65 @@
     margin: 0 5px;
 }
 
-.horizontal_scroller_arrow_left::before {
+.horizontal-scroller__arrow-left::before {
     transform: rotate(7deg) translate(0, 4.5px);
 }
 
-.horizontal_scroller_arrow_left::after {
+.horizontal-scroller__arrow-left::after {
     transform: rotate(-7deg) translate(0, -4.5px);
 }
 
-@media screen and (orientation: portrait) {
-    .horizontal_scroller {
+@media (max-width: 768px) {
+    .horizontal-scroller {
         grid-template-rows: auto 60px;
         grid-template-columns: repeat(4, 1fr);
     }
 
-    .horizontal_scroller_content {
+    .horizontal-scroller__content {
         grid-column: span 4;
         grid-row: 1;
     }
 
-    .btn_start {
+    .horizontal-scroller__arrow-container--start {
         grid-column: 1;
         grid-row: 2;
     }
 
-    .btn_prev {
+    .horizontal-scroller__arrow-container--prev {
         grid-column: 2;
         grid-row: 2;
     }
 
-    .btn_next {
+    .horizontal-scroller__arrow-container--next {
         grid-column: 3;
         grid-row: 2;
     }
 
-    .btn_end {
+    .horizontal-scroller__arrow-container--end {
         grid-column: 4;
         grid-row: 2;
     }
 
-    .horizontal_scroller_arrow_right::before, 
-    .horizontal_scroller_arrow_right::after,
-    .horizontal_scroller_arrow_left::before, 
-    .horizontal_scroller_arrow_left::after{
+    .horizontal-scroller__arrow-right::before,
+    .horizontal-scroller__arrow-right::after,
+    .horizontal-scroller__arrow-left::before,
+    .horizontal-scroller__arrow-left::after {
         height: 20px;
     }
 
-    .horizontal_scroller_arrow_right::before {
+    .horizontal-scroller__arrow-right::before {
         transform: rotate(-30deg) translate(0, 4.5px);
     }
 
-    .horizontal_scroller_arrow_right::after {
+    .horizontal-scroller__arrow-right::after {
         transform: rotate(30deg) translate(0, -4.5px);
     }
 
-    .horizontal_scroller_arrow_left::before {
+    .horizontal-scroller__arrow-left::before {
         transform: rotate(30deg) translate(0, 4.5px);
     }
 
-    .horizontal_scroller_arrow_left::after {
+    .horizontal-scroller__arrow-left::after {
         transform: rotate(-30deg) translate(0, -4.5px);
     }
 }

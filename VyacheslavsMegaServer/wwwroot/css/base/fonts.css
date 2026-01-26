@@ -1,0 +1,14 @@
+@font-face {
+    font-family: 'minecraft-title';
+    src: url(../../fonts/minecraft_title.ttf);
+}
+
+@font-face {
+    font-family: 'minecraft';
+    src: url(../../fonts/minecraft.ttf);
+}
+
+@font-face {
+    font-family: 'card';
+    src: url('../../fonts/OCR A Regular.ttf');
+}
