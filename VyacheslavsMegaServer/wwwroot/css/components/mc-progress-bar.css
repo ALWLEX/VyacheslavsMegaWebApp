@@ -1,5 +1,5 @@
 ﻿.mc-bar {
-    padding-top: 26px;
+    padding-top: 35px;
     width: fit-content;
     position: relative;
     text-align: center;
@@ -8,7 +8,7 @@
 /* Текст уровня */
 .mc-bar__text {
     position: absolute;
-    top: 1px;
+    top: 0;
     z-index: 1;
     width: 100%;
     color: #7dfc1f;
@@ -80,7 +80,7 @@
 
 @media (max-width: 426px) {
     .mc-bar {
-        padding-top: 26px;
+        padding-top: 24px;
     }
 
     .mc-bar__cell {
@@ -90,13 +90,13 @@
     }
 
     .mc-bar__text {
-        font-size: 20px;
+        font-size: 18px;
     }
 }
 
 @media (max-width: 320px) {
     .mc-bar {
-        padding-top: 20px;
+        padding-top: 18px;
     }
 
     .mc-bar__cell {
@@ -105,6 +105,6 @@
     }
 
     .mc-bar__text {
-        font-size: 16px;
+        font-size: 14px;
     }
 }

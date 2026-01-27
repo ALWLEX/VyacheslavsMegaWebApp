@@ -1,133 +1,108 @@
 ﻿@model DonationPageViewModel
 
-<div class="block_standart donation_intro first_slide">
+<link rel="stylesheet" href="~/css/pages/donation.css" />
+<link rel="stylesheet" href="~/css/components/bank-card.css" />
+<link rel="stylesheet" href="~/css/components/mc-progress-bar.css" />
+<link rel="stylesheet" href="~/css/components/mc-table.css" />
+
+<div class="block block--donation-intro">
     <div class="container">
-        <div class="intro_container">
-            <h1 class="title">Пожертвования</h1>
+        <div class="section section--centred section--first">
+            <h1 class="section__header section__header--main">Пожертвования</h1>
             @if (Model.HasCards)
             {
-                <h2 class="subtitle donation_subtitle">Пожертвовать на развитие проекта можно по номеру карты:</h2>
-                <div class="cards-container">
+                <p>Пожертвовать на развитие проекта можно по номеру карты:</p>
+                <div class="cards-container donation-intro__cards-container">
                     @foreach (DonationCard card in Model.DonationCards)
                     {
                         <div class="card" style="background: linear-gradient(45deg, @card.ColorDownLeft, @card.ColorUpRight);">
-                            <div class="card-header">
-                                <span class="bank-name">@card.BankName</span>
+                            <div class="card__header">
+                                <span>@card.BankName</span>
                             </div>
-                            <div class="card-body">
-                                <p class="card-number">@card.CardNumber</p>
-                                <a href="#" class="copy-link" onclick="copyCardNumber(event, @card.CardNumderNormalized)">Скопировать номер</a>
+                            <div class="card__body">
+                                <p class="card__number">@card.CardNumber</p>
+                                <a href="#" class="card__copy-link" onclick="copyCardNumber(event, @card.CardNumderNormalized)">Скопировать номер</a>
                             </div>
-                            <div class="card-footer">
-                                <span class="card-owner">@card.CardHolder</span>
+                            <div class="card__footer">
+                                <span>@card.CardHolder</span>
                             </div>
                         </div>
                     }
                 </div>
             }
-            <p class="minecraft_font font_size_small white">Если вы сюда попали рекомендуется прочитать <a href="#attention">этот раздел</a></p>
+            <p>Если вы сюда попали рекомендуется прочитать <a href="#attention">этот раздел</a></p>
         </div>
     </div>
 </div>
 
-<div class="block_standart donation_fund">
+<div class="block block--donation-fund">
     <div class="container">
-        <div class="section">
-            <h2 class="minecraft_font section_header">Состояние фонда сервера</h2>
+        <div class="section section--centred">
+            <h2 class="section__header">Состояние фонда сервера</h2>
 
-            <p class="section_text font_size_normal">Текущая цель - @Model.Goal.Name<br><br>Денег собрано:</p>
-
-            <div class="mc-xp-container">
-                <div id="xpText" class="mc-xp-text">0/100</div>
-                <div id="xpBar" class="mc-xp-bar"></div>
+            <p>Текущая цель - @Model.Goal.Name</p>
+            <p>Денег собрано:</p>
+            
+            <div class="mc-bar donation-fund__bar">
+                <div class="mc-bar__text" id="xpText">0/100</div>
+                <div class="mc-bar__progress" id="xpBar"></div>
 
                 <input id="fundCurrent" type="hidden" value="@Model.FundAmount" />
-                <input id="goalPrice" type="hidden" value="@Model.Goal.Price"/>
+                <input id="goalPrice" type="hidden" value="@Model.Goal.Price" />
             </div>
 
             <p class="section_text font_size_normal">Последние транзакции:</p>
-
-            <table class="mc_form_font_standart white mc_table wide_element">
-                <tr class="tr_header">
-                    <td>Сумма</td>
-                    <td>От кого/куда</td>
-                    <td>Доп. информация</td>
-                </tr>
-                @if (Model.LastTransactions.Count == 0)
-                {
-                    <tr class="tr_header">
-                        <td colspan="3">Транзакций пока не было</td>
+            <div class="mc-table-container">
+                <table class="mc-table donation-fund__table">
+                    <tr class="mc-table--center-aligment">
+                        <td>Сумма</td>
+                        <td>От кого/куда</td>
+                        <td>Доп. информация</td>
                     </tr>
-                }
-                else
-                {
-                    foreach (FundTransaction transaction in Model.LastTransactions)
+
+                    @if (Model.LastTransactions.Count == 0)
                     {
-                        <tr>
-                            <td>@transaction.Amount</td>
-                            <td>@transaction.Reason</td>
-                            <td>@transaction.Note</td>
+                        <tr class="mc-table--center-aligment">
+                            <td colspan="3">Транзакций пока не было</td>
                         </tr>
                     }
-                }
-            </table>
-
-            <script>
-                let current = document.getElementById("fundCurrent").value;
-                let max = document.getElementById("goalPrice").value;
-
-                const cellCount = 20; 
-                const xpBar = document.getElementById("xpBar");
-
-                xpBar.innerHTML = ""; // очистить
-
-                // Сколько ячеек нужно заполнить
-                let filledCells = Math.round((parseFloat(current.replace(',', '.')) / parseFloat(max.replace(',', '.'))) * cellCount);
-
-                // Создаем 20 клеток
-                for (let i = 0; i < cellCount; i++) {
-                    let cell = document.createElement("div");
-                    cell.className = "mc-xp-cell";
-                    if (i < filledCells) cell.classList.add("mc-xp-cell-filled");
-                    xpBar.appendChild(cell);
-                }
-
-                // Обновление текста
-                document.getElementById("xpText").textContent = current.toLocaleString('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " / " + (max == 0 ? "Не определено" : max.toLocaleString('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " ₸");
-            </script>
-
-        </div>
-    </div>
-</div>
-
-<div class="block_standart donation_attention" id="attention">
-    <div class="container">
-        <div class="section">
-            <h2 class="minecraft_font section_header">Внимание!</h2>
-            <div class="minecraft_font font_size_normal white">
-                <p class="section_text">Прочитайте этот раздел, здесь могут быть ответы на ваши вопросы</p>
-                <ul>
-                    <li>У проекта пока нет конкретной цели - просто развиваемся как по кайфу.</li>
-                    <li>Проект является некоммерческим, не приносит прибыли создателю и не обещает никаких выгод или привилегий от пожертвований.</li>
-                    <li>Пожертвования тратятся на содержание проекта и рекламные расходы.</li>
-                    <li>Помимо денег можно жертвовать предметы и/или своё время. Для подробностей свяжитесь с создателем проекта в разделе <a href="/#contacts">контактов</a>.</li>
-                    <li>Возможно позже сделаю топ донатеров.</li>
-                    <li>Не "DonationAlerts" или другая платформа - по причине того, что там жадные капиталисты берут комиссию, наживаясь на работягах.</li>
-                </ul>
+                    else
+                    {
+                        foreach (FundTransaction transaction in Model.LastTransactions)
+                        {
+                            <tr>
+                                <td>@transaction.Amount</td>
+                                <td>@transaction.Reason</td>
+                                <td>@transaction.Note</td>
+                            </tr>
+                        }
+                    }
+                </table>
             </div>
         </div>
     </div>
 </div>
 
-<script>
-    function copyCardNumber(event, cardNumber) {
-        const copyLink = event.target;
+<div class="block block--donation-attention" id="attention">
+    <div class="container">
+        <div class="section">
+            <h2 class="section__header">Внимание!</h2>
+            <p>Прочитайте этот раздел, здесь могут быть ответы на ваши вопросы</p>
+            <ul>
+                <li>У проекта пока нет конкретной цели - просто развиваемся как по кайфу.</li>
+                <li>Проект является некоммерческим, не приносит прибыли создателю и не обещает никаких выгод или
+                    привилегий от пожертвований.</li>
+                <li>Пожертвования тратятся на содержание проекта и рекламные расходы.</li>
+                <li>Помимо денег можно жертвовать предметы и/или своё время. Для подробностей свяжитесь с
+                    создателем
+                    проекта в разделе <a href="/#contacts">контактов</a>.</li>
+                <li>Возможно позже сделаю топ донатеров.</li>
+                <li>Не "DonationAlerts" или другая платформа - по причине того, что там жадные капиталисты берут
+                    комиссию, наживаясь на работягах.</li>
+            </ul>
+        </div>
+    </div>
+</div>
 
-        navigator.clipboard.writeText(cardNumber).then(function () {
-            copyLink.textContent = "Скопировано!";
-            setTimeout(function () {
-                copyLink.textContent = "Скопировать номер";
-            }, 3000);
-        });
-    }
-</script>
+<script src="~/js/donationProgress.js"></script>
+<script src="~/js/copyCardNumber.js"></script>

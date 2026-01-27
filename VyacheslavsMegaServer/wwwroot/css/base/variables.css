@@ -1,5 +1,7 @@
 :root {
-    --mobile-breakpoint: 768px;
+    --mobile-breakpoint-1: 768px;
+    --mobile-breakpoint-2: 426px;
+    --mobile-breakpoint-3: 320px;
 
     /* TEXT */
     --h1-font-size: 40px;
@@ -10,6 +12,9 @@
     --standart-word-spacing: 3px;
 
     /* SECTIONS */
+    --first-section-mobile-padding-1: 100px;
+    --first-section-mobile-padding-2: 80px;
+    --first-section-mobile-padding-3: 60px;
     --section-header-font-size: 28px;
     --section-header-after-width: 300px;
 

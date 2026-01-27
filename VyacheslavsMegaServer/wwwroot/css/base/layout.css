@@ -144,12 +144,20 @@ body.lock {
         padding: 25px 0;
     }
 
+    .section--first {
+        padding-top: var(--first-section-mobile-padding-1);
+    }
+
     .iconed-link__icon {
         height: 25px;
     }
 }
 
 @media (max-width: 426px) {
+    .section--first {
+        padding-top: var(--first-section-mobile-padding-2);
+    }
+
     *::-webkit-scrollbar {
         height: 7px;
 
@@ -158,5 +166,11 @@ body.lock {
 
     *::-webkit-scrollbar-thumb {
         border-radius: 3px;
+    }
+}
+
+@media (max-width: 320px){
+    .section--first {
+        padding-top: var(--first-section-mobile-padding-3);
     }
 }

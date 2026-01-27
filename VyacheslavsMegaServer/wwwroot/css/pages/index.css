@@ -205,7 +205,7 @@
 
     .intro__title-container {
         margin: 40px auto;
-        padding-top: 100px;
+        padding-top: var(--first-section-mobile-padding-1);
 
         overflow: hidden;
     }
@@ -270,12 +270,12 @@
 
 @media (max-width: 426px) {
     .intro__title-container {
-        padding-top: 80px;
+        padding-top: var(--first-section-mobile-padding-2);
     }
 }
 
 @media (max-width: 320px) {
     .intro__title-container {
-        padding-top: 60px;
+        padding-top: var(--first-section-mobile-padding-3);
     }
 }
