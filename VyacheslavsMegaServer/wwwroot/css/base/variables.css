@@ -20,6 +20,10 @@
 
     /* HEADER */
     --header-font-size: 18px;
+
+    /* FOOTER */
+    --footer-text-color: #cccccc;
+    --footer-background: #111111;
 }
 
 @media (max-width: 768px) {
