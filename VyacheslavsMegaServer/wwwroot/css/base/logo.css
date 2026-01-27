@@ -3,6 +3,7 @@
     flex-direction: row;
     align-items: center;
     gap: 5px;
+    width: fit-content;
 
     text-shadow: none;
 }
@@ -21,4 +22,10 @@
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+}
+
+@media (max-width: 426px){
+    .logo__text{
+        display: none;
+    }
 }

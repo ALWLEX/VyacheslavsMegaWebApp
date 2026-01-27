@@ -7,22 +7,26 @@
     bool isAdmin = user is null ? false : await _userManager.IsInRoleAsync(user, IdentityRepository.ADMIN_ROLE);
 }
 
+<div class="header">
+    <div class="container">
+        <div class="header__inner">
+            <a class="header__logo-link" href="/">
+                <div class="logo">
+                    <img class="logo__image" src="~/img/logo.svg" />
+                    <span class="logo__text">МЕГА СЕРВЕР<br>ВЯЧЕСЛАВА</span>
+                </div>
+            </a>
+        
+            <nav class="header__menu">
+                <a class="header__menu-link" href="/">Главная</a>
+                <a class="header__menu-link" asp-area="" asp-controller="Home" asp-action="DonationPage">Пожертвования</a>
+                <a class="header__menu-link" asp-area="" asp-controller="UserReports" asp-action="New">Сообщить о неисправности</a>
+                <a class="header__menu-link" href="/#contacts">Контакты</a>
+            </nav>
 
-<div class="container">
-    <div class="header-inner">
-        <a class="header__logo-link" href="/">
-            <div class="logo">
-                <img class="logo__image" src="~/img/logo.svg" />
-                <span class="logo__text">МЕГА СЕРВЕР<br>ВЯЧЕСЛАВА</span>
-            </div>
-        </a>
-
-        <nav class="header__menu">
-            <a class="header__menu-link" href="/">Главная</a>
-            <a class="header__menu-link" asp-area="" asp-controller="Home" asp-action="DonationPage">Пожертвования</a>
-            <a class="header__menu-link" asp-area="" asp-controller="UserReports" asp-action="New">Сообщить о неисправности</a>
-            <a class="header__menu-link" href="/#contacts">Контакты</a>
-            @if(user is null){
+            <div class="header__user">
+            @if (user is null)
+            {
                 <a class="header__menu-link header__menu-link--account" asp-area="" asp-controller="Account" asp-action="Login">Вход</a>
             }
             else
@@ -40,11 +44,13 @@
                     </div>
                 </div>
             }
-        </nav>
-        <div class="header__burger">
-            <span></span>
-            <span></span>
-            <span></span>
+            </div>
+
+            <div class="header__burger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
         </div>
     </div>
 </div>
