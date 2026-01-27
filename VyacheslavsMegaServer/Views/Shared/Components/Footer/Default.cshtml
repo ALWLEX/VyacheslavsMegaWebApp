@@ -39,13 +39,15 @@
             </div>
             <div class="footer__project-media">
                 <h3 class="footer__header">Соц. сети проекта</h3>
-                @foreach (ServerMediaLink link in Model.ServerMediaLinks.Where(l => l.ShowLink))
-                {
-                    <p class="iconed-link">
-                        <img class="link__icon" src="~/@link.LogoFullPath" />
-                        <a href="@link.Url">@link.Content</a>
-                    </p>
-                }
+                <div class="footer__media-links">
+                    @foreach (ServerMediaLink link in Model.ServerMediaLinks.Where(l => l.ShowLink))
+                    {
+                        <p class="iconed-link">
+                            <img class="iconed-link__icon" src="~/@link.LogoFullPath" />
+                            <a href="@link.Url">@link.Content</a>
+                        </p>
+                    }
+                </div>
             </div>
             <div class="footer__center-row">
                 <p>У тебя всё ещё какие-то проблемы? Обратись в раздел <a href="/#contacts">контактов</a></p>
