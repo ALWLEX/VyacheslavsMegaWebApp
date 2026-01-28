@@ -22,8 +22,11 @@
 
     /* COLORS */
     --text-color: whitesmoke;
-    --text-shadow: #3f3f3f;
     --dark-background: rgba(0, 0, 0, 0.4);
+
+    /* SHADOWS */
+    --text-shadow: 2px 2px #3f3f3f;
+    --main-title-shadow: 5px 5px #000000;
 
     /* HEADER */
     --header-font-size: 18px;

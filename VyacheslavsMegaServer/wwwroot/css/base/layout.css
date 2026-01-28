@@ -46,7 +46,7 @@ body {
     line-height: var(--standart-line-height);
 
     color: var(--text-color);
-    text-shadow: 2px 2px var(--text-shadow);
+    text-shadow: var(--text-shadow);
     background-color: #222;
 }
 
@@ -91,14 +91,14 @@ body.lock {
     padding-top: var(--first-section-desktop-padding);
 }
 
-.section__header {
+.section__title {
     width: 100%;
 
     font-size: var(--section-header-font-size);
     text-align: center;
 }
 
-.section__header::after {
+.section__title::after {
     display: block;
     width: var(--section-header-after-width);
     height: 2px;
@@ -109,11 +109,12 @@ body.lock {
     content: "";
 }
 
-.section__header--main {
+.section__title--main {
     font-family: minecraft-title;
     font-size: var(--title-font-size);
 
     color: var(--title-text-color);
+    text-shadow: var(--main-title-shadow);
 }
 
 .iconed-link__icon {
