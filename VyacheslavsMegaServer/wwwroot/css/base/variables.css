@@ -34,6 +34,10 @@
     /* FOOTER */
     --footer-text-color: #cccccc;
     --footer-background: #111111;
+
+    /* FORM CONTROLS */
+    --control-background: rgba(0, 0, 0, 0.9);
+    --control-border: 4px solid var(--text-color);
 }
 
 @media (max-width: 768px) {

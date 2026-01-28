@@ -1,0 +1,15 @@
+﻿.block--account {
+    background-image: url(../../img/backgrounds/account.jpg);
+    background-repeat: no-repeat;
+}
+
+.account-form {
+    width: 50%;
+    margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+    .account-form {
+        width: 100%;
+    }
+}

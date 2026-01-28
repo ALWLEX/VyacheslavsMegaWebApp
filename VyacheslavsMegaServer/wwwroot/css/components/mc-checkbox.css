@@ -1,0 +1,57 @@
+﻿.mc-checkbox {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.mc-checkbox__input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.mc-checkbox__box {
+    width: 32px;
+    height: 32px;
+
+    background: var(--control-background);
+    border: var(--control-border);
+
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mc-checkbox__box::after {
+    content: '';
+    width: 25px;
+    height: 25px;
+
+    background-image: url('../../img/form-elements/checkmark.gif');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+
+    opacity: 0;
+}
+
+.mc-checkbox__input:checked + .mc-checkbox__box::after {
+    opacity: 1;
+}
+
+.mc-checkbox__label {
+    font-family: minecraft;
+    font-optical-sizing: auto;
+    font-style: normal;
+    font-size: var(--normal-font-size);
+    letter-spacing: var(--standart-letter-spacing);
+    word-spacing: var(--standart-world-spacing);
+    line-height: var(--standart-line-height);
+
+    color: var(--text-color);
+    text-shadow: var(--text-shadow);
+}
+

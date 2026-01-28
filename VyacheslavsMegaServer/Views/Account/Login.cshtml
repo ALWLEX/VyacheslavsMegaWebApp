@@ -1,32 +1,55 @@
 ﻿@model LoginViewModel
 
-<div class="block_standart first_slide login">
+<link rel="stylesheet" href="~/css/pages/account.css" />
+<link rel="stylesheet" href="~/css/components/form.css" />
+<link rel="stylesheet" href="~/css/components/mc-checkbox.css" />
+<link rel="stylesheet" href="~/css/components/mc-button.css" />
+
+<div class="block block--account">
     <div class="container">
-        <div class="intro_container">
-            <h1 class="title">Вход</h1><br>
-            <form asp-area="" asp-controller="Account" asp-action="Login" asp-route-returnUrl="@ViewBag.ReturnUrl" class="center_element form_small" method="post">
-                <div asp-validation-summary="All" class="form_error mc_form_font_standart"></div>
-                <div class="form_part_left_aligment">
-                    <label class="element_label mc_form_font_standart" asp-for="UserName"></label><br>
-                    <input class="mc_text_input_space mc_form_font_standart wide_element labeled_element" asp-for="UserName" /><br>
+        <div class="section section--first">
+            <h2 class="section__title section__title--main">Вход</h2>
+
+            <form class="form account-form" asp-area="" asp-controller="Account" asp-action="Login" asp-route-returnUrl="@ViewBag.ReturnUrl" method="post">
+                <div class="form__validation-summary" asp-validation-summary="All"></div>
+
+                <div class="form__body">
+                    <div class="form-group">
+                        <label class="form-group__label" asp-for="UserName"></label>
+
+                        <div class="form-group__control">
+                            <div class="field field_type_text">
+                                <input class="field__input" asp-for="UserName">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-group__label" asp-for="Password"></label>
+
+                        <div class="form-group__control">
+                            <div class="field field_type_text">
+                                <input class="field__input" asp-for="Password">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-group__control">
+                            <label class="mc-checkbox">
+                                <input class="mc-checkbox__input" asp-for="RememberMe">
+                                <span class="mc-checkbox__box"></span>
+                                <span class="mc-checkbox__label">@Html.DisplayNameFor(x => x.RememberMe)</span>
+                            </label>
+                        </div>
+                    </div>
+                    
                 </div>
-                <div class="form_part_left_aligment form_next_block">
-                    <label class="element_label mc_form_font_standart" asp-for="Password"></label><br>
-                    <input class="mc_text_input_space mc_form_font_standart wide_element labeled_element" asp-for="Password" /><br>
-                </div>
-                <div class="form_part_center_aligment form_next_block">
-                    <label class="element_label mc_form_font_standart mc_checkbox_container" asp-for="RememberMe">
-                        @Html.DisplayNameFor(x => x.RememberMe)
-                    <input asp-for="RememberMe" /><br>
-                    <span class="mc_checkbox"></span>
-                    </label>
-                </div>
-                <div class="form_part_center_aligment form_next_block">
-                    <button class="mc_button  wide_element" type="submit">
-                        <span class="mc_button_title mc_form_font_standart">Войти</span>
+
+                <div class="form__footer">
+                    <button class="mc-button mc-button--wide" type="submit">
+                        <span class="mc-button__title">Войти</span>
                     </button>
-                </div>
-                <div class="form_part_center_aligment form_next_block">
                     <p class="mc_form_font_standart white">Нет аккаунта? А как насчёт <a asp-area="" asp-controller="Account" asp-action="Register">зарегестрировать</a>?</p>
                 </div>
             </form>
