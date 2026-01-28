@@ -1,27 +1,52 @@
 ﻿@model ChangePasswordViewModel
 
-<div class="block_standart first_slide login">
+<link rel="stylesheet" href="~/css/pages/account.css" />
+<link rel="stylesheet" href="~/css/components/form.css" />
+<link rel="stylesheet" href="~/css/components/mc-button.css" />
+
+<div class="block block--account">
     <div class="container">
-        <div class="intro_container">
-            <h1 class="title">Настройки аккаунта</h1><br>
-            <h2 class="subtitle">Смена пароля</h2>
-            <form asp-area="" asp-controller="Account" asp-action="ChangePassword" class="center_element form_small" method="post">
-                <div asp-validation-summary="All" class="form_error mc_form_font_standart"></div>
-                <div class="form_part_left_aligment">
-                    <label class="element_label mc_form_font_standart" asp-for="OldPassword"></label><br>
-                    <input class="mc_text_input_space mc_form_font_standart wide_element labeled_element" asp-for="OldPassword" /><br>
+        <div class="section section--first">
+            <h2 class="section__title section__title--main">Настройки аккаунта</h2>
+
+            <form class="form account-form" asp-area="" asp-controller="Account" asp-action="ChangePassword" method="post">
+                <div class="form__validation-summary" asp-validation-summary="All"></div>
+
+                <div class="form__body">
+                    <div class="form-group">
+                        <label class="form-group__label" asp-for="OldPassword"></label>
+
+                        <div class="form-group__control">
+                            <div class="field field_type_text">
+                                <input class="field__input" asp-for="OldPassword">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-group__label" asp-for="NewPassword"></label>
+
+                        <div class="form-group__control">
+                            <div class="field field_type_text">
+                                <input class="field__input" asp-for="NewPassword">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-group__label" asp-for="ConfirmPassword"></label>
+
+                        <div class="form-group__control">
+                            <div class="field field_type_text">
+                                <input class="field__input" asp-for="ConfirmPassword">
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="form_part_left_aligment form_next_block">
-                    <label class="element_label mc_form_font_standart" asp-for="NewPassword"></label><br>
-                    <input class="mc_text_input_space mc_form_font_standart wide_element labeled_element" asp-for="NewPassword" /><br>
-                </div>
-                <div class="form_part_left_aligment form_next_block">
-                    <label class="element_label mc_form_font_standart" asp-for="ConfirmPassword"></label><br>
-                    <input class="mc_text_input_space mc_form_font_standart wide_element labeled_element" asp-for="ConfirmPassword" /><br>
-                </div>
-                <div class="form_part_center_aligment form_next_block">
-                    <button class="mc_button wide_element" type="submit">
-                        <span class="mc_button_title mc_form_font_standart">Сохранить пароль</span>
+
+                <div class="form__footer">
+                    <button class="mc-button mc-button--wide" type="submit">
+                        <span class="mc-button__title">Сменить пароль</span>
                     </button>
                 </div>
             </form>
