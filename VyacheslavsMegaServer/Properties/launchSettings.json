@@ -3,7 +3,7 @@
     "http": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "userreports/new",
+      "launchUrl": "userrepor",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Staging"
       },

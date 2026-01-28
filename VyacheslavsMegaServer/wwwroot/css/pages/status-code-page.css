@@ -1,0 +1,78 @@
+﻿.status-code-block {
+    height: 100vh;
+    min-height: 620px;
+    max-height: 1000px;
+
+    background-image: url(../../img/backgrounds/error.jpg);
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+}
+
+.status-code-block p {
+    margin: 30px 0;
+}
+
+.status-code-block__container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    overflow-x: hidden;
+}
+
+.status-code-block__section {
+    height: fit-content;
+
+    text-align: center;
+}
+
+.status-code-block__title {
+    font-family: minecraft-title;
+    font-size: var(--title-font-size);
+    line-height: var(--standart-line-height);
+
+    text-shadow: 5px 5px #000;
+    color: var(--title-text-color);
+}
+
+.status-code-block__title::after {
+    position: absolute;
+
+    width: fit-content;
+    margin: 0;
+    block-size: fit-content;
+    z-index: 2;
+
+    font-family: minecraft;
+    font-size: var(--normal-font-size);
+
+    text-shadow: 2px 2px #3f3f3f;
+    color: yellow;
+
+    animation: title-pulse 1s infinite;
+}
+
+@keyframes title-pulse {
+    0% {
+        transform: rotate(-19.5deg) translate(-110px, -10px) scale(1);
+    }
+
+    50% {
+        transform: rotate(-19.5deg) translate(-110px, -10px) scale(1.1);
+    }
+
+    100% {
+        transform: rotate(-19.5deg) translate(-110px, -10px) scale(1);
+    }
+}
+
+@media (max-width: 426px) {
+    .status-code-block__title::after {
+        left: 70%;
+
+        width: 50%;
+        max-width: 250px;
+
+        text-align: center;
+    }
+}

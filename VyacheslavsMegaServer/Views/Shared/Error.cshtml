@@ -1,32 +1,32 @@
 ﻿@model ErrorViewModel
 
-<div class="block_standart status_code_page first_slide">
-    <div class="container">
-        <div class="intro_container dark_area">
+<link rel="stylesheet" href="~/css/pages/status-code-page.css" />
+
+<div class="status-code-block">
+    <div class="container status-code-block__container">
+        <div class="status-code-block__section">
             @if(Model.CurrentPageType == ErrorViewModel.PageType.StatusCode)
             {
                 <style>
-                    .title::after {
+                    .status-code-block__title::after {
                         content: "@Html.Raw(Model.StatusMessage)";
                     }
                 </style>
-                <h1 class="title">Ой, ошибка @Model.StatusCode<br>пришла</h1>
-                <hr class="hr_intro" />
+                <h1 class="status-code-block__title">Ой, ошибка @Model.StatusCode<br>пришла</h1>
             }   
             else
             {
-                <h1 class="title">Ошибка</h1>
-                <hr class="hr_intro" />
-                <h2 class="subtitle">Возникла ошибка в процессе запроса</h2>
+                <h1 class="status-code-block__title">Ошибка</h1>
+                <p>Возникла ошибка в процессе запроса</p>
 
                 @if (Model.ShowRequestId)
                 {
-                    <p class="minecraft_font font_size_normal white">
+                    <p>
                         <strong>Request ID:</strong> <code>@Model.RequestId</code>
                     </p>
                 }
             }
-            <a href="/" class="minecraft_font font_size_normal white">Вернуться на главную старницу</a>
+            <p><a href="/">Вернуться на главную старницу</a></p>
         </div>
     </div>
 </div>
