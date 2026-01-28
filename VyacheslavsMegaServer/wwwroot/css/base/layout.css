@@ -87,6 +87,10 @@ body.lock {
     text-align: center;
 }
 
+.section--first {
+    padding-top: var(--first-section-desktop-padding);
+}
+
 .section__header {
     width: 100%;
 
@@ -107,9 +111,9 @@ body.lock {
 
 .section__header--main {
     font-family: minecraft-title;
-    font-size: var(--h1-font-size);
+    font-size: var(--title-font-size);
 
-    color: var(--h1-text-color);
+    color: var(--title-text-color);
 }
 
 .iconed-link__icon {

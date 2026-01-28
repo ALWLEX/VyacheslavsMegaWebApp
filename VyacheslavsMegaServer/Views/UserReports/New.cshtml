@@ -1,34 +1,58 @@
 ﻿@model UserReport
 
-<div class="block_big_first report">
+<link rel="stylesheet" href="~/css/pages/report.css" />
+<link rel="stylesheet" href="~/css/components/form.css" />
+<link rel="stylesheet" href="~/css/components/mc-button.css" />
+
+<div class="block block--report">
     <div class="container">
-        <div>
-            <h2 class="minecraft_font section_header">Не работает сервер? Сообщите о сбоях:</h2>
-            <form method="post" asp-action="New">
-                <div asp-validation-summary="All" class="form_error mc_form_font_standart"></div>
-                <div class="form_part_left_aligment">
-                    <label class="element_label mc_form_font_standart" asp-for="Subject"></label><br />
-                    <input class="mc_text_input_space mc_form_font_standart wide_element labeled_element" asp-for="Subject" />
-                </div>
-                <div class="form_part_left_aligment form_next_block">
-                    <label class="element_label mc_form_font_standart" asp-for="ReportText"></label><br />
-                    <textarea class="mc_text_input_space mc_form_font_standart mc_textarea labeled_element"
-                              placeholder="Введите минимум 5 символов"
-                              asp-for="ReportText"
-                              name="reportText"></textarea>
-                </div>
-                <div class="form_part_right_aligment">
-                    <span class="counter mc_form_font_standart white">
-                        (<span class="current">0</span>&nbsp;/
-                        <span class="total">500</span> символов)
-                    </span>
-                </div>
-                <div class="form_part_center_aligment form_next_block">
-                    <button class="mc_button wide_element" type="submit"><span class="mc_button_title mc_form_font_standart">Отправить</span></button>
-                </div>
-            </form>
+        <div class="section section--first">
+            <h2 class="section__header">Не работает сервер? Сообщите о сбоях:</h2>
+
+            <div class="form-container">
+                <form class="form" method="post" asp-action="New">
+
+                    <div class="form__body">
+
+                        <div class="form__validation-summary" asp-validation-summary="All"></div>
+
+                        <div class="form-group">
+                            <label class="form-group__label" asp-for="Subject"></label>
+
+                            <div class="form-group__control">
+                                <div class="field">
+                                    <input class="field__input" asp-for="Subject">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-group__label" asp-for="ReportText"></label>
+
+                            <div class="form-group__control">
+                                <div class="field">
+                                    <textarea class="field__input field__input--no-resize" placeholder="Введите минимум 5 символов" rows="8"
+                                              asp-for="ReportText" id="reportText"></textarea>
+                                </div>
+                            </div>
+
+                            <div class="form-group__hint" id="counter">
+                                (<span id="current">0</span>&nbsp;/
+                                <span>500</span> символов)
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="form__footer">
+                        <button class="mc-button mc-button--wide" type="submit">
+                            <span class="mc-button__title">Сохранить</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </div>
 
-<script src="~/js/text_counter.js"></script>
+<script src="~/js/report-text-counter.js"></script>

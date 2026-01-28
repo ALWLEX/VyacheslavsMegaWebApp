@@ -32,11 +32,11 @@
 
 .intro__title {
     font-family: minecraft-title;
-    font-size: var(--h1-font-size);
+    font-size: var(--title-font-size);
     line-height: var(--standart-line-height);
 
     text-shadow: 5px 5px #000;
-    color: var(--h1-text-color);
+    color: var(--title-text-color);
 }
 
 .intro__title::after {
