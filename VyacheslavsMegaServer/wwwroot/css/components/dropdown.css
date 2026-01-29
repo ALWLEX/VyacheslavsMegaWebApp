@@ -1,0 +1,31 @@
+﻿.dropdown {
+    position: relative;
+}
+
+.dropdown__arrow {
+    height: var(--header-font-size);
+    padding-top: 5px;
+}
+
+.dropdown__content {
+    position: absolute;
+    right: 0;
+    z-index: 5;
+
+    display: none;
+    padding-bottom: 10px;
+    min-width: 160px;
+    
+    border-top: 33px solid transparent;
+    background-color: var(--header-background);
+    background-clip: padding-box;
+}
+
+.dropdown__content-link {
+    padding: 10px 16px;
+    display: block;
+}
+
+.dropdown:hover .dropdown__content {
+    display: block;
+}

@@ -31,16 +31,16 @@
             }
             else
             {
-                <div class="header__dropdown">
-                    <a class="header__menu-link header__dropdown-title header__menu-link--account">@user.UserName</a>
-                    <img class="header__dropdown-arrow" src="~/img/dropdown_arrow.gif" />
-                    <div class="header__dropdown-content">
-                        <a class="header__menu-link header__dropdown-content-link" asp-area="" asp-controller="Account" asp-action="AccountSettings">Настройки профиля</a>
+                <div class="dropdown">
+                    <a class="header__menu-link header__menu-link--account">@user.UserName</a>
+                    <img class="dropdown__arrow" src="~/img/dropdown_arrow.gif" />
+                    <div class="dropdown__content">
+                        <a class="header__menu-link dropdown__content-link" asp-area="" asp-controller="Account" asp-action="AccountSettings">Настройки профиля</a>
                         @if (isAdmin)
                         {
-                            <a class="header__menu-link header__dropdown-content-link" asp-area="Admin" asp-controller="Home" asp-action="Index">Панель администратора</a>
+                            <a class="header__menu-link dropdown__content-link" asp-area="Admin" asp-controller="Home" asp-action="Index">Панель администратора</a>
                         }
-                        <a class="header__menu-link header__dropdown-content-link" asp-area="" asp-controller="Account" asp-action="Logout">Выйти</a>
+                        <a class="header__menu-link dropdown__content-link" asp-area="" asp-controller="Account" asp-action="Logout">Выйти</a>
                     </div>
                 </div>
             }

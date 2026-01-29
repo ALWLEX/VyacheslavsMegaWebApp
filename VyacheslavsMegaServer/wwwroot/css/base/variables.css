@@ -30,6 +30,7 @@
 
     /* HEADER */
     --header-font-size: 18px;
+    --header-background: #000000BB;
 
     /* FOOTER */
     --footer-text-color: #cccccc;
