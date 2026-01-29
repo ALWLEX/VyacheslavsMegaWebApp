@@ -1,0 +1,21 @@
+﻿.admin-index {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+.admin-index__title {
+    font-family: minecraft-title;
+    font-size: var(--title-font-size);
+    line-height: var(--standart-line-height);
+    text-align: center;
+
+    color: var(--title-text-color);
+    text-shadow: var(--main-title-shadow);
+}
+
+.button-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
