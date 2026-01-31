@@ -1,13 +1,16 @@
 ﻿@model ContactsEditorViewModel
 
-<div class="block_big_first">
+<link rel="stylesheet" href="~/css/components/mc-table.css" />
+<link rel="stylesheet" href="~/css/pages/admin.css" />
+
+<div class="block block--first">
     <div class="container">
-        <div class="intro_container">
-            <h1 class="title">Редактор контактов</h1>
-            <br />
-            <div class="table_container">
-                <table class="mc_form_font_standart white mc_table wide_element">
-                    <tr class="tr_header">
+        <div class="section">
+            <h2 class="section__title section__title--main">Редактор контактов</h2>
+
+            <div class="mc-table-container">
+                <table class="mc-table mc-table--wide">
+                    <tr class="mc-table--center-aligment">
                         <td>Имя пользователя</td>
                         <td>Отображаемое имя</td>
                         <td>Описание</td>
@@ -16,22 +19,23 @@
                     @foreach (Contact contact in Model.Contacts)
                     {
                         <tr>
-                            <td class="align_left">@contact.User.UserName</td>
-                            <td class="align_left">@contact.DisplayName</td>
-                            <td class="align_left">@contact.Description</td>
+                            <td>@contact.User.UserName</td>
+                            <td>@contact.DisplayName</td>
+                            <td>@contact.Description</td>
                             <td><a asp-action="ContactDetails" asp-route-contactId="@contact.Id">Редактировать</a></td>
                             <td><a asp-action="ContactLinks" asp-route-contactId="@contact.Id">Редактировать ссылки</a></td>
                             <td><a asp-action="RemoveContact" asp-route-contactId="@contact.Id" onclick="confirmNavigation(event)">Удалить</a></td>
                         </tr>
                     }
-                    <tr class="tr_header">
+                    <tr class="mc-table--center-aligment">
                         <td colspan="6"><a asp-action="ContactDetails">Добавить контакт</a></td>
                     </tr>
                 </table>
             </div>
-            <div class="form_next_block">
-                <a href="/admin" class="white mc_form_font_standart">Назад</a>
-            </div>
+
+            <p class="back-link">
+                <a asp-area="Admin" asp-controller="Home" asp-action="Index">Назад</a>
+            </p>
         </div>
     </div>
 </div>

@@ -1,44 +1,79 @@
 ﻿@model ContactLink
 
-<div class="block_big_first intro first_slide" id="intro">
+<link rel="stylesheet" href="~/css/components/form.css" />
+<link rel="stylesheet" href="~/css/components/mc-checkbox.css" />
+<link rel="stylesheet" href="~/css/components/mc-listbox.css" />
+<link rel="stylesheet" href="~/css/components/mc-button.css" />
+
+<div class="block block--first">
     <div class="container">
-        <div class="intro_container">
-            <form asp-area="Admin" asp-controller="ContactsEditor" asp-action="LinkDetails" asp-route-contactId="@ViewBag.ContactId" method="post">
-                <div asp-validation-summary="All" class="form_error mc_form_font_standart"></div>
-                <input type="hidden" asp-for="Id" readonly />
-                <div class="form_part_left_aligment">
-                    <label class="element_label mc_form_font_standart" asp-for="Url"></label>
-                    <input class="mc_text_input_space mc_form_font_standart wide_element labeled_element"
-                           asp-for="Url" />
-                </div>
-                <div class="form_part_left_aligment form_next_block">
-                    <label class="element_label mc_form_font_standart" asp-for="Content"></label>
-                    <input class="mc_text_input_space mc_form_font_standart wide_element labeled_element"
-                           asp-for="Content" />
-                </div>
-                <div class="form_part_left_aligment form_next_block">
-                    <label class="element_label mc_form_font_standart" asp-for="Description"></label>
-                    <input class="mc_text_input_space mc_form_font_standart wide_element labeled_element"
-                           asp-for="Description" />
-                </div>
-                <div class="last_fill_column form_part_left_aligment form_next_block">
-                    <label class="element_label mc_form_font_standart"
-                           asp-for="ContactId"></label>
-                    <select class="labeled_element mc_listbox mc_form_font_standart"
-                            asp-for="ContactId"
-                            asp-items="ViewBag.SelectContactItems"
-                            size="5">
-                    </select>
+
+        <div class="form-container">
+            <form class="form" asp-area="Admin" asp-controller="ContactsEditor" asp-action="LinkDetails" asp-route-contactId="@ViewBag.ContactId" method="post">
+
+                <div class="form__header">
+                    <h2 class="form__title">@(Model.Id == 0 ? "Добавление" : "Редактирование") ссылки</h2>
                 </div>
 
-                <div class="form_part_center_aligment form_next_block">
-                    <button class="mc_button wide_element" type="submit">
-                        <span class="mc_button_title mc_form_font_standart">Сохранить</span>
+                <input type="hidden" asp-for="Id" readonly />
+
+                <div class="form__body">
+
+                    <div class="form__validation-summary" asp-validation-summary="All"></div>
+
+                    <!-- Url -->
+                    <div class="form-group">
+                        <label class="form-group__label" asp-for="Url"></label>
+
+                        <div class="form-group__control">
+                            <div class="field">
+                                <input class="field__input" asp-for="Url">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Content -->
+                    <div class="form-group">
+                        <label class="form-group__label" asp-for="Content"></label>
+
+                        <div class="form-group__control">
+                            <div class="field">
+                                <input class="field__input" asp-for="Content">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="form-group">
+                        <label class="form-group__label" asp-for="Description"></label>
+
+                        <div class="form-group__control">
+                            <div class="field">
+                                <input class="field__input" asp-for="Description">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ContactId -->
+                    <div class="form-group">
+                        <label class="form-group__label" asp-for="ContactId"></label>
+                        <select class="mc-listbox"
+                                asp-for="ContactId"
+                                asp-items="ViewBag.SelectContactItems"
+                                size="5">
+                        </select>
+                    </div>
+
+                </div>
+
+                <div class="form__footer">
+                    <button class="mc-button mc-button--wide" type="submit">
+                        <span class="mc-button__title">Сохранить</span>
                     </button>
+
+                    <p><a href="@string.Concat("/Admin/ContactsEditor/ContactLinks?contactId=", ViewBag.ContactId)">Назад</a></p>
                 </div>
-                <div class="form_next_block">
-                    <a asp-area="Admin" asp-controller="ContactsEditor" asp-action="Index" class="white mc_form_font_standart">Назад</a>
-                </div>
+
             </form>
         </div>
     </div>

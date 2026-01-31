@@ -3,7 +3,7 @@
     "http": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "Admin",
+      "launchUrl": "Admin/ContactsEditor/ContactDetails",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
