@@ -1,35 +1,39 @@
 ﻿@model PartnersEditorViewModel
 
-<div class="block_big_first">
+<link rel="stylesheet" href="~/css/components/mc-table.css" />
+<link rel="stylesheet" href="~/css/pages/admin.css" />
+
+<div class="block block--first">
     <div class="container">
-        <div class="intro_container">
-            <h1 class="title">Редактор партнёров</h1>
-            <br />
-            <div class="table_container">
-                <table class="mc_form_font_standart white mc_table wide_element">
-                    <tr class="tr_header">
+        <div class="section">
+            <h2 class="section__title section__title--main">Редактор партнёров</h2>
+
+            <div class="mc-table-container">
+                <table class="mc-table mc-table--wide">
+                    <tr class="mc-table--center-aligment">
                         <td>Партнёр</td>
                         <td colspan="3">Действия</td>
                     </tr>
                     @foreach (Partner partner in Model.Partners)
                     {
                         <tr>
-                            <td class="align_left">@partner.Name</td>
+                            <td>@partner.Name</td>
                             <td><a asp-action="PartnerDetails" asp-route-partnerId="@partner.Id">Редактировать</a></td>
                             <td><a asp-action="PartnerLinks" asp-route-partnerId="@partner.Id">Редактировать ссылки</a></td>
-                            <td><a asp-action="RemovePartner" asp-route-partnerId="@partner.Id" onclick="confirmNavigation(event)">Удалить</a></td>
+                            <td><a asp-action="RemovePartner" asp-route-partnerId="@partner.Id" onclick="confirmRemove(event)">Удалить</a></td>
                         </tr>
                     }
-                    <tr class="tr_header">
+                    <tr class="mc-table--center-aligment">
                         <td colspan="4"><a asp-action="PartnerDetails">Добавить партнёра</a></td>
                     </tr>
                 </table>
             </div>
-            <div class="form_next_block">
-                <a href="/admin" class="white mc_form_font_standart">Назад</a>
-            </div>
+
+            <p class="back-link">
+                <a asp-area="Admin" asp-controller="Home" asp-action="Index">Назад</a>
+            </p>
         </div>
     </div>
 </div>
 
-<script src="js/navigation_confirmation.js"></script>
+<script src="~/js/navigation-confirmation.js"></script>

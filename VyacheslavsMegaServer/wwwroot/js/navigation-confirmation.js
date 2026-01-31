@@ -1,4 +1,4 @@
-﻿function confirmNavigation(event) {
+﻿function confirmRemove(event) {
     if (!confirm("Подтвердите удаление")) {
         event.preventDefault();
     }

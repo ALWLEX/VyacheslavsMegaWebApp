@@ -24,7 +24,7 @@
                             <td>@contact.Description</td>
                             <td><a asp-action="ContactDetails" asp-route-contactId="@contact.Id">Редактировать</a></td>
                             <td><a asp-action="ContactLinks" asp-route-contactId="@contact.Id">Редактировать ссылки</a></td>
-                            <td><a asp-action="RemoveContact" asp-route-contactId="@contact.Id" onclick="confirmNavigation(event)">Удалить</a></td>
+                            <td><a asp-action="RemoveContact" asp-route-contactId="@contact.Id" onclick="confirmRemove(event)">Удалить</a></td>
                         </tr>
                     }
                     <tr class="mc-table--center-aligment">
@@ -40,4 +40,4 @@
     </div>
 </div>
 
-<script src="js/navigation_confirmation.js"></script>
+<script src="~/js/navigation-confirmation.js"></script>

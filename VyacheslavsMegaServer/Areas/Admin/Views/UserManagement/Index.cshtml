@@ -68,7 +68,7 @@
                                     </span>
                                 </td>
                                 -->
-                                <td><a asp-action="RemoveUser" asp-route-userId="@Model.Users[i].IdentityUserInfo.Id" onclick="confirmNavigation(event)">Удалить</a></td>
+                                <td><a asp-action="RemoveUser" asp-route-userId="@Model.Users[i].IdentityUserInfo.Id" onclick="confirmRemove(event)">Удалить</a></td>
                             </tr>
                         }
                     </table>

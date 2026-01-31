@@ -16,7 +16,7 @@
                         <tr>
                             <td class="align_left">@card.CardName</td>
                             <td><a asp-action="CardDetails" asp-route-cardId="@card.Id">Редактировать</a></td>
-                            <td><a asp-action="RemoveCard" asp-route-cardId="@card.Id" onclick="confirmNavigation(event)">Удалить</a></td>
+                            <td><a asp-action="RemoveCard" asp-route-cardId="@card.Id" onclick="confirmRemove(event)">Удалить</a></td>
                         </tr>
                     }
                     <tr class="tr_header">
@@ -31,4 +31,4 @@
     </div>
 </div>
 
-<script src="js/navigation_confirmation.js"></script>
+<script src="~/js/navigation-confirmation.js"></script>
