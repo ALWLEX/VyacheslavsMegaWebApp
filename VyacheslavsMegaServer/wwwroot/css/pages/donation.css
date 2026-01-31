@@ -17,10 +17,6 @@
     margin: 0 auto;
 }
 
-.donation-fund__table {
-    width: 100%;
-}
-
 .block--donation-attention {
     background: url(../../img/backgrounds/donation_attention.jpg);
     background-repeat: no-repeat;

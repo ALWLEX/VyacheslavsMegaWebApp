@@ -15,6 +15,10 @@
     box-shadow: inset 5px 5px white, inset -5px -5px #565656;
 }
 
+.mc-table--wide {
+    width: 100%;
+}
+
 .mc-table--center-aligment {
     text-align: center;
 }
