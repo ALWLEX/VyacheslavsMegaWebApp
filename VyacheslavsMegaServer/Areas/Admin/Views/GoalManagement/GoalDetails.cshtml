@@ -6,7 +6,7 @@
             <form class="form" asp-area="Admin" asp-controller="GoalManagement" asp-action="GoalDetails" method="post" enctype="multipart/form-data">
 
                 <div class="form__header">
-                    <h2 class="form__title">@(Model.Id == 0 ? "Добавление" : "Редактирование") цели</h2>
+                    <h2 class="form__title form__title--main">@(Model.Id == 0 ? "Добавление" : "Редактирование") цели</h2>
                 </div>
 
                 <input type="hidden" asp-for="Id" readonly />

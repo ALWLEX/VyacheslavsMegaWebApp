@@ -1,14 +1,4 @@
-﻿.form_image_200 {
-    display: block;
-    height: 200px;
-    width: fit-content;
-    object-fit: contain;
-    margin: 0 auto 10px;
-}
-
-
-
-/* ================================
+﻿/* ================================
    form-container
 ================================ */
 
@@ -59,10 +49,18 @@
 
 .form__title {
     margin: 0;
+
     text-align: center;
+    font-size: var(--section-header-font-size);
+    line-height: var(--standart-line-height);
+}
+
+.form__title--main {
     font-family: minecraft-title;
     font-size: var(--title-font-size);
+
     color: var(--title-text-color);
+    text-shadow: var(--main-title-shadow);
 }
 
 /* ================================

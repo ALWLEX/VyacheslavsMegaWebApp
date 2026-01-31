@@ -12,7 +12,7 @@
             <form class="form" asp-area="Admin" asp-controller="ContactsEditor" asp-action="ContactDetails" method="post">
 
                 <div class="form__header">
-                    <h2 class="form__title">@(Model.Id == 0 ? "Добавление" : "Редактирование") контакта</h2>
+                    <h2 class="form__title form__title--main">@(Model.Id == 0 ? "Добавление" : "Редактирование") контакта</h2>
                 </div>
 
                 <input type="hidden" asp-for="Id" readonly />
