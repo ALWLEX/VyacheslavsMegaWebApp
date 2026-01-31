@@ -8,155 +8,157 @@
 
 <div class="block block--first">
     <div class="container">
-        <form class="form" asp-area="Admin" asp-controller="MainPageEditor" asp-action="EditMainPage">
+        <div class="form-container">
+            <form class="form" asp-area="Admin" asp-controller="MainPageEditor" asp-action="EditMainPage">
 
-            <div class="form__header">
-                <h2 class="form__title">Содержание главной страницы</h2>
-            </div>
-
-            <input type="hidden" asp-for="Id" readonly />
-
-            <div class="form__body">
-
-                <div class="form__validation-summary" asp-validation-summary="All"></div>
-
-                <!-- Title -->
-                <div class="form-group">
-                    <label class="form-group__label" asp-for="Title"></label>
-                    <div class="form-group__control">
-                        <div class="field field_type_text">
-                            <input class="field__input" asp-for="Title">
-                        </div>
-                    </div>
+                <div class="form__header">
+                    <h2 class="form__title">Содержание главной страницы</h2>
                 </div>
 
-                <!-- YellowHint -->
-                <div class="form-group">
-                    <label class="form-group__label" asp-for="YellowHint"></label>
-                    <div class="form-group__control">
-                        <div class="field field_type_text">
-                            <input class="field__input" asp-for="YellowHint">
+                <input type="hidden" asp-for="Id" readonly />
+
+                <div class="form__body">
+
+                    <div class="form__validation-summary" asp-validation-summary="All"></div>
+
+                    <!-- Title -->
+                    <div class="form-group">
+                        <label class="form-group__label" asp-for="Title"></label>
+                        <div class="form-group__control">
+                            <div class="field field_type_text">
+                                <input class="field__input" asp-for="Title">
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- DownloadButtonTitle -->
-                <div class="form-group">
-                    <label class="form-group__label" asp-for="DownloadButtonTitle"></label>
-                    <div class="form-group__control">
-                        <div class="field field_type_text">
-                            <input class="field__input" asp-for="DownloadButtonTitle">
+                    <!-- YellowHint -->
+                    <div class="form-group">
+                        <label class="form-group__label" asp-for="YellowHint"></label>
+                        <div class="form-group__control">
+                            <div class="field field_type_text">
+                                <input class="field__input" asp-for="YellowHint">
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- DownloadButtonUrl -->
-                <div class="form-group">
-                    <label class="form-group__label" asp-for="DownloadButtonUrl"></label>
-                    <div class="form-group__control">
-                        <div class="field field_type_text">
-                            <input class="field__input" asp-for="DownloadButtonUrl">
+                    <!-- DownloadButtonTitle -->
+                    <div class="form-group">
+                        <label class="form-group__label" asp-for="DownloadButtonTitle"></label>
+                        <div class="form-group__control">
+                            <div class="field field_type_text">
+                                <input class="field__input" asp-for="DownloadButtonTitle">
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- DownloadLocalResource ShowDownloadButton -->
-                <div class="form__row">
-                    <div class="form-group form-group--size-50">
+                    <!-- DownloadButtonUrl -->
+                    <div class="form-group">
+                        <label class="form-group__label" asp-for="DownloadButtonUrl"></label>
+                        <div class="form-group__control">
+                            <div class="field field_type_text">
+                                <input class="field__input" asp-for="DownloadButtonUrl">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- DownloadLocalResource ShowDownloadButton -->
+                    <div class="form__row">
+                        <div class="form-group form-group--size-50">
+                            <div class="form-group__control">
+                                <label class="mc-checkbox">
+                                    <input class="mc-checkbox__input" asp-for="DownloadLocalResource">
+                                    <span class="mc-checkbox__box"></span>
+                                    <span class="mc-checkbox__label">@Html.DisplayNameFor(x => x.DownloadLocalResource)</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group form-group--size-50">
+                            <div class="form-group__control">
+                                <label class="mc-checkbox">
+                                    <input class="mc-checkbox__input" asp-for="ShowDownloadButton">
+                                    <span class="mc-checkbox__box"></span>
+                                    <span class="mc-checkbox__label">@Html.DisplayNameFor(x => x.ShowDownloadButton)</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ErrorMessage -->
+                    <div class="form-group">
+                        <label class="form-group__label" asp-for="ErrorMessage"></label>
+                        <div class="form-group__control">
+                            <div class="field field_type_text">
+                                <input class="field__input" asp-for="ErrorMessage">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ShowErrorMessage -->
+                    <div class="form-group">
                         <div class="form-group__control">
                             <label class="mc-checkbox">
-                                <input class="mc-checkbox__input" asp-for="DownloadLocalResource">
+                                <input class="mc-checkbox__input" asp-for="ShowErrorMessage">
                                 <span class="mc-checkbox__box"></span>
-                                <span class="mc-checkbox__label">@Html.DisplayNameFor(x => x.DownloadLocalResource)</span>
+                                <span class="mc-checkbox__label">@Html.DisplayNameFor(x => x.ShowErrorMessage)</span>
                             </label>
                         </div>
                     </div>
-                    <div class="form-group form-group--size-50">
+
+                    <!-- ServerAddress -->
+                    <div class="form-group">
+                        <label class="form-group__label" asp-for="ServerAddress"></label>
                         <div class="form-group__control">
-                            <label class="mc-checkbox">
-                                <input class="mc-checkbox__input" asp-for="ShowDownloadButton">
-                                <span class="mc-checkbox__box"></span>
-                                <span class="mc-checkbox__label">@Html.DisplayNameFor(x => x.ShowDownloadButton)</span>
-                            </label>
+                            <div class="field field_type_text">
+                                <input class="field__input" asp-for="ServerAddress">
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- ErrorMessage -->
-                <div class="form-group">
-                    <label class="form-group__label" asp-for="ErrorMessage"></label>
-                    <div class="form-group__control">
-                        <div class="field field_type_text">
-                            <input class="field__input" asp-for="ErrorMessage">
+                    <!-- Description -->
+                    <div class="form-group">
+                        <label class="form-group__label" asp-for="Description"></label>
+                        <trix-editor input="trix_input">@Html.Raw(Model.Description)</trix-editor>
+                        <input type="hidden" asp-for="Description" id="trix_input" />
+                    </div>
+
+                    <!-- Meta -->
+                    <div class="form-group">
+                        <label class="form-group__label" asp-for="PageTitle"></label>
+                        <div class="form-group__control">
+                            <div class="field field_type_text">
+                                <input class="field__input" asp-for="PageTitle">
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- ShowErrorMessage -->
-                <div class="form-group">
-                    <div class="form-group__control">
-                        <label class="mc-checkbox">
-                            <input class="mc-checkbox__input" asp-for="ShowErrorMessage">
-                            <span class="mc-checkbox__box"></span>
-                            <span class="mc-checkbox__label">@Html.DisplayNameFor(x => x.ShowErrorMessage)</span>
-                        </label>
-                    </div>
-                </div>
-
-                <!-- ServerAddress -->
-                <div class="form-group">
-                    <label class="form-group__label" asp-for="ServerAddress"></label>
-                    <div class="form-group__control">
-                        <div class="field field_type_text">
-                            <input class="field__input" asp-for="ServerAddress">
+                    <div class="form-group">
+                        <label class="form-group__label" asp-for="MetatagDescription"></label>
+                        <div class="form-group__control">
+                            <div class="field field_type_text">
+                                <input class="field__input" asp-for="MetatagDescription">
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Description -->
-                <div class="form-group">
-                    <label class="form-group__label" asp-for="Description"></label>
-                    <trix-editor input="trix_input">@Html.Raw(Model.Description)</trix-editor>
-                    <input type="hidden" asp-for="Description" id="trix_input" />
-                </div>
-
-                <!-- Meta -->
-                <div class="form-group">
-                    <label class="form-group__label" asp-for="PageTitle"></label>
-                    <div class="form-group__control">
-                        <div class="field field_type_text">
-                            <input class="field__input" asp-for="PageTitle">
+                    <div class="form-group">
+                        <label class="form-group__label" asp-for="MetatagKeywords"></label>
+                        <div class="form-group__control">
+                            <div class="field field_type_text">
+                                <input class="field__input" asp-for="MetatagKeywords">
+                            </div>
                         </div>
                     </div>
+
                 </div>
 
-                <div class="form-group">
-                    <label class="form-group__label" asp-for="MetatagDescription"></label>
-                    <div class="form-group__control">
-                        <div class="field field_type_text">
-                            <input class="field__input" asp-for="MetatagDescription">
-                        </div>
-                    </div>
+                <div class="form__footer">
+                    <button class="mc-button mc-button--wide" type="submit">
+                        <span class="mc-button__title">Сохранить</span>
+                    </button>
+
+                    <p><a asp-area="Admin" asp-controller="Home" asp-action="Index">Назад</a></p>
                 </div>
-
-                <div class="form-group">
-                    <label class="form-group__label" asp-for="MetatagKeywords"></label>
-                    <div class="form-group__control">
-                        <div class="field field_type_text">
-                            <input class="field__input" asp-for="MetatagKeywords">
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-
-            <div class="form__footer">
-                <button class="mc-button mc-button--wide" type="submit">
-                    <span class="mc-button__title">Сохранить</span>
-                </button>
-
-                <p><a asp-area="Admin" asp-controller="Home" asp-action="Index">Назад</a></p>
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
 </div>

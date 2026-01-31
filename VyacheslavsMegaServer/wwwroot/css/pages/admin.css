@@ -19,3 +19,7 @@
     flex-direction: column;
     gap: 15px;
 }
+
+.back-link {
+    text-align: center;
+}

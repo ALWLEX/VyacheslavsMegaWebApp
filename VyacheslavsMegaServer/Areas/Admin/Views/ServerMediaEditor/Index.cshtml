@@ -1,13 +1,16 @@
 ﻿@model LinksEditorViewModel<ServerMediaLink>
 
-<div class="block_big_first">
+<link rel="stylesheet" href="~/css/components/mc-table.css" />
+<link rel="stylesheet" href="~/css/pages/admin.css" />
+
+<div class="block block--first">
     <div class="container">
-        <div class="intro_container">
-            <h1 class="title">Редактор соц. сетей сервера</h1>
-            <br />
-            <div class="table_container">
-                <table class="mc_form_font_standart white mc_table wide_element">
-                    <tr class="tr_header">
+        <div class="section">
+            <h2 class="section__title">Редактор соц. сетей сервера</h2>
+
+            <div class="mc-table-container">
+                <table class="mc-table">
+                    <tr class="mc-table--center-aligment">
                         <td>Иконка</td>
                         <td>URL</td>
                         <td>Отображаемое значение</td>
@@ -16,21 +19,22 @@
                     @foreach (ServerMediaLink link in Model.Links)
                     {
                         <tr>
-                            <td class="align_center"><img class="link_icon" src="~/@link.LogoFullPath" /></td>
-                            <td class="align_left">@link.Url</td>
-                            <td class="align_left">@link.Content</td>
+                            <td><img class="mc-table__img" src="~/@link.LogoFullPath" /></td>
+                            <td>@link.Url</td>
+                            <td>@link.Content</td>
                             <td><a asp-action="LinkDetails" asp-route-linkId="@link.Id">Редактировать</a></td>
                             <td><a asp-action="RemoveLink" asp-route-linkId="@link.Id">Удалить</a></td>
                         </tr>
                     }
-                    <tr class="tr_header">
+                    <tr class="mc-table--center-aligment">
                         <td colspan="5"><a asp-action="LinkDetails">Добавить ссылку</a></td>
                     </tr>
                 </table>
             </div>
-            <div class="form_next_block">
-                <a asp-area="Admin" asp-controller="Home" asp-action="Index" class="white mc_form_font_standart">Назад</a>
-            </div>
+
+            <p class="back-link">
+                <a asp-area="Admin" asp-controller="Home" asp-action="Index">Назад</a>
+            </p>
         </div>
     </div>
 </div>
