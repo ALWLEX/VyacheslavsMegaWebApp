@@ -36,9 +36,9 @@ namespace VyacheslavsMegaServer.Data.Entities
         public string CardHolder { get; set; }
 
         [Display(Name = "Цвет правого верхнего угла")]
-        public string ColorUpRight { get; set; } = "black";
+        public string ColorUpRight { get; set; } = "#000000";
 
         [Display(Name = "Цвет левого нижнего угла")]
-        public string ColorDownLeft { get; set; } = "black";
+        public string ColorDownLeft { get; set; } = "#000000";
     }
 }

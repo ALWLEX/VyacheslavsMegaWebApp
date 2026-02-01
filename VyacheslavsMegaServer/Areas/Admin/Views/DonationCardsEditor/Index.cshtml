@@ -1,32 +1,36 @@
 ﻿@model DonationCardsEditorViewModel
 
-<div class="block_big_first">
+<link rel="stylesheet" href="~/css/components/mc-table.css" />
+<link rel="stylesheet" href="~/css/pages/admin.css" />
+
+<div class="block block--first">
     <div class="container">
-        <div class="intro_container">
-            <h1 class="title">Редактор карт</h1>
-            <br />
-            <div class="table_container">
-                <table class="mc_form_font_standart white mc_table wide_element">
-                    <tr class="tr_header">
+        <div class="section">
+            <h2 class="section__title section__title--main">Редактор карт</h2>
+
+            <div class="mc-table-container">
+                <table class="mc-table mc-table--wide">
+                    <tr class="mc-table--center-aligment">
                         <td>Название карты</td>
                         <td colspan="2">Действия</td>
                     </tr>
                     @foreach (DonationCard card in Model.DonationCards)
                     {
                         <tr>
-                            <td class="align_left">@card.CardName</td>
+                            <td>@card.CardName</td>
                             <td><a asp-action="CardDetails" asp-route-cardId="@card.Id">Редактировать</a></td>
                             <td><a asp-action="RemoveCard" asp-route-cardId="@card.Id" onclick="confirmRemove(event)">Удалить</a></td>
                         </tr>
                     }
-                    <tr class="tr_header">
+                    <tr class="mc-table--center-aligment">
                         <td colspan="3"><a asp-action="CardDetails">Добавить карту</a></td>
                     </tr>
                 </table>
             </div>
-            <div class="form_next_block">
-                <a href="/admin" class="white mc_form_font_standart">Назад</a>
-            </div>
+
+            <p class="back-link">
+                <a asp-area="Admin" asp-controller="Home" asp-action="Index">Назад</a>
+            </p>
         </div>
     </div>
 </div>

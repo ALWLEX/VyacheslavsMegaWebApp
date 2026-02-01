@@ -1,84 +1,158 @@
 ﻿@model DonationCard
 
-<div class="block_big_first first_slide">
+<link rel="stylesheet" href="~/css/components/form.css" />
+<link rel="stylesheet" href="~/css/components/mc-checkbox.css" />
+<link rel="stylesheet" href="~/css/components/bank-card.css" />
+<link rel="stylesheet" href="~/css/components/mc-button.css" />
+<link rel="stylesheet" href="~/css/components/mc-color-picker.css" />
+
+<div class="block block--first">
     <div class="container">
-        <div class="intro_container">
-            <form asp-area="Admin" asp-controller="DonationCardsEditor" asp-action="CardDetails" method="post">
-                <div asp-validation-summary="All" class="form_error mc_form_font_standart"></div>
+
+        <div class="form-container">
+            <form class="form" asp-area="Admin" asp-controller="DonationCardsEditor" asp-action="CardDetails" method="post">
+
+                <div class="form__header">
+                    <h2 class="form__title form__title--main">@(Model.Id == 0 ? "Добавление" : "Редактирование") карты</h2>
+                </div>
+
                 <input type="hidden" asp-for="Id" readonly />
-                <div class="form_part_left_aligment">
-                    <label class="element_label mc_form_font_standart" asp-for="CardName"></label>
-                    <input class="mc_text_input_space mc_form_font_standart wide_element labeled_element"
-                           asp-for="CardName" />
-                </div>
-                <div class="form_part_left_aligment form_next_block">
-                    <label class="element_label mc_form_font_standart" asp-for="BankName"></label>
-                    <input class="mc_text_input_space mc_form_font_standart wide_element labeled_element"
-                           asp-for="BankName" />
-                </div>
-                <div class="form_part_left_aligment form_next_block">
-                    <label class="element_label mc_form_font_standart" asp-for="CardNumber"></label>
-                    <input class="mc_text_input_space mc_form_font_standart wide_element labeled_element"
-                           asp-for="CardNumber" />
-                </div>
-                <div class="form_part_left_aligment form_next_block">
-                    <label class="element_label mc_form_font_standart" asp-for="CardHolder"></label>
-                    <input class="mc_text_input_space mc_form_font_standart wide_element labeled_element"
-                           asp-for="CardHolder" />
-                </div>
-                <div class="two_columns_form form_next_block">
-                    <div class="form_part_left_aligment">
-                        <label class="element_label mc_form_font_standart" asp-for="ColorDownLeft"></label>
-                        <input class="mc_text_input_space mc_form_font_standart wide_element labeled_element"
-                               id="colorDownLeft"
-                               asp-for="ColorDownLeft" />
-                    </div>
-                    <div class="form_part_left_aligment column_next">
-                        <label class="element_label mc_form_font_standart" asp-for="ColorUpRight"></label>
-                        <input class="mc_text_input_space mc_form_font_standart wide_element labeled_element"
-                               id="colorUpRight"
-                               asp-for="ColorUpRight" />
-                    </div>
-                </div>
-                <div class="form_next_block cards-container">
-                    <div class="card" id="cardExample" style="background: linear-gradient(45deg, black, black);">
-                        <div class="card-header">
-                            <span class="bank-name">BankName</span>
-                        </div>
-                        <div class="card-body">
-                            <p class="card-number">1234 5678 9012 3456</p>
-                        </div>
-                        <div class="card-footer">
-                            <span class="card-owner">CARDHOLDER</span>
+
+                <div class="form__body">
+
+                    <div class="form__validation-summary" asp-validation-summary="All"></div>
+
+                    <!-- CardName -->
+                    <div class="form-group">
+                        <label class="form-group__label" asp-for="CardName"></label>
+
+                        <div class="form-group__control">
+                            <div class="field">
+                                <input class="field__input" asp-for="CardName">
+                            </div>
                         </div>
                     </div>
+
+                    <!-- BankName -->
+                    <div class="form-group">
+                        <label class="form-group__label" asp-for="BankName"></label>
+
+                        <div class="form-group__control">
+                            <div class="field">
+                                <input class="field__input" asp-for="BankName">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CardNumber -->
+                    <div class="form-group">
+                        <label class="form-group__label" asp-for="CardNumber"></label>
+
+                        <div class="form-group__control">
+                            <div class="field">
+                                <input class="field__input" asp-for="CardNumber">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CardHolder -->
+                    <div class="form-group">
+                        <label class="form-group__label" asp-for="CardHolder"></label>
+
+                        <div class="form-group__control">
+                            <div class="field">
+                                <input class="field__input" asp-for="CardHolder">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form__row">
+                        <div class="form-group form-group--parent form-group--size-50">
+                            
+                            <!-- ColorDownLeft -->
+                            <div class="form-group">
+                                 <label class="form-group__label" asp-for="ColorDownLeft"></label>
+
+                                <div class="color-field form__row form__row--no-adaptivity">
+                                    <div class="form-group__control">
+                                        <div class="field">
+                                            <input class="field__input color-field__hex" id="colorDownLeft" asp-for="ColorDownLeft" />
+                                        </div>
+                                    </div>
+                                    <input class="color-field__picker" type="color" />
+                                    <button class="mc-button color-field__btn" type="button">
+                                        <span class="mc-button__title">🎨</span>
+                                    </button>
+                                </div>
+                            </div>
+                                
+                            <!-- ColorUpRight -->
+                            <div class="form-group">
+                                <label class="form-group__label" asp-for="ColorUpRight"></label>
+
+                                <div class="color-field form__row form__row--no-adaptivity">
+                                    <div class="form-group__control">
+                                        <div class="field">
+                                            <input class="field__input color-field__hex" id="colorUpRight" asp-for="ColorUpRight" />
+                                        </div>
+                                    </div>
+                                    <input class="color-field__picker" type="color" />
+                                    <button class="mc-button color-field__btn" type="button">
+                                        <span class="mc-button__title">🎨</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group form-group--card-container">
+                            <div class="card" id="cardExample" style="background: linear-gradient(45deg, #000000, #000000);">
+                                <div class="card__header">
+                                    <span>BankName</span>
+                                </div>
+                                <div class="card__body">
+                                    <p class="card__number">1234 5678 9012 3456</p>
+                                </div>
+                                <div class="card__footer">
+                                    <span>CARDHOLDER</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="form_part_center_aligment form_next_block">
-                    <button class="mc_button wide_element" type="submit">
-                        <span class="mc_button_title mc_form_font_standart">Сохранить</span>
+
+                <div class="form__footer">
+                    <button class="mc-button mc-button--wide" type="submit">
+                        <span class="mc-button__title">Сохранить</span>
                     </button>
+
+                    <p><a asp-area="Admin" asp-controller="DonationCardsEditor" asp-action="Index">Назад</a></p>
                 </div>
-                <div class="form_next_block">
-                    <a asp-area="Admin" asp-controller="DonationCardsEditor" asp-action="Index" class="white mc_form_font_standart">Назад</a>
-                </div>
+
             </form>
         </div>
     </div>
 </div>
 
+<script src="~/js/mc-color-picker.js"></script>
 <script>
     const colorUpRightInput = document.getElementById("colorUpRight");
     const colorDownLeftInput = document.getElementById("colorDownLeft");
     const cardExample = document.getElementById("cardExample");
 
+    document.querySelectorAll('.color-field__picker').forEach(picker => {
+        picker.addEventListener('input', updateColors);
+    });
+
+    document.querySelectorAll('.color-field__hex').forEach(hexInput => {
+        hexInput.addEventListener('input', updateColors);
+    });
+
     window.addEventListener("load", updateColors);
-    colorUpRightInput.addEventListener("input", updateColors);
-    colorDownLeftInput.addEventListener("input", updateColors);
 
     function updateColors(event) {
         let colorUpRight = colorUpRightInput.value;
-        let colorDownLeft = colorDownLeftInput.value
-        console.log(`linear-gradient(45deg, ${colorDownLeft}, ${colorUpRight})`)
-        cardExample.style.background = `linear-gradient(45deg, ${colorDownLeft}, ${colorUpRight})`
+        let colorDownLeft = colorDownLeftInput.value;
+        //console.log(`linear-gradient(45deg, ${colorDownLeft}, ${colorUpRight})`)
+        cardExample.style.background = `linear-gradient(45deg, ${colorDownLeft}, ${colorUpRight})`;
     }
 </script>
