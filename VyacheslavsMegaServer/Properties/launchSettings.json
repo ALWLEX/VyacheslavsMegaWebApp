@@ -3,7 +3,7 @@
     "http": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "Admin/PartnersEditor",
+      "launchUrl": "Admin/UserReportsViewer",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },

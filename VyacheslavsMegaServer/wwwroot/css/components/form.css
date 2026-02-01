@@ -8,7 +8,7 @@
     width: 100%;
 }
 
-.form-container>.form {
+.form-container > .form {
     max-width: 1000px;
     width: 100%;
     margin: 0;
@@ -64,17 +64,13 @@
 }
 
 /* ================================
-   Horizontal rows
+   Horizontal row
 ================================ */
 
 .form__row {
     display: flex;
     gap: 16px;
     width: 100%;
-}
-
-.form__row>.form-group {
-    flex: 1;
 }
 
 /* ================================
@@ -94,6 +90,14 @@
 
 .form-group__control {
     width: 100%;
+}
+
+.form-group__control--maximized {
+    height: 100%;
+}
+
+.form-group__control--maximized > * {
+    height: 100%;
 }
 
 .form-group__hint {
@@ -230,6 +234,11 @@
 
     .form__row {
         flex-direction: column;
+        gap: 5px;
+    }
+
+    .form__row > .form-group {
+        flex: 1;
     }
 
     .form__validation-summary {

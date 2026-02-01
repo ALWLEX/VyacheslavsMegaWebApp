@@ -1,10 +1,16 @@
 ﻿.mc-listbox {
+    width: 100%;
+
     background-color: var(--control-background);
     border: var(--control-border);
     color: var(--text-color);
     outline: none;
     -webkit-text-size-adjust: 100%;
     overflow-y: auto;
+}
+
+.mc-listbox--wide {
+    width: 100%;
 }
 
 .mc-listbox option {
