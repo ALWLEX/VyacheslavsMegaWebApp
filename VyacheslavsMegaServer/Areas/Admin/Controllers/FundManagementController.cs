@@ -25,7 +25,18 @@ namespace VyacheslavsMegaServer.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(FundManagementViewModel model)
         {
-            model.FundTransactions = await _fundRepository.GetTransactionsByDate(model.DateStart, model.DateEnd);
+            if (!ModelState.IsValid) return View(model);
+
+            switch (model.Filter)
+            {
+                case FundManagementViewModel.FilterBy.DATE:
+                    model.FundTransactions = await _fundRepository.GetTransactionsByDate(model.DateStart, model.DateEnd);
+                    break;
+
+                case FundManagementViewModel.FilterBy.LAST:
+                    model.FundTransactions = await _fundRepository.GetLastTransaction(model.CountTransactions);
+                    break;
+            }   
             return View(model);
         }
 

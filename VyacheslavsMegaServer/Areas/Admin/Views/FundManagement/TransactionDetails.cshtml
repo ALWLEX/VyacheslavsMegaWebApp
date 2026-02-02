@@ -1,7 +1,13 @@
 ﻿@model FundTransaction
 
-<div class="block_big_first">
+<link rel="stylesheet" href="~/css/components/form.css" />
+<link rel="stylesheet" href="~/css/components/mc-checkbox.css" />
+<link rel="stylesheet" href="~/css/components/mc-listbox.css" />
+<link rel="stylesheet" href="~/css/components/mc-button.css" />
+
+<div class="block block--first">
     <div class="container">
+
         <div class="form-container">
             <form class="form" asp-area="Admin" asp-controller="FundManagement" asp-action="TransactionDetails" method="post">
 
@@ -30,7 +36,7 @@
 
                         <div class="form-group__control">
                             <div class="field">
-                                <input class="field__input" asp-for="Date">
+                                <input class="field__input" type="datetime-local" step="60" asp-for="Date">
                             </div>
                         </div>
                     </div>
@@ -62,7 +68,7 @@
                         <span class="mc-button__title">Сохранить</span>
                     </button>
 
-                    <a asp-area="Admin" asp-controller="FundManagement" asp-action="Index" class="back-navigation">Назад</a>
+                    <p><a asp-area="Admin" asp-controller="FundManagement" asp-action="Index">Назад</a></p>
                 </div>
 
             </form>

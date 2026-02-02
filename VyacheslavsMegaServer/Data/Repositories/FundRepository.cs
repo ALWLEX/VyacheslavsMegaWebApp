@@ -25,7 +25,12 @@ namespace VyacheslavsMegaServer.Data.Repositories
 
         public async Task<List<FundTransaction>> GetTransactionsByDate(DateTime dateStart, DateTime dateEnd)
         {
-            return await DB.FundTransactions.Where(t => t.Date >= dateStart && t.Date <= dateEnd).ToListAsync();
+            return await DB.FundTransactions.Where(t => t.Date >= dateStart && t.Date <= dateEnd.AddDays(1).AddSeconds(-1)).OrderByDescending(t => t.Date).ToListAsync();
+        }
+
+        public async Task<List<FundTransaction>> GetTransactionsByDate(DateOnly dateStart, DateOnly dateEnd)
+        {
+            return await GetTransactionsByDate(dateStart.ToDateTime(new TimeOnly()), dateEnd.ToDateTime(new TimeOnly()));
         }
 
         public async Task<FundTransaction> GetTransactionById(int id)

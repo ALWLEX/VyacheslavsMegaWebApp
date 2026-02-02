@@ -266,3 +266,8 @@ input:-webkit-autofill {
     -webkit-box-shadow:0 0 0 50px black inset !important;
     -webkit-text-fill-color: #e0e0e0 !important;
 }
+
+input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+}

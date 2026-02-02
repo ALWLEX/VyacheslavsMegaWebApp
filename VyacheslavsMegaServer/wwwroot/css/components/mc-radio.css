@@ -39,7 +39,7 @@
     width: 16px;
     height: 16px;
 
-    background-image: url('../../img/radio-dot.gif'); /* ТВОЙ спрайт */
+    background-image: url('../../img/form-elements/radio-dot.gif'); /* ТВОЙ спрайт */
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;

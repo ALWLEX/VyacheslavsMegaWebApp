@@ -13,7 +13,7 @@ namespace VyacheslavsMegaServer.Data.Entities
     public class FundTransaction : Base.EntityBase
     {
         [Display(Name = "Дата")]
-        [DisplayFormat(DataFormatString = "{0:yyyy-MM-ddTHH:mm:ss}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-ddTHH:mm}", ApplyFormatInEditMode = true)]
         public DateTime Date { get; set; } = DateTime.Now;
 
         [MaxLength(255)]
