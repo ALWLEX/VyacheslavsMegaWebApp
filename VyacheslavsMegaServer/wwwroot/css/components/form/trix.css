@@ -57,14 +57,14 @@ trix-toolbar .trix-button {
     font-weight: 600;
 
     color: #DDD;
-    text-shadow: 2px 2px #000A;
+    text-shadow: 2px 2px #000000AA;
 
     white-space: nowrap;
     outline: none;
 
-    background: #999 url('../../img/bgbtn.png') center / cover;
+    background: #999 url('../../../img/bgbtn.png') center / cover;
     image-rendering: pixelated;
-    border: 2px solid #000;
+    border: 2px solid #000000;
 }
 
 trix-toolbar .trix-button:hover {
@@ -84,7 +84,7 @@ trix-toolbar .trix-button:not(:disabled) {
 }
 
 trix-toolbar .trix-button:disabled {
-    background: #333 url('../../img/bgbtn_dis.png') center / cover;
+    background: #333 url('../../../img/bgbtn_dis.png') center / cover;
 }
 
 @media (max-width: 768px) {
@@ -101,7 +101,7 @@ trix-toolbar .trix-button--icon {
     max-width: calc(0.8em + 4vw);
     text-indent: -9999px;
 
-    box-shadow: inset -2px -4px #0006, inset 2px 2px #FFF7;
+    box-shadow: inset -2px -4px #00000066, inset 2px 2px #FFFFFF77;
 }
 
 @media (max-width: 768px) {

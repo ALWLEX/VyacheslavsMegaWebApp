@@ -30,7 +30,7 @@
     width: 25px;
     height: 25px;
 
-    background-image: url('../../img/form-elements/checkmark.gif');
+    background-image: url('../../../img/form-elements/checkmark.gif');
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
