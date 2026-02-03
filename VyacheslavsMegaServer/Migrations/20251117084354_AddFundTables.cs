@@ -46,13 +46,28 @@ namespace VyacheslavsMegaServer.Migrations
                 .Annotation("MySQL:Charset", "utf8mb4");
 
             migrationBuilder.Sql(@"
+                DELIMITER $$
+
+                DROP PROCEDURE IF EXISTS InsertFundSnapshot$$
+
+                CREATE PROCEDURE InsertFundSnapshot()
+                BEGIN
+                    INSERT INTO FundSnapshots (SnapshotDate, Balance)
+                    SELECT
+                        DATE_FORMAT(CURRENT_DATE, '%Y-%m-01'),
+                        SUM(amount)
+                    FROM FundTransactions;
+                END$$
+
+                DELIMITER ;
+
                 CREATE EVENT IF NOT EXISTS CreateMonthlySnapshot
                 ON SCHEDULE EVERY 1 MONTH
                 STARTS CONCAT(DATE_FORMAT(CURRENT_DATE ,'%Y-%m-01'), ' 00:00:00')
                 DO
-                    INSERT INTO FundSnapshots (SnapshotDate, Balance)
-                    SELECT DATE_FORMAT(CURRENT_DATE ,'%Y-%m-01'), SUM(amount) 
-                    FROM FundTransactions;
+                    CALL InsertFundSnapshot();
+                
+                SET GLOBAL event_scheduler = ON;
             ");
 
             migrationBuilder.UpdateData(
@@ -72,7 +87,10 @@ namespace VyacheslavsMegaServer.Migrations
             migrationBuilder.DropTable(
                 name: "FundTransactions");
 
-            migrationBuilder.Sql("DROP EVENT IF EXISTS CreateMonthlySnapshot;");
+            migrationBuilder.Sql(@"
+                DROP EVENT IF EXISTS CreateMonthlySnapshot;
+                DROP PROCEDURE IF EXISTS InsertFundSnapshot;
+            ");
 
             migrationBuilder.UpdateData(
                 table: "AspNetUsers",
