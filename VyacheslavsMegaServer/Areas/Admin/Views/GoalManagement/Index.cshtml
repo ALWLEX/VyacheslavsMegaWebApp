@@ -1,14 +1,17 @@
 ﻿@model GoalManagementViewModel
 
-<div class="block_big_first">
-    <div class="container">
-        <div class="intro_container">
-            <h1 class="title">Управление целями</h1>
-            <br />
+<link rel="stylesheet" href="~/css/components/mc-table.css" />
+<link rel="stylesheet" href="~/css/components/mc-checkbox.css" />
+<link rel="stylesheet" href="~/css/pages/admin.css" />
 
-            <div class="table_container">
-                <table class="mc_form_font_standart white mc_table wide_element">
-                    <tr class="tr_header">
+<div class="block block--first">
+    <div class="container">
+        <div class="section">
+            <h1 class="section__title section__title--main">Управление целями</h1>
+
+            <div class="table-container">
+                <table class="mc-table mc-table--wide">
+                    <tr class="mc-table--center-aligment">
                         <td>Название</td>
                         <td>Цена</td>
                         <td>Текущая</td>
@@ -20,13 +23,13 @@
                         <tr>
                             <td>@goal.Name</td>
                             <td>@goal.Price</td>
-                            <td>
+                            <td class="mc-table--center-aligment">
                                 <label class="mc-checkbox">
                                     <input class="mc-checkbox__input" type="checkbox" checked="@goal.IsCurrent" disabled/>
                                     <span class="mc-checkbox__box"></span>
                                 </label>
                             </td>
-                            <td>
+                            <td class="mc-table--center-aligment">
                                 <label class="mc-checkbox">
                                     <input class="mc-checkbox__input" type="checkbox" checked="@goal.IsCompleted" disabled/>
                                     <span class="mc-checkbox__box"></span>
@@ -36,14 +39,15 @@
                             <td><a asp-action="RemoveGoal" asp-route-goalId="@goal.Id">Удалить</a></td>
                         </tr>
                     }
-                    <tr class="tr_header">
+                    <tr class="mc-table--center-aligment">
                         <td colspan="6"><a asp-action="GoalDetails">Добавить цель</a></td>
                     </tr>
                 </table>
             </div>
-            <div class="form_next_block">
-                <a href="/admin" class="white mc_form_font_standart">Назад</a>
-            </div>
+            
+            <p class="back-link">
+                <a asp-area="Admin" asp-controller="Home" asp-action="Index">Назад</a>
+            </p>
         </div>
     </div>
 </div>

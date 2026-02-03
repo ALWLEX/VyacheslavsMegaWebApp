@@ -1,6 +1,11 @@
 ﻿@model Goal
 
-<div class="block_big_first">
+<link rel="stylesheet" href="~/css/components/form.css" />
+<link rel="stylesheet" href="~/css/components/mc-checkbox.css" />
+<link rel="stylesheet" href="~/css/components/mc-file.css" />
+<link rel="stylesheet" href="~/css/components/mc-button.css" />
+
+<div class="block block--first">
     <div class="container">
         <div class="form-container">
             <form class="form" asp-area="Admin" asp-controller="GoalManagement" asp-action="GoalDetails" method="post" enctype="multipart/form-data">
@@ -113,7 +118,7 @@
                                 </button>
 
                                 <div class="mc-file__filename" id="fileName">
-                                    Файл не выбран
+                                    @(Model.HasLogo ? Model.LogoFullPath : "Файл не выбран")
                                 </div>
 
                             </div>
@@ -128,7 +133,9 @@
                         <span class="mc-button__title">Сохранить</span>
                     </button>
 
-                    <a asp-area="Admin" asp-controller="GoalManagement" asp-action="Index" class="back-navigation">Назад</a>
+                    <p>
+                        <a asp-area="Admin" asp-controller="GoalManagement" asp-action="Index">Назад</a>
+                    </p>
                 </div>
 
             </form>
@@ -136,8 +143,8 @@
     </div>
 </div>
 
-<!--<script src="~/js/form_image_previewer.js"></script>-->
-
+<script src="~/js/form-image-previewer.js"></script>
+<!--
 <script>
     function previewImage(event) {
         const input = event.target;
@@ -157,3 +164,4 @@
         reader.readAsDataURL(file);
     }
 </script>
+-->
