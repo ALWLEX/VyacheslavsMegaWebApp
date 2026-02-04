@@ -22,8 +22,8 @@
                         <p class="intro__info-text intro__info-text--error">@Model.MainPageData.ErrorMessage</p>
                     }
                     <p class="intro__info-text">IP: @Model.MainPageData.ServerAddress</p>
-                    <p class="intro__info-text">Версия: 1.21.11</p>
-                    <p class="intro__info-text">Игроков онлайн: 09/11</p>
+                    <p class="intro__info-text">Версия: @Model.MainPageData.ServerVersion</p>
+                    <p class="intro__info-text">Игроков онлайн: @Model.MCServerStat.Players.Online/@Model.MCServerStat.Players.Max</p>
                 </div>
 
                 <div class="intro__info-block">

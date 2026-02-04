@@ -32,7 +32,7 @@ namespace VyacheslavsMegaServer.ViewComponents
                 ServerMediaLinks = await _mediaLinksRepository.GetAllLinks(),
                 MaxPlayers = MCServerStat?.Players?.Max ?? 0,
                 OnlinePlayers = MCServerStat?.Players?.Online ?? 0,
-                IsServerOnline = MCServerStat?.Online
+                IsServerOnline = MCServerStat?.IsOnline
             };
         }
     }

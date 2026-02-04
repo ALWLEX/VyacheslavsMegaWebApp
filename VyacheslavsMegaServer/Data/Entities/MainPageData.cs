@@ -31,6 +31,9 @@ namespace VyacheslavsMegaServer.Data.Entities
         [Display(Name = "Адрес сервера")]
         public string ServerAddress { get; set; }
 
+        [Display(Name = "Версия сервера")]
+        public string ServerVersion { get; set; }
+
         [MaxLength(30)]
         [Display(Name = "Жёлтая надпись")]
         public string YellowHint { get; set; }

@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using VyacheslavsMegaServer.Data.JSON.Repositories;
 using VyacheslavsMegaServer.Data.Repositories;
 using VyacheslavsMegaServer.Models;
 
@@ -15,9 +16,20 @@ namespace VyacheslavsMegaServer.Controllers
         private readonly ServerMediaLinksRepository _mediaLinksRepository;
         private readonly FundRepository _fundRepository;
         private readonly GoalRepository _goalRepository;
+        private readonly MCServerStatRepository _MCServerStatRepository;
 
-        public HomeController(MainPageRepository mainPageRepository, PartnersInfoRepository partnersInfoRepository, ContactsInfoRepository contactsInfoRepository, DonationCardsRepository cardsRepository, ServerMediaLinksRepository mediaLinksRepository, FundRepository fundRepository, GoalRepository goalRepository)
+        public HomeController(
+            MainPageRepository mainPageRepository, 
+            PartnersInfoRepository partnersInfoRepository, 
+            ContactsInfoRepository contactsInfoRepository, 
+            DonationCardsRepository cardsRepository, 
+            ServerMediaLinksRepository mediaLinksRepository, 
+            FundRepository fundRepository, 
+            GoalRepository goalRepository,
+            MCServerStatRepository serverStatRepository
+            )
         {
+            _MCServerStatRepository = serverStatRepository;
             _mainPageRepository = mainPageRepository;
             _contactsInfoRepository = contactsInfoRepository;
             _partnersInfoRepository = partnersInfoRepository;
@@ -32,6 +44,7 @@ namespace VyacheslavsMegaServer.Controllers
             MainPageViewModel model = new MainPageViewModel()
             {
                 MainPageData = await _mainPageRepository.GetMainPageData(),
+                MCServerStat = await _MCServerStatRepository.GetMCServerStats(),
                 Creator = await _contactsInfoRepository.GetContactById(1),
                 PartnersData = await _partnersInfoRepository.GetAllPartnersRandomly(),
                 MediaLinks = await _mediaLinksRepository.GetAllLinks(),

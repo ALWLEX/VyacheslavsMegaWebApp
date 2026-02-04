@@ -153,16 +153,16 @@ namespace VyacheslavsMegaServer.Migrations
                         {
                             Id = "d4bc75a9-ca48-45aa-a3f2-2ea5886ce303",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "271bc70d-03c9-467a-acaa-cfb094664433",
+                            ConcurrencyStamp = "3ad85db5-54be-412d-aadb-b4bb06ec5050",
                             Email = "vya4slav4617@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "VYA4SLAV4617@GMAIL.COM",
                             NormalizedUserName = "EVRAY",
-                            PasswordHash = "AQAAAAIAAYagAAAAELDf/qOuQX2XwSq+i0yCz2/4H96EyU1x130n3FNMST2GxFwzvZNNTOdirVcAVXXkyg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEP3zMy9hmYa5rmQw9iQHo3bPw94zKnY57DFhcGeV0oAx/SJ/0rubWe6y6RiwxgPD/A==",
                             PhoneNumber = "+7 (705) 806 3101",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "022680bc-5a50-48a9-a45f-f520b6317944",
+                            SecurityStamp = "b07279fc-2968-4bfe-b04d-36278310bebc",
                             TwoFactorEnabled = false,
                             UserName = "Evray"
                         });
@@ -506,6 +506,10 @@ namespace VyacheslavsMegaServer.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<string>("ServerVersion")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
                     b.Property<bool>("ShowDownloadButton")
                         .HasColumnType("tinyint(1)");
 
@@ -539,6 +543,7 @@ namespace VyacheslavsMegaServer.Migrations
                             MetatagKeywords = "Minecraft, server, Вячеслав, мега, сервер",
                             PageTitle = "V-Server",
                             ServerAddress = "109.248.157.54:25565",
+                            ServerVersion = "1.21.11",
                             ShowDownloadButton = false,
                             ShowErrorMessage = false,
                             Title = "Открой для себя мир Minecraft с\r\nVyacheslav's mega server",

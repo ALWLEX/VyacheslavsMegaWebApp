@@ -23,7 +23,7 @@ namespace VyacheslavsMegaServer.Data.JSON.MCServerStat
         public string Version { get; set; }
 
         [JsonPropertyName("online")]
-        public bool Online { get; set; }
+        public bool IsOnline { get; set; }
 
         [JsonPropertyName("protocol")]
         public int Protocol { get; set; }
