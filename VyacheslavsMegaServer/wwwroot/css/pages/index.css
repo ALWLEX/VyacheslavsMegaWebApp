@@ -8,7 +8,7 @@
     min-height: 620px;
     max-height: 1000px;
 
-    background-image: url(../../img/backgrounds/intro1.jpg);
+    background-image: url(../../img/backgrounds/index/intro.webp);
     background-repeat: no-repeat;
 }
 
@@ -106,7 +106,7 @@
 }
 
 .block--about {
-    background-image: url(../../img/backgrounds/about.jpg);
+    background-image: url(../../img/backgrounds/index/about.webp);
     background-repeat: no-repeat;
 }
 
@@ -116,7 +116,7 @@
 
 */
 .block--contacts {
-    background-image: url(../../img/backgrounds/contacts.jpg);
+    background-image: url(../../img/backgrounds/index/contacts.webp);
     background-repeat: no-repeat;
 }
 
@@ -138,7 +138,7 @@
 
 */
 .block--partners {
-    background: linear-gradient(0deg, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.1) 100%), url(../../img/backgrounds/partners.jpg);
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.1) 100%), url(../../img/backgrounds/index/partners.webp);
     background-repeat: no-repeat;
 }
 

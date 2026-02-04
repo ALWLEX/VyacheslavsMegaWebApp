@@ -1,5 +1,5 @@
 .block--donation-intro {
-    background: url(../../img/backgrounds/donation_intro.jpg);
+    background: url(../../img/backgrounds/donation/intro.webp);
     background-repeat: no-repeat;
 }
 
@@ -8,7 +8,7 @@
 }
 
 .block--donation-fund {
-    background: url(../../img/backgrounds/donation_fund.jpg);
+    background: url(../../img/backgrounds/donation/fund.webp);
     background-repeat: no-repeat;
     background-size: cover;
 }
@@ -18,6 +18,6 @@
 }
 
 .block--donation-attention {
-    background: url(../../img/backgrounds/donation_attention.jpg);
+    background: url(../../img/backgrounds/donation/attention.webp);
     background-repeat: no-repeat;
 }
