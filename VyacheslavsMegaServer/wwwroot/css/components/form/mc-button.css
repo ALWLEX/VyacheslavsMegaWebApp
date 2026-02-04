@@ -1,5 +1,5 @@
 ﻿.mc-button {
-    background: #999 url('../../../img/bgbtn.png') center / cover;
+    background: #999 url('../../../img/form-elements/button/bgbtn.png') center / cover;
     image-rendering: pixelated;
     border: 2px solid #000000;
     cursor: pointer;
@@ -35,7 +35,7 @@
 }
 
 .mc-button:disabled {
-    background: #333 url('../../../img/bgbtn_dis.png') center / cover;
+    background: #333 url('../../../img/form-elements/button/bgbtn-dis.png') center / cover;
 }
 
 .mc-button:disabled span.mc-button__title {
