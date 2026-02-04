@@ -10,9 +10,13 @@
 
   <ItemGroup>
     <Compile Remove="wwwroot\js\ckeditor4\**" />
+    <Compile Remove="wwwroot\js\ckeditor\**" />
     <Content Remove="wwwroot\js\ckeditor4\**" />
+    <Content Remove="wwwroot\js\ckeditor\**" />
     <EmbeddedResource Remove="wwwroot\js\ckeditor4\**" />
+    <EmbeddedResource Remove="wwwroot\js\ckeditor\**" />
     <None Remove="wwwroot\js\ckeditor4\**" />
+    <None Remove="wwwroot\js\ckeditor\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -35,46 +39,6 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\uploaded-resources\img\partners\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="wwwroot\js\ckeditor\adapters\jquery.js" />
-    <None Include="wwwroot\js\ckeditor\build-config.js" />
-    <None Include="wwwroot\js\ckeditor\CHANGES.md" />
-    <None Include="wwwroot\js\ckeditor\ckeditor.js" />
-    <None Include="wwwroot\js\ckeditor\config.js" />
-    <None Include="wwwroot\js\ckeditor\lang\en.js" />
-    <None Include="wwwroot\js\ckeditor\lang\ru.js" />
-    <None Include="wwwroot\js\ckeditor\LICENSE.md" />
-    <None Include="wwwroot\js\ckeditor\plugins\clipboard\dialogs\paste.js" />
-    <None Include="wwwroot\js\ckeditor\plugins\dialog\dialogDefinition.js" />
-    <None Include="wwwroot\js\ckeditor\plugins\emoji\assets\iconsall.svg" />
-    <None Include="wwwroot\js\ckeditor\plugins\lineheight\LICENSE" />
-    <None Include="wwwroot\js\ckeditor\plugins\lineheight\README.md" />
-    <None Include="wwwroot\js\ckeditor\plugins\link\dialogs\anchor.js" />
-    <None Include="wwwroot\js\ckeditor\plugins\link\dialogs\link.js" />
-    <None Include="wwwroot\js\ckeditor\README.md" />
-    <None Include="wwwroot\js\ckeditor\samples\img\logo.svg" />
-    <None Include="wwwroot\js\ckeditor\samples\js\sample.js" />
-    <None Include="wwwroot\js\ckeditor\samples\js\sf.js" />
-    <None Include="wwwroot\js\ckeditor\samples\old\assets\posteddata.php" />
-    <None Include="wwwroot\js\ckeditor\samples\old\assets\uilanguages\languages.js" />
-    <None Include="wwwroot\js\ckeditor\samples\old\dialog\assets\my_dialog.js" />
-    <None Include="wwwroot\js\ckeditor\samples\old\sample.js" />
-    <None Include="wwwroot\js\ckeditor\samples\old\sample_posteddata.php" />
-    <None Include="wwwroot\js\ckeditor\samples\toolbarconfigurator\font\fontello.svg" />
-    <None Include="wwwroot\js\ckeditor\samples\toolbarconfigurator\js\abstracttoolbarmodifier.js" />
-    <None Include="wwwroot\js\ckeditor\samples\toolbarconfigurator\js\fulltoolbareditor.js" />
-    <None Include="wwwroot\js\ckeditor\samples\toolbarconfigurator\js\toolbarmodifier.js" />
-    <None Include="wwwroot\js\ckeditor\samples\toolbarconfigurator\js\toolbartextmodifier.js" />
-    <None Include="wwwroot\js\ckeditor\samples\toolbarconfigurator\lib\codemirror\codemirror.js" />
-    <None Include="wwwroot\js\ckeditor\samples\toolbarconfigurator\lib\codemirror\javascript.js" />
-    <None Include="wwwroot\js\ckeditor\samples\toolbarconfigurator\lib\codemirror\LICENSE" />
-    <None Include="wwwroot\js\ckeditor\samples\toolbarconfigurator\lib\codemirror\show-hint.js" />
-    <None Include="wwwroot\js\ckeditor\SECURITY.md" />
-    <None Include="wwwroot\js\ckeditor\skins\moono-lisa\readme.md" />
-    <None Include="wwwroot\js\ckeditor\styles.js" />
-    <None Include="wwwroot\js\ckeditor\vendor\promise.js" />
   </ItemGroup>
 
 </Project>
