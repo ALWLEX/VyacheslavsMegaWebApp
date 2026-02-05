@@ -26,28 +26,31 @@
                     <p class="intro__info-text">Игроков онлайн: @Model.MCServerStat.Players.Online/@Model.MCServerStat.Players.Max</p>
                 </div>
 
-                <div class="intro__info-block">
-                    <h3 class="intro__info-title">Полезные ресурсы</h3>
-                    @if (Model.MainPageData.ShowDownloadButton)
-                    {
-                        @if (Model.MainPageData.DownloadLocalResource)
+                @if (Model.DownloadButtons.Any())
+                {
+                    <div class="intro__info-block">
+                        <h3 class="intro__info-title">Полезные ресурсы</h3>
+                        @foreach (DownloadButton button in Model.DownloadButtons)
                         {
-                            <a href="~/@Model.MainPageData.DownloadButtonUrl">
-                                <button class="mc-button mc-button--wide" type="button">
-                                    <span class="mc-button__title">@Model.MainPageData.DownloadButtonTitle</span>
-                                </button>
-                            </a>
+                            @if (button.IsResourceLocal)
+                            {
+                                <a href="~/@button.Url">
+                                    <button class="mc-button mc-button--wide" type="button">
+                                        <span class="mc-button__title">@button.Title</span>
+                                    </button>
+                                </a>
+                            }
+                            else
+                            {
+                                <a href="@button.Url">
+                                    <button class="mc-button mc-button--wide" type="button">
+                                        <span class="mc-button__title">@button.Title</span>
+                                    </button>
+                                </a>
+                            }
                         }
-                        else
-                        {
-                            <a href="@Model.MainPageData.DownloadButtonUrl">
-                                <button class="mc-button mc-button--wide" type="button">
-                                    <span class="mc-button__title">@Model.MainPageData.DownloadButtonTitle</span>
-                                </button>
-                            </a>
-                        }
-                    }
-                </div>
+                    </div>
+                }
             </div>
         </div>
 

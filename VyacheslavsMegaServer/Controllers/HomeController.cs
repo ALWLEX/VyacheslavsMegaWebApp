@@ -17,6 +17,7 @@ namespace VyacheslavsMegaServer.Controllers
         private readonly FundRepository _fundRepository;
         private readonly GoalRepository _goalRepository;
         private readonly MCServerStatRepository _MCServerStatRepository;
+        private readonly DownloadButtonsRepository _downloadButtonsRepository;
 
         public HomeController(
             MainPageRepository mainPageRepository, 
@@ -26,7 +27,8 @@ namespace VyacheslavsMegaServer.Controllers
             ServerMediaLinksRepository mediaLinksRepository, 
             FundRepository fundRepository, 
             GoalRepository goalRepository,
-            MCServerStatRepository serverStatRepository
+            MCServerStatRepository serverStatRepository,
+            DownloadButtonsRepository buttonsRepository
             )
         {
             _MCServerStatRepository = serverStatRepository;
@@ -37,6 +39,7 @@ namespace VyacheslavsMegaServer.Controllers
             _mediaLinksRepository = mediaLinksRepository;
             _fundRepository = fundRepository;
             _goalRepository = goalRepository;
+            _downloadButtonsRepository = buttonsRepository;
         }
 
         public async Task<IActionResult> Index()
@@ -44,6 +47,7 @@ namespace VyacheslavsMegaServer.Controllers
             MainPageViewModel model = new MainPageViewModel()
             {
                 MainPageData = await _mainPageRepository.GetMainPageData(),
+                DownloadButtons = await _downloadButtonsRepository.GetButtonsToShow(),
                 MCServerStat = await _MCServerStatRepository.GetMCServerStats(),
                 Creator = await _contactsInfoRepository.GetContactById(1),
                 PartnersData = await _partnersInfoRepository.GetAllPartnersRandomly(),

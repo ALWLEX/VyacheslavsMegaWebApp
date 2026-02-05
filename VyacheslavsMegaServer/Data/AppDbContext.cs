@@ -27,6 +27,7 @@ namespace VyacheslavsMegaServer.Data
         public DbSet<FundTransaction> FundTransactions { get; set; }
         public DbSet<FundSnapshot> FundSnapshots { get; set; }
         public DbSet<Goal> Goals { get; set; }
+        public DbSet<DownloadButton> DownloadButtons { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -112,8 +113,6 @@ namespace VyacheslavsMegaServer.Data
                 YellowHint = "Теперь с модами",
                 ServerAddress = "109.248.157.54:25565",
                 ServerVersion = "1.21.11",
-                DownloadButtonTitle = "Скачать",
-                DownloadButtonUrl = "",
                 Description = "На сервере установлена сборка интересных модов. Этот модпак превращает Minecraft в сложное и увлекательное приключение с множеством новых возможностей.\r\nПогружайтесь в новые приключения с:\r\n\r\nУлучшенным ИИ мобов и механикой боя\r\nОбширными новыми биомами для исследования\r\nРазнообразными и опасными новыми мобами\r\nПродвинутой магией и зачарованиями\r\nИ многим другим",
                 MetatagDescription = "Мега сервер Вячеслава",
                 MetatagKeywords = "Minecraft, server, Вячеслав, мега, сервер",

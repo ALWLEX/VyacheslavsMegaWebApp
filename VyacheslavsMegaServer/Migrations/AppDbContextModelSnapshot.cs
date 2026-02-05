@@ -153,16 +153,16 @@ namespace VyacheslavsMegaServer.Migrations
                         {
                             Id = "d4bc75a9-ca48-45aa-a3f2-2ea5886ce303",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "3ad85db5-54be-412d-aadb-b4bb06ec5050",
+                            ConcurrencyStamp = "270defe0-6b04-4433-bef0-b3e7654b22b7",
                             Email = "vya4slav4617@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "VYA4SLAV4617@GMAIL.COM",
                             NormalizedUserName = "EVRAY",
-                            PasswordHash = "AQAAAAIAAYagAAAAEP3zMy9hmYa5rmQw9iQHo3bPw94zKnY57DFhcGeV0oAx/SJ/0rubWe6y6RiwxgPD/A==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEIjF3mA9fh8VQFRVNsoVeGNx+NGxEECZQRZcUoSJhO6di7B7gw6CEAFfdOux2q9Etg==",
                             PhoneNumber = "+7 (705) 806 3101",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "b07279fc-2968-4bfe-b04d-36278310bebc",
+                            SecurityStamp = "6ab088d3-1fac-4cf5-bca1-7d360c0286df",
                             TwoFactorEnabled = false,
                             UserName = "Evray"
                         });
@@ -381,6 +381,32 @@ namespace VyacheslavsMegaServer.Migrations
                     b.ToTable("DonationCards");
                 });
 
+            modelBuilder.Entity("VyacheslavsMegaServer.Data.Entities.DownloadButton", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnOrder(0);
+
+                    b.Property<bool>("IsResourceLocal")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("Show")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("DownloadButtons");
+                });
+
             modelBuilder.Entity("VyacheslavsMegaServer.Data.Entities.FundSnapshot", b =>
                 {
                     b.Property<int>("Id")
@@ -474,17 +500,6 @@ namespace VyacheslavsMegaServer.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("varchar(1000)");
 
-                    b.Property<string>("DownloadButtonTitle")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("DownloadButtonUrl")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<bool>("DownloadLocalResource")
-                        .HasColumnType("tinyint(1)");
-
                     b.Property<string>("ErrorMessage")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -510,9 +525,6 @@ namespace VyacheslavsMegaServer.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<bool>("ShowDownloadButton")
-                        .HasColumnType("tinyint(1)");
-
                     b.Property<bool>("ShowErrorMessage")
                         .HasColumnType("tinyint(1)");
 
@@ -535,16 +547,12 @@ namespace VyacheslavsMegaServer.Migrations
                         {
                             Id = 1,
                             Description = "На сервере установлена сборка интересных модов. Этот модпак превращает Minecraft в сложное и увлекательное приключение с множеством новых возможностей.\r\nПогружайтесь в новые приключения с:\r\n\r\nУлучшенным ИИ мобов и механикой боя\r\nОбширными новыми биомами для исследования\r\nРазнообразными и опасными новыми мобами\r\nПродвинутой магией и зачарованиями\r\nИ многим другим",
-                            DownloadButtonTitle = "Скачать",
-                            DownloadButtonUrl = "",
-                            DownloadLocalResource = false,
                             ErrorMessage = "",
                             MetatagDescription = "Мега сервер Вячеслава",
                             MetatagKeywords = "Minecraft, server, Вячеслав, мега, сервер",
                             PageTitle = "V-Server",
                             ServerAddress = "109.248.157.54:25565",
                             ServerVersion = "1.21.11",
-                            ShowDownloadButton = false,
                             ShowErrorMessage = false,
                             Title = "Открой для себя мир Minecraft с\r\nVyacheslav's mega server",
                             YellowHint = "Теперь с модами"

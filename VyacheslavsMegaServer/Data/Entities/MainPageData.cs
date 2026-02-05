@@ -16,18 +16,6 @@ namespace VyacheslavsMegaServer.Data.Entities
         [Display(Name = "Показать текст ошибки")]
         public bool ShowErrorMessage { get; set; }
 
-        [Display(Name = "Надпись кнопки")]
-        public string DownloadButtonTitle { get; set; }
-
-        [Display(Name = "URL кнопки")]
-        public string DownloadButtonUrl { get; set; }
-
-        [Display(Name = "Локальный ресурс (~/)?")]
-        public bool DownloadLocalResource { get; set; }
-
-        [Display(Name = "Показать кнопку скачивания")]
-        public bool ShowDownloadButton { get; set; }
-
         [Display(Name = "Адрес сервера")]
         public string ServerAddress { get; set; }
 

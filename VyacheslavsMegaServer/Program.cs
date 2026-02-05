@@ -59,6 +59,7 @@ internal class Program
         builder.Services.AddTransient<IdentityRepository>();
         builder.Services.AddTransient<FundRepository>();
         builder.Services.AddTransient<GoalRepository>();
+        builder.Services.AddTransient<DownloadButtonsRepository>();
 
         var app = builder.Build();
 

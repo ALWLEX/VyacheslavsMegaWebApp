@@ -1,0 +1,33 @@
+﻿@model DownloadButtonsViewModel
+
+<div class="block block--first">
+    <div class="container">
+        <div class="section">
+            <h2 class="section__title section__title--main">Кнопки загрузки</h2>
+
+            <div class="mc-table-container">
+                <table class="mc-table mc-table--wide">
+                    <tr class="mc-table--center-aligment">
+                        <td>Текст кнопки</td>
+                        <td colspan="2">Действия</td>
+                    </tr>
+                    @foreach (DownloadButton button in Model.DownloadButtons)
+                    {
+                        <tr>
+                            <td>@button.Title</td>
+                            <td><a asp-action="ButtonDetails" asp-route-buttonId="@button.Id">Редактировать</a></td>
+                            <td><a asp-action="RemoveButton" asp-route-buttonId="@button.Id">Удалить</a></td>
+                        </tr>
+                    }
+                    <tr class="mc-table--center-aligment">
+                        <td colspan="6"><a asp-action="ButtonDetails">Добавить кнопку</a></td>
+                    </tr>
+                </table>
+            </div>
+
+            <p class="back-link">
+                <a asp-area="Admin" asp-controller="Home" asp-action="Index">Назад</a>
+            </p>
+        </div>
+    </div>
+</div>

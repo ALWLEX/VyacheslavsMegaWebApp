@@ -12,6 +12,8 @@ namespace VyacheslavsMegaServer.Models
 
         public MCServerStat MCServerStat { get; set; }
 
+        public List<DownloadButton> DownloadButtons { get; set; }
+
         public List<ServerMediaLink> MediaLinks { get; set; }
         
         public List<Partner> PartnersData { get; set; }
