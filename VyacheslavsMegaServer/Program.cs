@@ -18,6 +18,7 @@ internal class Program
 
         configurationBuilder.AddJsonFile("appsettings.json")
             .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
+            .AddEnvironmentVariables()
             .Build()
             .Bind("Project", new ProjectConfig());
         _configuration = configurationBuilder.Build();
