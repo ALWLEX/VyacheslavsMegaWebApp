@@ -394,7 +394,7 @@ namespace VyacheslavsMegaServer.Migrations
                     b.Property<bool>("IsResourceLocal")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<bool>("Show")
+                    b.Property<bool>("ShowButton")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("Title")

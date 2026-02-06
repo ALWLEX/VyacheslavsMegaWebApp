@@ -11,7 +11,7 @@ using VyacheslavsMegaServer.Data;
 namespace VyacheslavsMegaServer.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260204204645_add-server-version")]
+    [Migration("20260204204645_AddServerVersion")]
     partial class AddServerVersion
     {
         /// <inheritdoc />
