@@ -25,14 +25,10 @@ namespace VyacheslavsMegaServer.ViewComponents
 
         public async Task<FooterViewModel> InitializeModel()
         {
-            MCServerStat MCServerStat = await _MCServerStatRepository.GetMCServerStats();
-
             return new FooterViewModel()
             {
                 ServerMediaLinks = await _mediaLinksRepository.GetAllLinks(),
-                MaxPlayers = MCServerStat?.Players?.Max ?? 0,
-                OnlinePlayers = MCServerStat?.Players?.Online ?? 0,
-                IsServerOnline = MCServerStat?.IsOnline
+                MCServerStat = await _MCServerStatRepository.GetMCServerStats()
             };
         }
     }

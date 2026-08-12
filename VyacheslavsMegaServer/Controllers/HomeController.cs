@@ -67,9 +67,25 @@ namespace VyacheslavsMegaServer.Controllers
                 Goal = await _goalRepository.GetCurrentGoal(),
                 FundAmount = await _fundRepository.GetFundState(),
                 LastTransactions = await _fundRepository.GetLastTransaction(3)
-
             };
             return View(model);
+        }
+
+        public async Task<IActionResult> TransactionsHistory()
+        {
+            TransactionsHistoryViewModel model = new TransactionsHistoryViewModel()
+            {
+                TransactionsList = await _fundRepository.GetLastTransaction(10),
+                MaxIncome = _fundRepository.GetMax(FundRepository.TransactionPurpose.Income),
+                MaxOutcome = _fundRepository.GetMax(FundRepository.TransactionPurpose.Outcome),
+                TotalCount = _fundRepository.GetTotalTransactionsCount()
+            };
+            return View(model);
+        }
+
+        public async Task<IActionResult> GetTransactions(int lastId)
+        {
+            return Json(await _fundRepository.GetTransactionsAfterId(lastId, 10));
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

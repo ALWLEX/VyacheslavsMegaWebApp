@@ -1,0 +1,114 @@
+﻿@model TransactionsHistoryViewModel
+
+<div class="block block--first">
+    <div class="container">
+        <div class="section">
+            <h1 class="section__title section__title--main">История транзакций</h1>
+            
+            <p>Всего транзакций: @Model.TotalCount</p>
+            @if (Model.MaxIncome != null) 
+            {
+                <p>
+                    Максимальный доход: @Model.MaxIncome.Amount - @Model.MaxIncome.Reason
+                </p>
+            }
+            @if (Model.MaxOutcome != null)
+            {
+                <p>
+                    Максимальный расход: @Model.MaxOutcome.Amount - @Model.MaxOutcome.Reason
+                </p>
+            }
+
+            <div class="mc-table-container">
+                <table class="mc-table mc-table--wide">
+                    <tr class="mc-table--center-aligment">
+                        <td>ID</td>
+                        <td>Сумма</td>
+                        <td>От кого/куда</td>
+                        <td>Доп. информация</td>
+                    </tr>
+
+                    <tbody id="transactionsBody">
+
+
+                    @if (Model.TransactionsList.Count == 0)
+                    {
+                        <tr class="mc-table--center-aligment">
+                            <td colspan="3">Транзакций пока не было</td>
+                        </tr>
+                    }
+                    else
+                    {
+                        foreach (FundTransaction transaction in Model.TransactionsList)
+                        {
+                            <tr>
+                                <td>@transaction.Id</td>
+                                <td>@transaction.Amount</td>
+                                <td>@transaction.Reason</td>
+                                <td>@transaction.Note</td>
+                            </tr>
+                        }
+                        
+                    }
+
+                    </tbody>
+
+                    <tr class="mc-table--center-aligment" id="loadMoreRow">
+                        <td colspan="4">
+                            <a href="#" id="loadMoreBtn">Ещё</a>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+    let lastId = @(
+        Model.TransactionsList.Count > 0
+        ? Model.TransactionsList.Last().Id
+        : 0
+        );
+
+    async function loadMoreTransactions(e) {
+
+        e.preventDefault();
+
+        const response = await fetch(`/Home/GetTransactions?lastId=${lastId}`);
+
+        const data = await response.json();
+
+        if (data.length === 0) {
+
+            document.getElementById("loadMoreRow").remove();
+
+            return;
+        }
+
+        const tbody = document.getElementById("transactionsBody");
+
+        data.forEach(t => {
+
+            const row = document.createElement("tr");
+
+            row.innerHTML = `
+                <td>${t.id}</td>
+                <td>${t.amount}</td>
+                <td>${t.reason}</td>
+                <td>${t.note ?? ''}</td>
+            `;
+
+            tbody.appendChild(row);
+        });
+
+        lastId = data[data.length - 1].id;
+    }
+
+    document
+        .getElementById("loadMoreBtn")
+        .addEventListener("click", loadMoreTransactions);
+
+</script>

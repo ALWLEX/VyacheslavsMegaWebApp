@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.Transactions;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using VyacheslavsMegaServer.Data.Entities;
 
 namespace VyacheslavsMegaServer.Data.Repositories
@@ -7,6 +7,8 @@ namespace VyacheslavsMegaServer.Data.Repositories
     public class FundRepository : Base.RepositoryBase
     {
         public enum TransactionState { Added, Removed }
+        
+        public enum TransactionPurpose { Income, Outcome }
 
         public async Task<decimal> GetFundState()
         {
@@ -21,6 +23,33 @@ namespace VyacheslavsMegaServer.Data.Repositories
         public async Task<List<FundTransaction>> GetLastTransaction(int count)
         {
             return await DB.FundTransactions.OrderByDescending(t => t.Date).Take(count).ToListAsync();
+        }
+
+        public async Task<List<FundTransaction>> GetTransactionsAfterId(int lastId, int count)
+        {
+            return await DB.FundTransactions
+                .OrderByDescending(x => x.Id)
+                .AsQueryable()
+                .Where(x => x.Id < lastId)
+                .Take(count)
+                .ToListAsync();
+        }
+
+        public FundTransaction? GetMax(TransactionPurpose transactionPurpose)
+        {
+            return transactionPurpose == TransactionPurpose.Income
+                ? DB.FundTransactions
+                    .OrderByDescending(t => t.Amount)
+                    .FirstOrDefault()
+
+                : DB.FundTransactions
+                    .OrderBy(t => t.Amount)
+                    .FirstOrDefault();
+        }
+
+        public int GetTotalTransactionsCount()
+        {
+            return DB.FundTransactions.Count();
         }
 
         public async Task<List<FundTransaction>> GetTransactionsByDate(DateTime dateStart, DateTime dateEnd)
