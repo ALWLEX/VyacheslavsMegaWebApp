@@ -23,7 +23,10 @@
                     }
                     <p class="intro__info-text">IP: @Model.MainPageData.ServerAddress</p>
                     <p class="intro__info-text">Версия: @Model.MainPageData.ServerVersion</p>
-                    <p class="intro__info-text">Игроков онлайн: @Model.MCServerStat.Players.Online/@Model.MCServerStat.Players.Max</p>
+                    @if(Model.MCServerStat.Available)
+                    {
+                        <p class="intro__info-text">Игроков онлайн: @Model.MCServerStat.Players.Online/@Model.MCServerStat.Players.Max</p>
+                    }
                 </div>
 
                 @if (Model.DownloadButtons.Any())

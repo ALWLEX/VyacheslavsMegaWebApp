@@ -9,7 +9,6 @@ namespace VyacheslavsMegaServer.Data.JSON.Repositories
         public async Task<MCServerStat.MCServerStat> GetMCServerStats()
         {
             string MCServerStatApiUrl = $"https://api.mcsrvstat.us/2/{MCServerData.IP}:{MCServerData.Port}";
-            MCServerStat.MCServerStat? MCServerStat;
             using (HttpClient apiHttpClient = new HttpClient())
             {
                 //User-Agent is required by API
@@ -21,22 +20,18 @@ namespace VyacheslavsMegaServer.Data.JSON.Repositories
                 {
                     response = await apiHttpClient.GetAsync(MCServerStatApiUrl);
                     response.EnsureSuccessStatusCode();
+
+                    // Deserialize JSON to object
+                    return JsonSerializer.Deserialize<MCServerStat.MCServerStat>(await response.Content.ReadAsStringAsync(), new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true // Ignore case of properties' names
+                    }) ?? new MCServerStat.MCServerStat(false);
                 }
                 catch (Exception ex)
                 {
-                    return null;
+                    return new MCServerStat.MCServerStat(false);
                 }
-
-                string jsonResponse = await response.Content.ReadAsStringAsync();
-
-                // Десериализуем JSON в объект C#
-                MCServerStat = JsonSerializer.Deserialize<MCServerStat.MCServerStat>(jsonResponse, new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true // Игнорируем регистр имён свойств
-                });
             }
-
-            return MCServerStat;
         }
     }
 }

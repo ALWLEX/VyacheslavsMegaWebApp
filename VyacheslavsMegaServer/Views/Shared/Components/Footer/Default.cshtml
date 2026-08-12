@@ -12,19 +12,19 @@
             </div>
             <div class="footer__server--status">
                 <h3 class="footer__header">Состояние сервера</h3>
-                @if (!Model.IsServerOnline.HasValue)
+                @if (!Model.MCServerStat.Available)
                 {
                     <p>Состояние сервера сейчас неизвестно</p>
                 }
                 else
                 {
-                    @if (Model.IsServerOnline.Value)
+                    @if (Model.MCServerStat.IsOnline)
                     {
                         <p>
                             Сервер онлайн!
                             <img class="footer__server-status-icon" src="~/img/serverStatusIcons/OnlineIcon.png">
                         </p>
-                        <p>Игроков на сервере: @Model.OnlinePlayers/@Model.MaxPlayers</p>
+                        <p>Игроков на сервере: @Model.MCServerStat.Players.Online/@Model.MCServerStat.Players.Max</p>
                     }
                     else
                     {

@@ -4,6 +4,18 @@ namespace VyacheslavsMegaServer.Data.JSON.MCServerStat
 {
     public class MCServerStat
     {
+        public MCServerStat() 
+        {
+            Available = true;
+        }
+
+        public MCServerStat(bool statsAvailable)
+        {
+            Available = statsAvailable;
+        }
+
+        public bool Available { get; private set; }
+
         [JsonPropertyName("ip")]
         public string Ip { get; set; }
 
