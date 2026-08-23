@@ -76,8 +76,8 @@ namespace VyacheslavsMegaServer.Controllers
             TransactionsHistoryViewModel model = new TransactionsHistoryViewModel()
             {
                 TransactionsList = await _fundRepository.GetLastTransaction(10),
-                MaxIncome = _fundRepository.GetMax(FundRepository.TransactionPurpose.Income),
-                MaxOutcome = _fundRepository.GetMax(FundRepository.TransactionPurpose.Outcome),
+                MaxIncome = _fundRepository.GetMaxByType(Data.Entities.TransactionPurpose.TransactionType.Income),
+                MaxExpence = _fundRepository.GetMaxByType(Data.Entities.TransactionPurpose.TransactionType.Expense),
                 TotalCount = _fundRepository.GetTotalTransactionsCount()
             };
             return View(model);
@@ -85,7 +85,7 @@ namespace VyacheslavsMegaServer.Controllers
 
         public async Task<IActionResult> GetTransactions(int lastId)
         {
-            return Json(await _fundRepository.GetTransactionsAfterId(lastId, 10));
+            return Json(await _fundRepository.GetTransactionsAfterId(lastId, 50));
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

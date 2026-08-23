@@ -19,15 +19,18 @@ namespace VyacheslavsMegaServer.Data.Entities
 
         [Display(Name = "Показать в списке контактов")]
         public bool ShowContact { get; set; }
+
         #region Navigations
+
         [Display(Name = "Пользователь")]
         public string UserId { get; set; }
 
         [ValidateNever]
-        public virtual IdentityUser User { get; set; } = null!;
+        public virtual IdentityUser User { get; set; }
 
         [ValidateNever]
-        public virtual ICollection<ContactLink> Links { get; set; } = null!;
+        public virtual ICollection<ContactLink> Links { get; set; } = new List<ContactLink>();
+
         #endregion
     }
 }

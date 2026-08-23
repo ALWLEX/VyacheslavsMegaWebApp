@@ -1,24 +1,15 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System.ComponentModel;
 
 namespace VyacheslavsMegaServer.Data.Entities
-{
-    public enum TransactionType
-    {
-        Income,
-        Expense
-    }
-    
+{   
     public class FundTransaction : Base.EntityBase
     {
         [Display(Name = "Дата")]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-ddTHH:mm}", ApplyFormatInEditMode = true)]
         public DateTime Date { get; set; } = DateTime.Now;
-
-        [MaxLength(255)]
-        [Display(Name = "Причина транзакции")]
-        public string Reason { get; set; }
 
         [Column(TypeName = "decimal(10,2)")]
         [Display(Name = "Сумма")]
@@ -26,5 +17,15 @@ namespace VyacheslavsMegaServer.Data.Entities
 
         [Display(Name = "Доп. информация")]
         public string? Note { get; set; }
+
+        #region Navigations
+
+        [Display(Name = "Причина транзакции")]
+        public int TransactionPurposeId { get; set; } = 1;
+
+        [ValidateNever]
+        public virtual TransactionPurpose Purpose { get; set; }
+
+        #endregion
     }
 }

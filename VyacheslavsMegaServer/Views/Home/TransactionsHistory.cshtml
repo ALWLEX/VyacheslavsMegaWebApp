@@ -9,13 +9,15 @@
             @if (Model.MaxIncome != null) 
             {
                 <p>
-                    Максимальный доход: @Model.MaxIncome.Amount - @Model.MaxIncome.Reason
+                    Максимальный доход: @Model.MaxIncome.Amount - @Model.MaxIncome.Note<br />
+                    Категория дохода - @Model.MaxIncome.Purpose.Name
                 </p>
             }
-            @if (Model.MaxOutcome != null)
+            @if (Model.MaxExpence != null)
             {
                 <p>
-                    Максимальный расход: @Model.MaxOutcome.Amount - @Model.MaxOutcome.Reason
+                    Максимальный расход: @Model.MaxExpence.Amount - @Model.MaxExpence.Note<br />
+                    Категория расхода - @Model.MaxExpence.Purpose.Name
                 </p>
             }
 
@@ -24,7 +26,7 @@
                     <tr class="mc-table--center-aligment">
                         <td>ID</td>
                         <td>Сумма</td>
-                        <td>От кого/куда</td>
+                        <td>Назначение</td>
                         <td>Доп. информация</td>
                     </tr>
 
@@ -44,11 +46,10 @@
                             <tr>
                                 <td>@transaction.Id</td>
                                 <td>@transaction.Amount</td>
-                                <td>@transaction.Reason</td>
+                                <td>@transaction.Purpose.Name</td>
                                 <td>@transaction.Note</td>
                             </tr>
-                        }
-                        
+                        }  
                     }
 
                     </tbody>
@@ -97,7 +98,7 @@
             row.innerHTML = `
                 <td>${t.id}</td>
                 <td>${t.amount}</td>
-                <td>${t.reason}</td>
+                <td>${t.purpose.name}</td>
                 <td>${t.note ?? ''}</td>
             `;
 

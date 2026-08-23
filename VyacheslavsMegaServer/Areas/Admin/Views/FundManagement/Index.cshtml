@@ -86,7 +86,7 @@
                     <tr>
                         <td>@transaction.Amount</td>
                         <td>@transaction.Date</td>
-                        <td>@transaction.Reason</td>
+                        <td>@transaction.Purpose.Name</td>
                         <td><a asp-action="TransactionDetails" asp-route-transactionId="@transaction.Id">Редактировать</a></td>
                         <td><a asp-action="RemoveTransaction" asp-route-transactionId="@transaction.Id" onclick="confirmRemove(event)">Удалить</a></td>
                     </tr>

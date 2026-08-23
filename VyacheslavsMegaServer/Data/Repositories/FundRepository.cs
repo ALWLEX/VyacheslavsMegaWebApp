@@ -1,14 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using VyacheslavsMegaServer.Data.Entities;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using static VyacheslavsMegaServer.Data.Repositories.FundRepository;
 
 namespace VyacheslavsMegaServer.Data.Repositories
 {
     public class FundRepository : Base.RepositoryBase
     {
         public enum TransactionState { Added, Removed }
-        
-        public enum TransactionPurpose { Income, Outcome }
 
         public async Task<decimal> GetFundState()
         {
@@ -35,9 +36,9 @@ namespace VyacheslavsMegaServer.Data.Repositories
                 .ToListAsync();
         }
 
-        public FundTransaction? GetMax(TransactionPurpose transactionPurpose)
+        public FundTransaction? GetMaxByType(TransactionPurpose.TransactionType type)
         {
-            return transactionPurpose == TransactionPurpose.Income
+            return type == TransactionPurpose.TransactionType.Income
                 ? DB.FundTransactions
                     .OrderByDescending(t => t.Amount)
                     .FirstOrDefault()
@@ -45,6 +46,13 @@ namespace VyacheslavsMegaServer.Data.Repositories
                 : DB.FundTransactions
                     .OrderBy(t => t.Amount)
                     .FirstOrDefault();
+        }
+
+        public FundTransaction? GetMaxByPurpose(TransactionPurpose purpose)
+        {
+            return purpose.Type == TransactionPurpose.TransactionType.Income
+                ? purpose.Transactions.MaxBy(t => t.Amount)
+                : purpose.Transactions.MinBy(t => t.Amount);
         }
 
         public int GetTotalTransactionsCount()
@@ -73,6 +81,7 @@ namespace VyacheslavsMegaServer.Data.Repositories
             {
                 try
                 {
+                    await setTranactionAmountSign(transaction);
                     if (transaction.Id == 0)
                     {
                         DB.Entry(transaction).State = EntityState.Added;
@@ -81,18 +90,12 @@ namespace VyacheslavsMegaServer.Data.Repositories
                     else
                     {
                         FundTransaction oldTransaction = await GetTransactionById(transaction.Id);
-                        if (transaction.Amount == oldTransaction.Amount && transaction.Date == oldTransaction.Date) 
-                        {
-                            DB.Entry(oldTransaction).State = EntityState.Detached;
-                            DB.Entry(transaction).State = EntityState.Modified;
-                        }
-                        else
-                        {
-                            await RemoveTransactionById(transaction.Id);
-                            await recalcSnapshotsByTransaction(oldTransaction, TransactionState.Removed);
-                            DB.FundTransactions.Add(transaction);
-                            await recalcSnapshotsByTransaction(transaction, TransactionState.Added);
-                        }
+                        DB.Entry(oldTransaction).State = EntityState.Detached;
+                        DB.Entry(transaction).State = EntityState.Modified;
+
+                        //Recalculate snapshots if tranaction has different date or amount
+                        if (transaction.Amount != oldTransaction.Amount || transaction.Date != oldTransaction.Date)
+                            await recalcSnapshotsByTransaction(oldTransaction, transaction);
                     }
                         
                     await DB.SaveChangesAsync();
@@ -102,7 +105,6 @@ namespace VyacheslavsMegaServer.Data.Repositories
                 {
                     DBTransaction.Rollback();
                 }
-                return;
             }
         }
 
@@ -125,9 +127,89 @@ namespace VyacheslavsMegaServer.Data.Repositories
             }
         }
 
+        //Transaction reasons
+
+        public async Task<List<TransactionPurpose>> GetAllTransactionPurposes()
+        {
+            return await DB.TransactionPurposes.ToListAsync();
+        }
+
+        public async Task<TransactionPurpose> GetTransactionPurposeById(int id)
+        {
+            return await DB.TransactionPurposes.FirstAsync(r => r.Id == id);
+        }
+
+        public async Task<List<SelectListItem>> GetPurposesSelectList()
+        {
+            return await DB.TransactionPurposes.Select(p => new SelectListItem(p.Name, p.Id.ToString())).ToListAsync();
+        }
+
+        public async Task SaveTransactionPurpose(TransactionPurpose purpose)
+        {
+            using (var DBTransaction = await DB.Database.BeginTransactionAsync())
+            {
+                try
+                {
+                    if (purpose.Id == 0)
+                    {
+                        DB.Entry(purpose).State = EntityState.Added;
+                    }
+                    else
+                    {
+                        TransactionPurpose oldPurpose = await GetTransactionPurposeById(purpose.Id);
+                        if (oldPurpose.Type == purpose.Type)
+                        {
+                            DB.Entry(oldPurpose).State = EntityState.Detached;
+                            DB.Entry(purpose).State = EntityState.Modified;
+                        }
+                        else
+                        {
+                            foreach(FundTransaction transaction in oldPurpose.Transactions)
+                            {
+                                transaction.Amount = -transaction.Amount;
+                                await SaveTransaction(transaction);
+                            }
+                        }
+                    }
+
+                    await DB.SaveChangesAsync();
+                    await DBTransaction.CommitAsync();
+                }
+                catch (Exception ex)
+                {
+                    DBTransaction.Rollback();
+                }
+            }
+        }
+
+        public async Task<bool> RemoveTransactionPurposeById(int id)
+        {
+            TransactionPurpose purpose = await GetTransactionPurposeById(id);
+            try
+            {
+                DB.TransactionPurposes.Remove(purpose);
+                await DB.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+        public async Task<bool> IsPurposeEmpty(int purposeId)
+        {
+            return !await DB.FundTransactions.AnyAsync(t => t.TransactionPurposeId == purposeId);
+        }
+
         private IQueryable<FundSnapshot> getFundSnapshotsAfterDate(DateTime date)
         {
-            return DB.FundSnapshots.Where(s => s.SnapshotDate >= date);
+            return DB.FundSnapshots.Where(s => s.SnapshotDate > date);
+        }
+
+        private IQueryable<FundSnapshot> getFundSnapshotsBetweenDates(DateTime dateStart, DateTime dateEnd)
+        {
+            return DB.FundSnapshots.Where(s => s.SnapshotDate >= dateStart && s.SnapshotDate <= dateEnd);
         }
 
         private async Task recalcSnapshotsByTransaction(FundTransaction transaction, TransactionState transactionState)
@@ -138,6 +220,62 @@ namespace VyacheslavsMegaServer.Data.Repositories
             }
             await DB.SaveChangesAsync();
             return;
+        }
+
+        private async Task recalcSnapshotsByTransaction(FundTransaction oldTransaction, FundTransaction newTransaction)
+        {
+            decimal diffAmount = newTransaction.Amount - oldTransaction.Amount;
+
+            //If new is earlier
+            if (newTransaction.Date < oldTransaction.Date)
+            {
+                foreach (FundSnapshot snapshot in getFundSnapshotsBetweenDates(newTransaction.Date, oldTransaction.Date))
+                {
+                    snapshot.Balance += newTransaction.Amount;
+                }
+                foreach (FundSnapshot snapshot in getFundSnapshotsAfterDate(oldTransaction.Date))
+                {
+                    snapshot.Balance += diffAmount;
+                }
+                await DB.SaveChangesAsync();
+                return;
+            }
+
+            //If new is later
+            if (newTransaction.Date > oldTransaction.Date)
+            {
+                foreach (FundSnapshot snapshot in getFundSnapshotsBetweenDates(oldTransaction.Date, newTransaction.Date))
+                {
+                    snapshot.Balance -= newTransaction.Amount;
+                }
+                foreach (FundSnapshot snapshot in getFundSnapshotsAfterDate(newTransaction.Date))
+                {
+                    snapshot.Balance += diffAmount;
+                }
+                await DB.SaveChangesAsync();
+                return;
+            }
+
+            //If dates are the same
+            foreach (FundSnapshot snapshot in getFundSnapshotsAfterDate(newTransaction.Date))
+            {
+                snapshot.Balance += diffAmount;
+            }
+            await DB.SaveChangesAsync();
+        }
+
+        private async Task setTranactionAmountSign(FundTransaction transaction)
+        {
+            TransactionPurpose purpose = await GetTransactionPurposeById(transaction.TransactionPurposeId);
+            switch (purpose.Type)
+            {
+                case TransactionPurpose.TransactionType.Income:
+                    transaction.Amount = decimal.Abs(transaction.Amount);
+                    return;
+                case TransactionPurpose.TransactionType.Expense:
+                    transaction.Amount = -decimal.Abs(transaction.Amount);
+                    return;
+            }
         }
     }
 }

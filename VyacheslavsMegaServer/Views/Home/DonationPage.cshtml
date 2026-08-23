@@ -51,7 +51,7 @@
                 <table class="mc-table mc-table--wide">
                     <tr class="mc-table--center-aligment">
                         <td>Сумма</td>
-                        <td>От кого/куда</td>
+                        <td>Назначение</td>
                         <td>Доп. информация</td>
                     </tr>
 
@@ -67,7 +67,7 @@
                         {
                             <tr>
                                 <td>@transaction.Amount</td>
-                                <td>@transaction.Reason</td>
+                                <td>@transaction.Purpose.Name</td>
                                 <td>@transaction.Note</td>
                             </tr>
                         }

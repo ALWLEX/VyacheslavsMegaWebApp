@@ -17,8 +17,8 @@ namespace VyacheslavsMegaServer.Areas.Admin.Models
 
         [Display(Name = "Количество транзакций")]
         [Range (1, 500)]
-        public int CountTransactions { get; set; } = 10;
+        public int CountTransactions { get; set; } = 25;
 
-        public FilterBy Filter { get; set; } = FilterBy.DATE;
+        public FilterBy Filter { get; set; } = FilterBy.LAST;
     }
 }

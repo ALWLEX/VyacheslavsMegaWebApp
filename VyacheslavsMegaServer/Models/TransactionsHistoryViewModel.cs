@@ -10,6 +10,6 @@ namespace VyacheslavsMegaServer.Models
 
         public FundTransaction? MaxIncome { get; set; }
 
-        public FundTransaction? MaxOutcome { get; set; }
+        public FundTransaction? MaxExpence { get; set; }
     }
 }

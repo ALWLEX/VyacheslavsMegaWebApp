@@ -18,7 +18,7 @@ namespace VyacheslavsMegaServer.Areas.Admin.Controllers
         public async Task<IActionResult> Index()
         {
             FundManagementViewModel model = new FundManagementViewModel();
-            model.FundTransactions = await _fundRepository.GetTransactionsByDate(model.DateStart, model.DateEnd);
+            model.FundTransactions = await _fundRepository.GetLastTransaction(25);
             return View(model);
         }
 
@@ -42,6 +42,7 @@ namespace VyacheslavsMegaServer.Areas.Admin.Controllers
 
         public async Task<IActionResult> TransactionDetails(int? transactionId)
         {
+            ViewBag.SelectPurposeItems = await _fundRepository.GetPurposesSelectList();
             if (transactionId == null) 
                 return View(new FundTransaction());
             return View(await _fundRepository.GetTransactionById(transactionId.Value));
@@ -59,6 +60,42 @@ namespace VyacheslavsMegaServer.Areas.Admin.Controllers
         {
             await _fundRepository.RemoveTransactionById(transactionId);
             return RedirectToAction(nameof(Index));
+        }
+
+
+        //Purposes editor
+
+        public async Task<IActionResult> TransactionPurposesIndex()
+        {
+            TransactionPurposesIndexViewModel model = new TransactionPurposesIndexViewModel()
+            {
+                TransactionPurposes = await _fundRepository.GetAllTransactionPurposes()
+            };
+            return View(model);
+        }
+
+        public async Task<IActionResult> TransactionPurposeDetails(int? purposeId)
+        {
+            if (purposeId == null)
+                return View(new TransactionPurpose());
+            return View(await _fundRepository.GetTransactionPurposeById(purposeId.Value));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> TransactionPurposeDetails(TransactionPurpose model)
+        {
+            if (!ModelState.IsValid) return View(model);
+            await _fundRepository.SaveTransactionPurpose(model);
+            return RedirectToAction(nameof(TransactionPurposesIndex));
+        }
+
+        public async Task<IActionResult> RemoveTransactionPurpose(int purposeId)
+        {
+            if (await _fundRepository.IsPurposeEmpty(purposeId))
+                await _fundRepository.RemoveTransactionPurposeById(purposeId);
+            else
+                TempData["RemoveError"] = $"Ошибка удаления - к назначению с ID {purposeId} привязаны транзакции";
+            return RedirectToAction(nameof(TransactionPurposesIndex));
         }
     }
 }

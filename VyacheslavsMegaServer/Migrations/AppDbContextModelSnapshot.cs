@@ -153,16 +153,16 @@ namespace VyacheslavsMegaServer.Migrations
                         {
                             Id = "d4bc75a9-ca48-45aa-a3f2-2ea5886ce303",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "270defe0-6b04-4433-bef0-b3e7654b22b7",
+                            ConcurrencyStamp = "71407eed-1a56-467f-bcdb-d270ce07d612",
                             Email = "vya4slav4617@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "VYA4SLAV4617@GMAIL.COM",
                             NormalizedUserName = "EVRAY",
-                            PasswordHash = "AQAAAAIAAYagAAAAEIjF3mA9fh8VQFRVNsoVeGNx+NGxEECZQRZcUoSJhO6di7B7gw6CEAFfdOux2q9Etg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAENnw4GUfHNkukFqRPLw/ERP1QA4iWxnvmbDgxbXg0yu5W53NMpnuRN1j6CtsLfboZA==",
                             PhoneNumber = "+7 (705) 806 3101",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "6ab088d3-1fac-4cf5-bca1-7d360c0286df",
+                            SecurityStamp = "9c64845b-4313-49cc-a6cc-801ab81930b5",
                             TwoFactorEnabled = false,
                             UserName = "Evray"
                         });
@@ -391,7 +391,7 @@ namespace VyacheslavsMegaServer.Migrations
                     b.Property<bool>("IsResourceLocal")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<bool>("Show")
+                    b.Property<bool>("ShowButton")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("Title")
@@ -441,12 +441,12 @@ namespace VyacheslavsMegaServer.Migrations
                     b.Property<string>("Note")
                         .HasColumnType("longtext");
 
-                    b.Property<string>("Reason")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
+                    b.Property<int>("TransactionPurposeId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("TransactionPurposeId");
 
                     b.ToTable("FundTransactions");
                 });
@@ -651,6 +651,44 @@ namespace VyacheslavsMegaServer.Migrations
                     b.ToTable("ServerMediaLinks");
                 });
 
+            modelBuilder.Entity("VyacheslavsMegaServer.Data.Entities.TransactionPurpose", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnOrder(0);
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(200)
+                        .HasColumnType("varchar(200)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TransactionPurposes");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Пожертвование",
+                            Type = 0
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Покупка комплектующих сервера",
+                            Type = 1
+                        });
+                });
+
             modelBuilder.Entity("VyacheslavsMegaServer.Data.Entities.UserReport", b =>
                 {
                     b.Property<int>("Id")
@@ -749,6 +787,17 @@ namespace VyacheslavsMegaServer.Migrations
                     b.Navigation("Contact");
                 });
 
+            modelBuilder.Entity("VyacheslavsMegaServer.Data.Entities.FundTransaction", b =>
+                {
+                    b.HasOne("VyacheslavsMegaServer.Data.Entities.TransactionPurpose", "Purpose")
+                        .WithMany("Transactions")
+                        .HasForeignKey("TransactionPurposeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Purpose");
+                });
+
             modelBuilder.Entity("VyacheslavsMegaServer.Data.Entities.PartnerLink", b =>
                 {
                     b.HasOne("VyacheslavsMegaServer.Data.Entities.Partner", "Partner")
@@ -768,6 +817,11 @@ namespace VyacheslavsMegaServer.Migrations
             modelBuilder.Entity("VyacheslavsMegaServer.Data.Entities.Partner", b =>
                 {
                     b.Navigation("Links");
+                });
+
+            modelBuilder.Entity("VyacheslavsMegaServer.Data.Entities.TransactionPurpose", b =>
+                {
+                    b.Navigation("Transactions");
                 });
 #pragma warning restore 612, 618
         }

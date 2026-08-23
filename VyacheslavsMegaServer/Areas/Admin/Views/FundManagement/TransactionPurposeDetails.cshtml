@@ -1,0 +1,74 @@
+﻿@model TransactionPurpose
+
+<div class="block block--first">
+    <div class="container">
+
+        <div class="form-container">
+            <form class="form" asp-area="Admin" asp-controller="FundManagement" asp-action="TransactionPurposeDetails" method="post">
+
+                <div class="form__header">
+                    <h2 class="form__title form__title--main">@(Model.Id == 0 ? "Добавление" : "Редактирование") назначения</h2>
+                </div>
+
+                <input type="hidden" asp-for="Id" readonly />
+
+                <div class="form__body">
+
+                    <div class="form__validation-summary" asp-validation-summary="All"></div>
+
+                    <div class="form-group">
+                        <label class="form-group__label" asp-for="Name"></label>
+
+                        <div class="form-group__control">
+                            <div class="field">
+                                <input class="field__input" asp-for="Name">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form__row">
+                        <div class="form-group">
+                            <div class="form-group__control">
+                                <label class="mc-radio">
+                                    <input class="mc-radio__input" type="radio" asp-for="Type" value="@TransactionPurpose.TransactionType.Income">
+                                    <span class="mc-radio__circle"></span>
+                                    <span class="mc-radio__label">@TransactionPurpose.GetTypeText(TransactionPurpose.TransactionType.Income)</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="form-group__control">
+                                <label class="mc-radio">
+                                    <input class="mc-radio__input" type="radio" asp-for="Type" value="@TransactionPurpose.TransactionType.Expense">
+                                    <span class="mc-radio__circle"></span>
+                                    <span class="mc-radio__label">@TransactionPurpose.GetTypeText(TransactionPurpose.TransactionType.Expense)</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-group__label" asp-for="Description"></label>
+
+                        <div class="form-group__control">
+                            <div class="field">
+                                <textarea class="field__input" rows="4" asp-for="Description"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="form__footer">
+                    <button class="mc-button mc-button--wide" type="submit">
+                        <span class="mc-button__title">Сохранить</span>
+                    </button>
+
+                    <p><a asp-area="Admin" asp-controller="FundManagement" asp-action="TransactionPurposesIndex">Назад</a></p>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>

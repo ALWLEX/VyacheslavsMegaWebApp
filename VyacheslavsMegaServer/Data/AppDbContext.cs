@@ -28,6 +28,7 @@ namespace VyacheslavsMegaServer.Data
         public DbSet<FundSnapshot> FundSnapshots { get; set; }
         public DbSet<Goal> Goals { get; set; }
         public DbSet<DownloadButton> DownloadButtons { get; set; }
+        public DbSet<TransactionPurpose> TransactionPurposes { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -116,6 +117,20 @@ namespace VyacheslavsMegaServer.Data
                 Description = "На сервере установлена сборка интересных модов. Этот модпак превращает Minecraft в сложное и увлекательное приключение с множеством новых возможностей.\r\nПогружайтесь в новые приключения с:\r\n\r\nУлучшенным ИИ мобов и механикой боя\r\nОбширными новыми биомами для исследования\r\nРазнообразными и опасными новыми мобами\r\nПродвинутой магией и зачарованиями\r\nИ многим другим",
                 MetatagDescription = "Мега сервер Вячеслава",
                 MetatagKeywords = "Minecraft, server, Вячеслав, мега, сервер",
+            });
+
+            modelBuilder.Entity<TransactionPurpose>().HasData(new TransactionPurpose()
+            {
+                Id = 1,
+                Name = "Пожертвование",
+                Type = TransactionPurpose.TransactionType.Income
+            });
+
+            modelBuilder.Entity<TransactionPurpose>().HasData(new TransactionPurpose()
+            {
+                Id = 2,
+                Name = "Покупка комплектующих сервера",
+                Type = TransactionPurpose.TransactionType.Expense
             });
         }
     }

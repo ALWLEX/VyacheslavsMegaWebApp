@@ -11,8 +11,8 @@ using VyacheslavsMegaServer.Data;
 namespace VyacheslavsMegaServer.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240921172411_EditContactsTable")]
-    partial class EditContactsTable
+    [Migration("20260822175033_AddTransactionPurposeTable")]
+    partial class AddTransactionPurposeTable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -56,6 +56,12 @@ namespace VyacheslavsMegaServer.Migrations
                             Id = "db158bac-48d4-47c3-a6b0-c6d8b5c9ee55",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = "03d4ba1e-afef-4e77-849d-295bd86148db",
+                            Name = "Moderator",
+                            NormalizedName = "MODERATOR"
                         });
                 });
 
@@ -150,16 +156,16 @@ namespace VyacheslavsMegaServer.Migrations
                         {
                             Id = "d4bc75a9-ca48-45aa-a3f2-2ea5886ce303",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "8dc140be-3b1a-4077-9247-927be5ec7b5e",
+                            ConcurrencyStamp = "71407eed-1a56-467f-bcdb-d270ce07d612",
                             Email = "vya4slav4617@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "VYA4SLAV4617@GMAIL.COM",
                             NormalizedUserName = "EVRAY",
-                            PasswordHash = "AQAAAAIAAYagAAAAEHF1X+sTY6FbBycEx4Hnp2Spk2MsEv28ZbsoW+VQBznWVGnRub8gp0ljRghxPo4bSQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAENnw4GUfHNkukFqRPLw/ERP1QA4iWxnvmbDgxbXg0yu5W53NMpnuRN1j6CtsLfboZA==",
                             PhoneNumber = "+7 (705) 806 3101",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "773641d3-6950-4968-b39c-713c2265367b",
+                            SecurityStamp = "9c64845b-4313-49cc-a6cc-801ab81930b5",
                             TwoFactorEnabled = false,
                             UserName = "Evray"
                         });
@@ -296,7 +302,7 @@ namespace VyacheslavsMegaServer.Migrations
                         });
                 });
 
-            modelBuilder.Entity("VyacheslavsMegaServer.Data.Entities.Link", b =>
+            modelBuilder.Entity("VyacheslavsMegaServer.Data.Entities.ContactLink", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -321,7 +327,7 @@ namespace VyacheslavsMegaServer.Migrations
 
                     b.HasIndex("ContactId");
 
-                    b.ToTable("Links");
+                    b.ToTable("ContactLinks");
 
                     b.HasData(
                         new
@@ -331,7 +337,158 @@ namespace VyacheslavsMegaServer.Migrations
                             Content = "Вячеслав Костырев",
                             Description = "VK: ",
                             Url = "https://vk.com/sansei_1"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            ContactId = 1,
+                            Content = "@vyacheslav_minecraft",
+                            Description = "Telegram: ",
+                            Url = "https://t.me/vyacheslav_minecraft"
                         });
+                });
+
+            modelBuilder.Entity("VyacheslavsMegaServer.Data.Entities.DonationCard", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnOrder(0);
+
+                    b.Property<string>("BankName")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("CardHolder")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("CardName")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("CardNumber")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("ColorDownLeft")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("ColorUpRight")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("DonationCards");
+                });
+
+            modelBuilder.Entity("VyacheslavsMegaServer.Data.Entities.DownloadButton", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnOrder(0);
+
+                    b.Property<bool>("IsResourceLocal")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("ShowButton")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("DownloadButtons");
+                });
+
+            modelBuilder.Entity("VyacheslavsMegaServer.Data.Entities.FundSnapshot", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnOrder(0);
+
+                    b.Property<decimal>("Balance")
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<DateTime>("SnapshotDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("FundSnapshots");
+                });
+
+            modelBuilder.Entity("VyacheslavsMegaServer.Data.Entities.FundTransaction", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnOrder(0);
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Note")
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("TransactionPurposeId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TransactionPurposeId");
+
+                    b.ToTable("FundTransactions");
+                });
+
+            modelBuilder.Entity("VyacheslavsMegaServer.Data.Entities.Goal", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnOrder(0);
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<bool>("IsCompleted")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("IsCurrent")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("LogoFileName")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(10,2)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Goals");
                 });
 
             modelBuilder.Entity("VyacheslavsMegaServer.Data.Entities.MainPageData", b =>
@@ -367,8 +524,9 @@ namespace VyacheslavsMegaServer.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<bool>("ShowDownloadButton")
-                        .HasColumnType("tinyint(1)");
+                    b.Property<string>("ServerVersion")
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
                     b.Property<bool>("ShowErrorMessage")
                         .HasColumnType("tinyint(1)");
@@ -397,10 +555,140 @@ namespace VyacheslavsMegaServer.Migrations
                             MetatagKeywords = "Minecraft, server, Вячеслав, мега, сервер",
                             PageTitle = "V-Server",
                             ServerAddress = "109.248.157.54:25565",
-                            ShowDownloadButton = false,
+                            ServerVersion = "1.21.11",
                             ShowErrorMessage = false,
                             Title = "Открой для себя мир Minecraft с\r\nVyacheslav's mega server",
                             YellowHint = "Теперь с модами"
+                        });
+                });
+
+            modelBuilder.Entity("VyacheslavsMegaServer.Data.Entities.Partner", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnOrder(0);
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("varchar(300)");
+
+                    b.Property<string>("LogoFileName")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<bool>("ShowPartner")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("Subtitle")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Partners");
+                });
+
+            modelBuilder.Entity("VyacheslavsMegaServer.Data.Entities.PartnerLink", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnOrder(0);
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("PartnerId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PartnerId");
+
+                    b.ToTable("PartnerLinks");
+                });
+
+            modelBuilder.Entity("VyacheslavsMegaServer.Data.Entities.ServerMediaLink", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnOrder(0);
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("LogoFileName")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<bool>("ShowLink")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ServerMediaLinks");
+                });
+
+            modelBuilder.Entity("VyacheslavsMegaServer.Data.Entities.TransactionPurpose", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnOrder(0);
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(200)
+                        .HasColumnType("varchar(200)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TransactionPurposes");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Пожертвование",
+                            Type = 0
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Покупка комплектующих сервера",
+                            Type = 1
                         });
                 });
 
@@ -491,7 +779,7 @@ namespace VyacheslavsMegaServer.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("VyacheslavsMegaServer.Data.Entities.Link", b =>
+            modelBuilder.Entity("VyacheslavsMegaServer.Data.Entities.ContactLink", b =>
                 {
                     b.HasOne("VyacheslavsMegaServer.Data.Entities.Contact", "Contact")
                         .WithMany("Links")
@@ -502,9 +790,41 @@ namespace VyacheslavsMegaServer.Migrations
                     b.Navigation("Contact");
                 });
 
+            modelBuilder.Entity("VyacheslavsMegaServer.Data.Entities.FundTransaction", b =>
+                {
+                    b.HasOne("VyacheslavsMegaServer.Data.Entities.TransactionPurpose", "Purpose")
+                        .WithMany("Transactions")
+                        .HasForeignKey("TransactionPurposeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Purpose");
+                });
+
+            modelBuilder.Entity("VyacheslavsMegaServer.Data.Entities.PartnerLink", b =>
+                {
+                    b.HasOne("VyacheslavsMegaServer.Data.Entities.Partner", "Partner")
+                        .WithMany("Links")
+                        .HasForeignKey("PartnerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Partner");
+                });
+
             modelBuilder.Entity("VyacheslavsMegaServer.Data.Entities.Contact", b =>
                 {
                     b.Navigation("Links");
+                });
+
+            modelBuilder.Entity("VyacheslavsMegaServer.Data.Entities.Partner", b =>
+                {
+                    b.Navigation("Links");
+                });
+
+            modelBuilder.Entity("VyacheslavsMegaServer.Data.Entities.TransactionPurpose", b =>
+                {
+                    b.Navigation("Transactions");
                 });
 #pragma warning restore 612, 618
         }
