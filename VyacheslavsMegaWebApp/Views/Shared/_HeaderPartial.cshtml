@@ -1,9 +1,10 @@
 ﻿@using Microsoft.AspNetCore.Identity
+@using VyacheslavsMegaWebApp.Data.Entities.Identity
 @using VyacheslavsMegaWebApp.Data.Repositories
-@inject UserManager<IdentityUser> _userManager;
+@inject UserManager<VmsIdentityUser> _userManager;
 
 @{
-    IdentityUser? user = await _userManager.GetUserAsync(User);
+    VmsIdentityUser? user = await _userManager.GetUserAsync(User);
     bool isAdmin = user is null ? false : await _userManager.IsInRoleAsync(user, IdentityRepository.ADMIN_ROLE);
 }
 

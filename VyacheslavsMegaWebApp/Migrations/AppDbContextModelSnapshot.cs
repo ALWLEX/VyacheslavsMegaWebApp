@@ -85,89 +85,6 @@ namespace VyacheslavsMegaWebApp.Migrations
                     b.ToTable("AspNetRoleClaims", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUser", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<int>("AccessFailedCount")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Email")
-                        .HasMaxLength(256)
-                        .HasColumnType("varchar(256)");
-
-                    b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<bool>("LockoutEnabled")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("datetime");
-
-                    b.Property<string>("NormalizedEmail")
-                        .HasMaxLength(256)
-                        .HasColumnType("varchar(256)");
-
-                    b.Property<string>("NormalizedUserName")
-                        .HasMaxLength(256)
-                        .HasColumnType("varchar(256)");
-
-                    b.Property<string>("PasswordHash")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("longtext");
-
-                    b.Property<bool>("PhoneNumberConfirmed")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<string>("SecurityStamp")
-                        .HasColumnType("longtext");
-
-                    b.Property<bool>("TwoFactorEnabled")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<string>("UserName")
-                        .HasMaxLength(256)
-                        .HasColumnType("varchar(256)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NormalizedEmail")
-                        .HasDatabaseName("EmailIndex");
-
-                    b.HasIndex("NormalizedUserName")
-                        .IsUnique()
-                        .HasDatabaseName("UserNameIndex");
-
-                    b.ToTable("AspNetUsers", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "d4bc75a9-ca48-45aa-a3f2-2ea5886ce303",
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "71407eed-1a56-467f-bcdb-d270ce07d612",
-                            Email = "vya4slav4617@gmail.com",
-                            EmailConfirmed = true,
-                            LockoutEnabled = false,
-                            NormalizedEmail = "VYA4SLAV4617@GMAIL.COM",
-                            NormalizedUserName = "EVRAY",
-                            PasswordHash = "AQAAAAIAAYagAAAAENnw4GUfHNkukFqRPLw/ERP1QA4iWxnvmbDgxbXg0yu5W53NMpnuRN1j6CtsLfboZA==",
-                            PhoneNumber = "+7 (705) 806 3101",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "9c64845b-4313-49cc-a6cc-801ab81930b5",
-                            TwoFactorEnabled = false,
-                            UserName = "Evray"
-                        });
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
                     b.Property<int>("Id")
@@ -254,7 +171,7 @@ namespace VyacheslavsMegaWebApp.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("VyacheslavsMegaServer.Data.Entities.Contact", b =>
+            modelBuilder.Entity("VyacheslavsMegaWebApp.Data.Entities.Contact", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -299,7 +216,7 @@ namespace VyacheslavsMegaWebApp.Migrations
                         });
                 });
 
-            modelBuilder.Entity("VyacheslavsMegaServer.Data.Entities.ContactLink", b =>
+            modelBuilder.Entity("VyacheslavsMegaWebApp.Data.Entities.ContactLink", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -345,7 +262,7 @@ namespace VyacheslavsMegaWebApp.Migrations
                         });
                 });
 
-            modelBuilder.Entity("VyacheslavsMegaServer.Data.Entities.DonationCard", b =>
+            modelBuilder.Entity("VyacheslavsMegaWebApp.Data.Entities.DonationCard", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -381,7 +298,7 @@ namespace VyacheslavsMegaWebApp.Migrations
                     b.ToTable("DonationCards");
                 });
 
-            modelBuilder.Entity("VyacheslavsMegaServer.Data.Entities.DownloadButton", b =>
+            modelBuilder.Entity("VyacheslavsMegaWebApp.Data.Entities.DownloadButton", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -407,7 +324,7 @@ namespace VyacheslavsMegaWebApp.Migrations
                     b.ToTable("DownloadButtons");
                 });
 
-            modelBuilder.Entity("VyacheslavsMegaServer.Data.Entities.FundSnapshot", b =>
+            modelBuilder.Entity("VyacheslavsMegaWebApp.Data.Entities.FundSnapshot", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -425,7 +342,7 @@ namespace VyacheslavsMegaWebApp.Migrations
                     b.ToTable("FundSnapshots");
                 });
 
-            modelBuilder.Entity("VyacheslavsMegaServer.Data.Entities.FundTransaction", b =>
+            modelBuilder.Entity("VyacheslavsMegaWebApp.Data.Entities.FundTransaction", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -451,7 +368,7 @@ namespace VyacheslavsMegaWebApp.Migrations
                     b.ToTable("FundTransactions");
                 });
 
-            modelBuilder.Entity("VyacheslavsMegaServer.Data.Entities.Goal", b =>
+            modelBuilder.Entity("VyacheslavsMegaWebApp.Data.Entities.Goal", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -488,7 +405,96 @@ namespace VyacheslavsMegaWebApp.Migrations
                     b.ToTable("Goals");
                 });
 
-            modelBuilder.Entity("VyacheslavsMegaServer.Data.Entities.MainPageData", b =>
+            modelBuilder.Entity("VyacheslavsMegaWebApp.Data.Entities.Identity.VmsIdentityUser", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
+
+                    b.Property<byte[]>("EmailConfirmCodeHash")
+                        .HasColumnType("longblob");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<DateTime?>("EmailConfirmedCodeCreationTime")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("longtext");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("longtext");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("UserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedEmail")
+                        .HasDatabaseName("EmailIndex");
+
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasDatabaseName("UserNameIndex");
+
+                    b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "d4bc75a9-ca48-45aa-a3f2-2ea5886ce303",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "0a5df9ab-ea23-47a5-a702-59928042621c",
+                            Email = "vya4slav4617@gmail.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "VYA4SLAV4617@GMAIL.COM",
+                            NormalizedUserName = "EVRAY",
+                            PasswordHash = "AQAAAAIAAYagAAAAEDDHhAPFdwjUltGX7G+ni4hfGrHg94Ix40YsEf7wg3CuEoMyZd7P037qzk9lf40f0Q==",
+                            PhoneNumber = "+7 (705) 806 3101",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "f521e49e-682a-4801-a6d6-6dcb47a44b80",
+                            TwoFactorEnabled = false,
+                            UserName = "Evray"
+                        });
+                });
+
+            modelBuilder.Entity("VyacheslavsMegaWebApp.Data.Entities.MainPageData", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -559,7 +565,7 @@ namespace VyacheslavsMegaWebApp.Migrations
                         });
                 });
 
-            modelBuilder.Entity("VyacheslavsMegaServer.Data.Entities.Partner", b =>
+            modelBuilder.Entity("VyacheslavsMegaWebApp.Data.Entities.Partner", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -593,7 +599,7 @@ namespace VyacheslavsMegaWebApp.Migrations
                     b.ToTable("Partners");
                 });
 
-            modelBuilder.Entity("VyacheslavsMegaServer.Data.Entities.PartnerLink", b =>
+            modelBuilder.Entity("VyacheslavsMegaWebApp.Data.Entities.PartnerLink", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -621,7 +627,7 @@ namespace VyacheslavsMegaWebApp.Migrations
                     b.ToTable("PartnerLinks");
                 });
 
-            modelBuilder.Entity("VyacheslavsMegaServer.Data.Entities.ServerMediaLink", b =>
+            modelBuilder.Entity("VyacheslavsMegaWebApp.Data.Entities.ServerMediaLink", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -651,7 +657,7 @@ namespace VyacheslavsMegaWebApp.Migrations
                     b.ToTable("ServerMediaLinks");
                 });
 
-            modelBuilder.Entity("VyacheslavsMegaServer.Data.Entities.TransactionPurpose", b =>
+            modelBuilder.Entity("VyacheslavsMegaWebApp.Data.Entities.TransactionPurpose", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -689,7 +695,7 @@ namespace VyacheslavsMegaWebApp.Migrations
                         });
                 });
 
-            modelBuilder.Entity("VyacheslavsMegaServer.Data.Entities.UserReport", b =>
+            modelBuilder.Entity("VyacheslavsMegaWebApp.Data.Entities.UserReport", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -725,7 +731,7 @@ namespace VyacheslavsMegaWebApp.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                    b.HasOne("VyacheslavsMegaWebApp.Data.Entities.Identity.VmsIdentityUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -734,7 +740,7 @@ namespace VyacheslavsMegaWebApp.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                    b.HasOne("VyacheslavsMegaWebApp.Data.Entities.Identity.VmsIdentityUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -749,7 +755,7 @@ namespace VyacheslavsMegaWebApp.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                    b.HasOne("VyacheslavsMegaWebApp.Data.Entities.Identity.VmsIdentityUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -758,16 +764,16 @@ namespace VyacheslavsMegaWebApp.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                    b.HasOne("VyacheslavsMegaWebApp.Data.Entities.Identity.VmsIdentityUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("VyacheslavsMegaServer.Data.Entities.Contact", b =>
+            modelBuilder.Entity("VyacheslavsMegaWebApp.Data.Entities.Contact", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
+                    b.HasOne("VyacheslavsMegaWebApp.Data.Entities.Identity.VmsIdentityUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -776,9 +782,9 @@ namespace VyacheslavsMegaWebApp.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("VyacheslavsMegaServer.Data.Entities.ContactLink", b =>
+            modelBuilder.Entity("VyacheslavsMegaWebApp.Data.Entities.ContactLink", b =>
                 {
-                    b.HasOne("VyacheslavsMegaServer.Data.Entities.Contact", "Contact")
+                    b.HasOne("VyacheslavsMegaWebApp.Data.Entities.Contact", "Contact")
                         .WithMany("Links")
                         .HasForeignKey("ContactId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -787,9 +793,9 @@ namespace VyacheslavsMegaWebApp.Migrations
                     b.Navigation("Contact");
                 });
 
-            modelBuilder.Entity("VyacheslavsMegaServer.Data.Entities.FundTransaction", b =>
+            modelBuilder.Entity("VyacheslavsMegaWebApp.Data.Entities.FundTransaction", b =>
                 {
-                    b.HasOne("VyacheslavsMegaServer.Data.Entities.TransactionPurpose", "Purpose")
+                    b.HasOne("VyacheslavsMegaWebApp.Data.Entities.TransactionPurpose", "Purpose")
                         .WithMany("Transactions")
                         .HasForeignKey("TransactionPurposeId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -798,9 +804,9 @@ namespace VyacheslavsMegaWebApp.Migrations
                     b.Navigation("Purpose");
                 });
 
-            modelBuilder.Entity("VyacheslavsMegaServer.Data.Entities.PartnerLink", b =>
+            modelBuilder.Entity("VyacheslavsMegaWebApp.Data.Entities.PartnerLink", b =>
                 {
-                    b.HasOne("VyacheslavsMegaServer.Data.Entities.Partner", "Partner")
+                    b.HasOne("VyacheslavsMegaWebApp.Data.Entities.Partner", "Partner")
                         .WithMany("Links")
                         .HasForeignKey("PartnerId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -809,17 +815,17 @@ namespace VyacheslavsMegaWebApp.Migrations
                     b.Navigation("Partner");
                 });
 
-            modelBuilder.Entity("VyacheslavsMegaServer.Data.Entities.Contact", b =>
+            modelBuilder.Entity("VyacheslavsMegaWebApp.Data.Entities.Contact", b =>
                 {
                     b.Navigation("Links");
                 });
 
-            modelBuilder.Entity("VyacheslavsMegaServer.Data.Entities.Partner", b =>
+            modelBuilder.Entity("VyacheslavsMegaWebApp.Data.Entities.Partner", b =>
                 {
                     b.Navigation("Links");
                 });
 
-            modelBuilder.Entity("VyacheslavsMegaServer.Data.Entities.TransactionPurpose", b =>
+            modelBuilder.Entity("VyacheslavsMegaWebApp.Data.Entities.TransactionPurpose", b =>
                 {
                     b.Navigation("Transactions");
                 });

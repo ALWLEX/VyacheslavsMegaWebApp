@@ -2,11 +2,12 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using VyacheslavsMegaWebApp.Data.Entities;
+using VyacheslavsMegaWebApp.Data.Entities.Identity;
 using VyacheslavsMegaWebApp.Service;
 
 namespace VyacheslavsMegaWebApp.Data
 {
-    public class AppDbContext : IdentityDbContext<IdentityUser>
+    public class AppDbContext : IdentityDbContext<VmsIdentityUser>
     {
         public AppDbContext(DbContextOptions options) : base(options)
         {
@@ -42,7 +43,7 @@ namespace VyacheslavsMegaWebApp.Data
 
             #region Identity config
 
-            modelBuilder.Entity<IdentityUser>().HasData(new IdentityUser()
+            modelBuilder.Entity<VmsIdentityUser>().HasData(new VmsIdentityUser()
             {
                 Id = "d4bc75a9-ca48-45aa-a3f2-2ea5886ce303",
                 UserName = "Evray",
@@ -51,7 +52,7 @@ namespace VyacheslavsMegaWebApp.Data
                 Email = "vya4slav4617@gmail.com",
                 NormalizedEmail = "VYA4SLAV4617@GMAIL.COM",
                 EmailConfirmed = true,
-                PasswordHash = new PasswordHasher<IdentityUser>().HashPassword(null, "admin")
+                PasswordHash = new PasswordHasher<VmsIdentityUser>().HashPassword(null, "admin")
             });
 
             modelBuilder.Entity<IdentityRole>().HasData(new IdentityRole()

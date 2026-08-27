@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using System.ComponentModel.DataAnnotations;
 using VyacheslavsMegaWebApp.Data.Entities.Base;
+using VyacheslavsMegaWebApp.Data.Entities.Identity;
 
 namespace VyacheslavsMegaWebApp.Data.Entities
 {
@@ -26,7 +27,7 @@ namespace VyacheslavsMegaWebApp.Data.Entities
         public string UserId { get; set; }
 
         [ValidateNever]
-        public virtual IdentityUser User { get; set; }
+        public virtual VmsIdentityUser User { get; set; }
 
         [ValidateNever]
         public virtual ICollection<ContactLink> Links { get; set; } = new List<ContactLink>();

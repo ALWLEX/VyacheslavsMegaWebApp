@@ -3,18 +3,19 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Collections;
 using VyacheslavsMegaWebApp.Areas.Admin.Models;
+using VyacheslavsMegaWebApp.Data.Entities.Identity;
 
 namespace VyacheslavsMegaWebApp.Data.Repositories
 {
     public class IdentityRepository
     {
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<VmsIdentityUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
 
         public const string NO_ROLE = "None";
         public const string ADMIN_ROLE = "Admin";
 
-        public IdentityRepository(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager) 
+        public IdentityRepository(UserManager<VmsIdentityUser> userManager, RoleManager<IdentityRole> roleManager) 
         { 
             _roleManager = roleManager;
             _userManager = userManager;
@@ -70,14 +71,14 @@ namespace VyacheslavsMegaWebApp.Data.Repositories
 
         public async Task RemoveUser(string userId)
         {
-            IdentityUser? user = await _userManager.FindByIdAsync(userId);
+            VmsIdentityUser? user = await _userManager.FindByIdAsync(userId);
             if (user != null)
                 await _userManager.DeleteAsync(user);
         }
 
         public async Task<UserViewModel> GetUserById(string userId)
         {
-            IdentityUser identityUser = await _userManager.FindByIdAsync(userId);
+            VmsIdentityUser identityUser = await _userManager.FindByIdAsync(userId);
             string userRole = (await _userManager.GetRolesAsync(identityUser)).FirstOrDefault();
             return new UserViewModel()
             {
@@ -88,7 +89,7 @@ namespace VyacheslavsMegaWebApp.Data.Repositories
 
         public async Task ApplyRoleToUser(string userId, string role)
         {
-            IdentityUser identityUser = await _userManager.FindByIdAsync(userId);
+            VmsIdentityUser identityUser = await _userManager.FindByIdAsync(userId);
             await _userManager.RemoveFromRolesAsync(identityUser, await GetRoleNames());
             if (role != NO_ROLE) 
             {

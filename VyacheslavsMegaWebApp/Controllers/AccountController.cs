@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using VyacheslavsMegaWebApp.Data.Entities.Identity;
 using VyacheslavsMegaWebApp.Models;
 
 namespace VyacheslavsMegaWebApp.Controllers
@@ -8,10 +9,10 @@ namespace VyacheslavsMegaWebApp.Controllers
     [Authorize]
     public class AccountController : Controller
     {
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly UserManager<VmsIdentityUser> _userManager;
+        private readonly SignInManager<VmsIdentityUser> _signInManager;
 
-        public AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager) 
+        public AccountController(UserManager<VmsIdentityUser> userManager, SignInManager<VmsIdentityUser> signInManager) 
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -30,7 +31,7 @@ namespace VyacheslavsMegaWebApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                IdentityUser? user = await _userManager.FindByNameAsync(model.UserName);
+                VmsIdentityUser? user = await _userManager.FindByNameAsync(model.UserName);
                 if (user != null) 
                 {
                     await _signInManager.SignOutAsync();
@@ -57,7 +58,7 @@ namespace VyacheslavsMegaWebApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                IdentityUser user = new IdentityUser { Email = model.Email, UserName = model.Email };
+                VmsIdentityUser user = new VmsIdentityUser { Email = model.Email, UserName = model.Email };
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
@@ -95,7 +96,7 @@ namespace VyacheslavsMegaWebApp.Controllers
         {
             if (!ModelState.IsValid)
             {
-                IdentityUser currentUser = await _userManager.GetUserAsync(User);
+                VmsIdentityUser currentUser = await _userManager.GetUserAsync(User);
                 await _userManager.ChangePasswordAsync(currentUser, model.OldPassword, model.NewPassword);
                 return RedirectToAction(nameof(AccountSettings));
             }

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using VyacheslavsMegaWebApp.Areas.Admin.Models;
 using VyacheslavsMegaWebApp.Data.Entities;
+using VyacheslavsMegaWebApp.Data.Entities.Identity;
 using VyacheslavsMegaWebApp.Data.Repositories;
 
 namespace VyacheslavsMegaWebApp.Areas.Admin.Controllers
@@ -11,9 +12,9 @@ namespace VyacheslavsMegaWebApp.Areas.Admin.Controllers
     public class ContactsEditorController : Controller
     {
         private readonly ContactsInfoRepository _contactsInfoRepository;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<VmsIdentityUser> _userManager;
 
-        public ContactsEditorController(ContactsInfoRepository contactsInfoRepository, UserManager<IdentityUser> userManager)
+        public ContactsEditorController(ContactsInfoRepository contactsInfoRepository, UserManager<VmsIdentityUser> userManager)
         {
             _contactsInfoRepository = contactsInfoRepository;
             _userManager = userManager;
