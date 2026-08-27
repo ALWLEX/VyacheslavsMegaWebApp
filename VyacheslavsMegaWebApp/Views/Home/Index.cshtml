@@ -23,7 +23,7 @@
                     }
                     <p class="intro__info-text">IP: @Model.MainPageData.ServerAddress</p>
                     <p class="intro__info-text">Версия: @Model.MainPageData.ServerVersion</p>
-                    @if(Model.MCServerStat.Available)
+                    @if(Model.MCServerStat.Available && Model.MCServerStat.IsOnline)
                     {
                         <p class="intro__info-text">Игроков онлайн: @Model.MCServerStat.Players.Online/@Model.MCServerStat.Players.Max</p>
                     }
