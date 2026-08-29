@@ -2,7 +2,9 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using VyacheslavsMegaWebApp.Data.Entities.Identity;
+using VyacheslavsMegaWebApp.Data.Repositories;
 using VyacheslavsMegaWebApp.Models;
+using VyacheslavsMegaWebApp.Service;
 
 namespace VyacheslavsMegaWebApp.Controllers
 {
@@ -11,11 +13,15 @@ namespace VyacheslavsMegaWebApp.Controllers
     {
         private readonly UserManager<VmsIdentityUser> _userManager;
         private readonly SignInManager<VmsIdentityUser> _signInManager;
+        private readonly IdentityRepository _identityRepository;
+        private readonly EmailService _emailService;
 
-        public AccountController(UserManager<VmsIdentityUser> userManager, SignInManager<VmsIdentityUser> signInManager) 
+        public AccountController(UserManager<VmsIdentityUser> userManager, SignInManager<VmsIdentityUser> signInManager, IdentityRepository identityRepository, EmailService emailService) 
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _identityRepository = identityRepository;
+            _emailService = emailService;
         }
 
         [AllowAnonymous]
@@ -58,13 +64,13 @@ namespace VyacheslavsMegaWebApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                VmsIdentityUser user = new VmsIdentityUser { Email = model.Email, UserName = model.Email };
+                VmsIdentityUser user = new VmsIdentityUser { Email = model.Email, UserName = model.UserName };
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
                     // установка куки
                     await _signInManager.SignInAsync(user, false);
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction(nameof(ConfirmEmail));
                 }
                 else
                 {
@@ -102,6 +108,38 @@ namespace VyacheslavsMegaWebApp.Controllers
             }
             
             return View(nameof(AccountSettings), model);
+        }
+
+        [Authorize]
+        public async Task<IActionResult> ConfirmEmail()
+        {
+            VmsIdentityUser user = await _userManager.GetUserAsync(User);
+            if (DateTime.UtcNow - user.EmailConfirmedCodeCreationTime >= new TimeSpan(0, 3, 0))
+                await _emailService.SendEmail(await _emailService.CreateConfirmMessage(user, await _identityRepository.GetEmailConfirmationCode(user.Id)));
+            return View(new EmailConfirmationViewModel() { User = user });
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> ConfirmEmail(EmailConfirmationViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                model.ConfirmationCode = string.Empty;
+                return View(model);
+            }
+
+            VmsIdentityUser user = await _userManager.GetUserAsync(User);
+            IdentityRepository.EmailConfirmationResult result = await _identityRepository.ConfirmEmail(user.Id, model.ConfirmationCode);
+            if ( result == IdentityRepository.EmailConfirmationResult.Success) 
+                return RedirectToAction("Index", "Home");
+
+            string errorMessage = result == IdentityRepository.EmailConfirmationResult.Timeout
+                ? "Время действия кода вышло, запросите новый код"
+                : "Неверный код, попробуйте ещё раз";
+            model.ConfirmationCode = string.Empty;
+            ModelState.AddModelError(string.Empty, errorMessage);
+            return View(model);
         }
     }
 }

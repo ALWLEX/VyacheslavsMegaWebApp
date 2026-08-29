@@ -20,7 +20,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="AppResources\Images\192.png" />
+    <None Remove="AppResources\Images\512-maskable.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="BuildBundlerMinifier" Version="3.2.449" />
+    <PackageReference Include="MailKit" Version="4.17.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.7" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.7" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.7">
@@ -39,6 +45,18 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\uploaded-resources\img\partners\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="AppResources\EmailTemplates\EmailConfirmation\Template.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="AppResources\EmailTemplates\EmailConfirmation\Template.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="AppResources\Images\logoEmail.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

@@ -33,6 +33,10 @@
     line-height: var(--standart-line-height);
 }
 
+.form--text-left{
+    text-align: left;
+}
+
 .form__header {
     margin-bottom: 20px;
 }

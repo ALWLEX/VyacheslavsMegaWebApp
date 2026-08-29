@@ -62,6 +62,7 @@ internal class Program
         builder.Services.AddTransient<FundRepository>();
         builder.Services.AddTransient<GoalRepository>();
         builder.Services.AddTransient<DownloadButtonsRepository>();
+        builder.Services.AddTransient<EmailService>();
 
         var app = builder.Build();
 

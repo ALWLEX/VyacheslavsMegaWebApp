@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Configuration;
 
 namespace VyacheslavsMegaWebApp.Models
 {
@@ -6,6 +7,7 @@ namespace VyacheslavsMegaWebApp.Models
     {
         [Required]
         [MaxLength(50)]
+        [RegularExpression(@"^[A-Za-z0-9_]{3,16}$", ErrorMessage = "Некорректное имя пользователя")]
         [Display(Name = "Имя пользователя")]
         public string UserName { get; set; }
 
