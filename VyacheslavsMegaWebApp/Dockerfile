@@ -4,16 +4,16 @@ EXPOSE 8080
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
-COPY VyacheslavsMegaServer.csproj VyacheslavsMegaServer.csproj
-RUN dotnet restore VyacheslavsMegaServer.csproj
+COPY VyacheslavsMegaWebApp.csproj VyacheslavsMegaWebApp.csproj
+RUN dotnet restore VyacheslavsMegaWebApp.csproj
 COPY . .
 WORKDIR /src
-RUN dotnet build VyacheslavsMegaServer.csproj -c Release -o /app
+RUN dotnet build VyacheslavsMegaWebApp.csproj -c Release -o /app
 
 FROM build AS publish
-RUN dotnet publish VyacheslavsMegaServer.csproj -c Release -o /app
+RUN dotnet publish VyacheslavsMegaWebApp.csproj -c Release -o /app
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app .
-ENTRYPOINT ["dotnet", "VyacheslavsMegaServer.dll"]
+ENTRYPOINT ["dotnet", "VyacheslavsMegaWebApp.dll"]
