@@ -54,6 +54,12 @@
     <None Update="AppResources\EmailTemplates\EmailConfirmation\Template.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="AppResources\EmailTemplates\PasswordReset\Template.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="AppResources\EmailTemplates\PasswordReset\Template.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="AppResources\Images\logoEmail.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

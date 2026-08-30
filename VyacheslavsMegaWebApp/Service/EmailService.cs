@@ -9,6 +9,40 @@ namespace VyacheslavsMegaWebApp.Service
 {
     public class EmailService
     {
+        public async Task<MimeMessage> CreatePasswordResetMessage(VmsIdentityUser user, string url)
+        {
+            MimeMessage emailMessage = new MimeMessage();
+            BodyBuilder bodyBuilder = new BodyBuilder();
+
+            MimeEntity logoImage = bodyBuilder.LinkedResources.Add(AppResourcesManager.GetImage(AppResourcesManager.EmailLogo));
+            logoImage.ContentId = MimeUtils.GenerateMessageId();
+
+
+            bodyBuilder.HtmlBody = setEmailParams(
+                await AppResourcesManager.GetEmailTemplate(AppResourcesManager.PasswordReset, AppResourcesManager.EmailMessageFormat.Html),
+                new Dictionary<string, string>
+                {
+                    ["userName"] = user.UserName,
+                    ["resetPasswordUrl"] = url,
+                    ["logoCid"] = logoImage.ContentId
+                });
+
+            bodyBuilder.TextBody = setEmailParams(
+                await AppResourcesManager.GetEmailTemplate(AppResourcesManager.PasswordReset, AppResourcesManager.EmailMessageFormat.Text),
+                new Dictionary<string, string>
+                {
+                    ["userName"] = user.UserName,
+                    ["resetPasswordUrl"] = url
+                });
+
+            emailMessage.From.Add(new MailboxAddress("Администрация проекта", "vyacheslavmegasrv@gmail.com"));
+            emailMessage.To.Add(new MailboxAddress("", user.Email));
+            emailMessage.Subject = "Сброс пароля";
+            emailMessage.Body = bodyBuilder.ToMessageBody();
+
+            return emailMessage;
+        }
+
         public async Task<MimeMessage> CreateConfirmMessage(VmsIdentityUser user, string code)
         {
             MimeMessage emailMessage = new MimeMessage();

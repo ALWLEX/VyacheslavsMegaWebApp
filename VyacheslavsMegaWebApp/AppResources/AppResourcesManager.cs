@@ -7,6 +7,7 @@
         public enum EmailMessageFormat { Html, Text }
 
         public const string EmailConfirmation = "EmailConfirmation";
+        public const string PasswordReset = "PasswordReset";
 
         #endregion
 

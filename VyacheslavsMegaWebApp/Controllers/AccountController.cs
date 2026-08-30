@@ -141,5 +141,75 @@ namespace VyacheslavsMegaWebApp.Controllers
             ModelState.AddModelError(string.Empty, errorMessage);
             return View(model);
         }
+
+        [AllowAnonymous]
+        public IActionResult ForgotPassword()
+        {
+            return View();
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            VmsIdentityUser? user;
+
+            switch (model.GetUserInputType())
+            {
+                case ForgotPasswordViewModel.UserInputType.Username:
+                    user = await _userManager.FindByNameAsync(model.UserInput);
+                    break;
+                case ForgotPasswordViewModel.UserInputType.Email:
+                    user = await _userManager.FindByEmailAsync(model.UserInput);
+                    break;
+                default:
+                    ModelState.AddModelError("", "Недопустимый ввод, попробуйте ещё раз");
+                    return View(model);
+            }
+
+            if (user is null)
+            {
+                ModelState.AddModelError("", "Пользователь не найден, попробуйте ещё раз");
+                return View(model);
+            }
+            string token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            string userId = user.Id;
+            string url = Url.Action(nameof(ResetPassword), "Account", new { userId, token }, Request.Scheme);
+            await _emailService.SendEmail(await _emailService.CreatePasswordResetMessage(user, url));
+            TempData["email"] = user.Email;
+            return RedirectToAction(nameof(EmailSent));
+        }
+
+        [AllowAnonymous]
+        public IActionResult ResetPassword(string userId, string token)
+        {
+            return View(new ResetPasswordViewModel { UserId = userId, Token = token });
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
+        {
+            VmsIdentityUser user = await _userManager.FindByIdAsync(model.UserId);
+            IdentityResult result = await _userManager.ResetPasswordAsync(user, model.Token, model.NewPassword);
+
+            if (result.Succeeded)
+            {
+                await _signInManager.SignInAsync(user, false);
+                return RedirectToAction(nameof(HomeController.Index), "Home");
+            }
+
+            ModelState.AddModelError("", "Не удалось сбросить пароль, попробуйте ещё раз");
+            return View(model);
+        }
+
+        [AllowAnonymous]
+        public IActionResult EmailSent()
+        {
+            return View();
+        }
     }
 }
