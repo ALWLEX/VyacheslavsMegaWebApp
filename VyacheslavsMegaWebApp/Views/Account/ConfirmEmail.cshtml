@@ -35,7 +35,7 @@
 
             <input type="hidden"
                    id="code-sent-at"
-                   value="@Model.User.EmailConfirmedCodeCreationTime.Value.ToString("yyyy-MM-ddTHH:mm:ssZ")">
+                   value="@(Model.User.EmailConfirmedCodeCreationTime?.ToString("yyyy-MM-ddTHH:mm:ssZ") ?? DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ"))">
 
         </div>
     </div>

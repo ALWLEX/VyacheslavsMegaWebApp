@@ -114,7 +114,7 @@ namespace VyacheslavsMegaWebApp.Controllers
         public async Task<IActionResult> ConfirmEmail()
         {
             VmsIdentityUser user = await _userManager.GetUserAsync(User);
-            if (DateTime.UtcNow - user.EmailConfirmedCodeCreationTime >= new TimeSpan(0, 3, 0))
+            if (user.EmailConfirmedCodeCreationTime is null || DateTime.UtcNow - user.EmailConfirmedCodeCreationTime >= new TimeSpan(0, 3, 0))
                 await _emailService.SendEmail(await _emailService.CreateConfirmMessage(user, await _identityRepository.GetEmailConfirmationCode(user.Id)));
             return View(new EmailConfirmationViewModel() { User = user });
         }

@@ -72,6 +72,16 @@
     color: var(--text-color-hover);
 }
 
+.header__table-menu tr td:first-child {
+    padding: 10px 0 10px 16px;
+    font-size: medium;
+    vertical-align: top;
+}
+
+.header__table-menu tr td:last-child {
+    padding: 10px 16px 10px 0;
+}
+
 /*Burger*/
 .header__burger {
     position: relative;

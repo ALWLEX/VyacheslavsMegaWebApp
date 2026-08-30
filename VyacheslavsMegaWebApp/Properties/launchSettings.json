@@ -3,7 +3,6 @@
     "http": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "account/confirmemail",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },

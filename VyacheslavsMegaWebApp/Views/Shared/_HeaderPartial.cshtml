@@ -33,14 +33,36 @@
             else
             {
                 <div class="dropdown">
+                    @if (!user.EmailConfirmed)
+                    {
+                        <span class="warning-blink">⚠️</span>
+                    }     
                     <a class="header__menu-link header__menu-link--account dropdown__content">@user.UserName</a>
                     <div class="dropdown__menu">
-                        <a class="header__menu-link dropdown__menu-link" asp-area="" asp-controller="Account" asp-action="AccountSettings">Настройки профиля</a>
-                        @if (isAdmin)
-                        {
-                            <a class="header__menu-link dropdown__menu-link" asp-area="Admin" asp-controller="Home" asp-action="Index">Панель администратора</a>
-                        }
-                        <a class="header__menu-link dropdown__menu-link" asp-area="" asp-controller="Account" asp-action="Logout">Выйти</a>
+                        <table class="header__table-menu">
+                            @if (!user.EmailConfirmed)
+                            {
+                                <tr>
+                                    <td><span class="warning-blink">⚠️</span></td>
+                                    <td class="dropdown__menu-link"><a class="header__menu-link" asp-area="" asp-controller="Account" asp-action="ConfirmEmail">Подтвердите e-mail</a></td>
+                                </tr>
+                            }
+                            <tr> 
+                                <td></td>
+                                    <td class="dropdown__menu-link"><a class="header__menu-link" asp-area="" asp-controller="Account" asp-action="AccountSettings">Настройки профиля</a></td>
+                            </tr>
+                            @if (isAdmin)
+                            {
+                                <tr>
+                                    <td></td>
+                                    <td class ="dropdown__menu-link"><a class="header__menu-link" asp-area="Admin" asp-controller="Home" asp-action="Index">Панель администратора</a></td>
+                                </tr>
+                            }
+                            <tr>
+                                <td></td>
+                                <td class="dropdown__menu-link"><a class="header__menu-link" asp-area="" asp-controller="Account" asp-action="Logout">Выйти</a></td>
+                            </tr>
+                        </table>
                     </div>
                 </div>
             }
