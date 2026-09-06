@@ -1,9 +1,7 @@
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Hosting.Internal;
-using System.Configuration;
 using VyacheslavsMegaWebApp.Data;
 using VyacheslavsMegaWebApp.Data.Entities.Identity;
+using VyacheslavsMegaWebApp.Data.JSON.Configuration;
 using VyacheslavsMegaWebApp.Data.JSON.Repositories;
 using VyacheslavsMegaWebApp.Data.Repositories;
 using VyacheslavsMegaWebApp.Service;
@@ -23,7 +21,7 @@ internal class Program
             .Build()
             .Bind("Project", new ProjectConfig());
         _configuration = configurationBuilder.Build();
-
+       
         // Add services to the container.
         builder.Services.AddAuthorization(x =>
             x.AddPolicy("AdminAreaPolicy", policy => policy.RequireRole("Admin")));
@@ -36,6 +34,7 @@ internal class Program
         builder.Services.AddIdentity<VmsIdentityUser, IdentityRole>(options =>
         {
             options.User.RequireUniqueEmail = true;
+            options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_";
             options.Password.RequireDigit = false;
             options.Password.RequireNonAlphanumeric = false;
             options.Password.RequireLowercase = false;

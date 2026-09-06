@@ -4,6 +4,7 @@ using MailKit.Security;
 using MimeKit.Utils;
 using VyacheslavsMegaWebApp.AppResources;
 using VyacheslavsMegaWebApp.Data.Entities.Identity;
+using VyacheslavsMegaWebApp.Data.JSON.Configuration.EmailService;
 
 namespace VyacheslavsMegaWebApp.Service
 {
@@ -35,7 +36,7 @@ namespace VyacheslavsMegaWebApp.Service
                     ["resetPasswordUrl"] = url
                 });
 
-            emailMessage.From.Add(new MailboxAddress("Администрация проекта", "vyacheslavmegasrv@gmail.com"));
+            emailMessage.From.Add(new MailboxAddress(EmailServiceConfig.SenderName, EmailServiceConfig.Email));
             emailMessage.To.Add(new MailboxAddress("", user.Email));
             emailMessage.Subject = "Сброс пароля";
             emailMessage.Body = bodyBuilder.ToMessageBody();
@@ -69,7 +70,7 @@ namespace VyacheslavsMegaWebApp.Service
                     ["code"] = code
                 });
 
-            emailMessage.From.Add(new MailboxAddress("Администрация проекта", "vyacheslavmegasrv@gmail.com"));
+            emailMessage.From.Add(new MailboxAddress(EmailServiceConfig.SenderName, EmailServiceConfig.Email));
             emailMessage.To.Add(new MailboxAddress("", user.Email));
             emailMessage.Subject = "Подтверждение email";
             emailMessage.Body = bodyBuilder.ToMessageBody();
@@ -81,8 +82,8 @@ namespace VyacheslavsMegaWebApp.Service
         {
             using (var client = new SmtpClient())
             {
-                await client.ConnectAsync("smtp.gmail.com", 587, SecureSocketOptions.StartTls);
-                await client.AuthenticateAsync("vyacheslavmegasrv@gmail.com", "zesv tjuv wenk gyro");
+                await client.ConnectAsync(SmtpServerConfig.Address, SmtpServerConfig.Port, SecureSocketOptions.StartTls);
+                await client.AuthenticateAsync(EmailServiceConfig.Email, EmailServiceConfig.Password);
                 await client.SendAsync(message);
 
                 await client.DisconnectAsync(true);

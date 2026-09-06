@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using VyacheslavsMegaWebApp.Data.Entities;
 using VyacheslavsMegaWebApp.Data.Entities.Identity;
-using VyacheslavsMegaWebApp.Service;
+using VyacheslavsMegaWebApp.Data.JSON.Configuration;
 
 namespace VyacheslavsMegaWebApp.Data
 {

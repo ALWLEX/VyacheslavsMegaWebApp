@@ -1,6 +1,5 @@
-﻿using System.Net.Http;
-using System.Text.Json;
-using VyacheslavsMegaWebApp.Service;
+﻿using System.Text.Json;
+using VyacheslavsMegaWebApp.Data.JSON.Configuration.MinecraftServer;
 
 namespace VyacheslavsMegaWebApp.Data.JSON.Repositories
 {
@@ -8,7 +7,7 @@ namespace VyacheslavsMegaWebApp.Data.JSON.Repositories
     {
         public async Task<MCServerStat.MCServerStat> GetMCServerStats()
         {
-            string MCServerStatApiUrl = $"https://api.mcsrvstat.us/2/{MCServerData.IP}:{MCServerData.Port}";
+            string MCServerStatApiUrl = $"https://api.mcsrvstat.us/2/{MinecraftServerData.IP}:{MinecraftServerData.Port}";
             using (HttpClient apiHttpClient = new HttpClient())
             {
                 //User-Agent is required by API
