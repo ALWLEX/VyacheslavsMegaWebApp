@@ -1,87 +1,39 @@
-﻿@model UserManagerViewModel
+﻿@using VyacheslavsMegaWebApp.Data.Entities.Identity
+@model UserManagerViewModel
 
-<div class="block_big_first">
+<div class="block block--first">
     <div class="container">
-        <div class="intro_container">
-            <h1 class="title">Редактор пользователей</h1>
-            <br />
-            <div asp-validation-summary="All" class="form_error mc_form_font_standart"></div>
-            <form asp-area="Admin" asp-controller="UserManagement" asp-action="Index" method="post">
-                <div class="form_part_left_aligment">
-                    <label class="element_label mc_form_font_standart" asp-for="NameSearchQuery"></label>
-                    <input class="mc_text_input_space mc_form_font_standart wide_element labeled_element"
-                           asp-for="NameSearchQuery" />
-                </div>
-                <div class="form_part_left_aligment form_next_block">
-                    <label class="element_label mc_form_font_standart" asp-for="EmailSearchQuery"></label>
-                    <input class="mc_text_input_space mc_form_font_standart wide_element labeled_element"
-                           asp-for="EmailSearchQuery" />
-                </div>
-                <div class="form_part_left_aligment form_next_block">
-                    <label class="element_label mc_form_font_standart" asp-for="RoleSearchQuery"></label>
-                    <select class="mc_text_input_space mc_form_font_standart wide_element labeled_element"
-                           asp-for="RoleSearchQuery" 
-                           asp-items="@Model.RolesSelectListToFilter">
-                    </select>
-                </div>
-                <div class="form_part_center_aligment form_next_block">
-                    <button class="mc_button wide_element" type="submit">
-                        <span class="mc_button_title mc_form_font_standart">Найти</span>
-                    </button>
-                </div>
-            </form>
-            <br />
-            <form asp-area="Admin" asp-controller="UserManagement" asp-action="SaveUserRoles" method="post">
-                <div class="table_container">
-                    <table class="mc_form_font_standart white mc_table wide_element">
-                        <tr class="tr_header">
-                            <td>Имя</td>
-                            <td>Email</td>
-                            <td>Роль</td>
-                            <!--<td>Подтверждён</td>-->
-                            <td colspan="1">Действия</td>
+        <div class="section">
+            <h2 class="section__title section__title--main">Редактор пользователей</h2>
+
+            <div class="mc-table-container">
+                <table class="mc-table mc-table--wide">
+                    <tr class="mc-table--center-aligment">
+                        <td>Имя</td>
+                        <td>Email</td>
+                        <td>Подтверждён</td>
+                        <td>Действия</td>
+                    </tr>
+                    @foreach (VmsIdentityUser user in Model.Users)
+                    {
+                        <tr>
+                            <td>@user.UserName</td>
+                            <td>@user.Email</td>
+                            <td class="mc-table--center-aligment">
+                                <label class="mc-checkbox">
+                                    <input class="mc-checkbox__input" type="checkbox" checked="@user.EmailConfirmed" disabled />
+                                    <span class="mc-checkbox__box"></span>
+                                </label>
+                            </td>
+                            <td><a asp-action="UserDetails" asp-route-linkId="@user.Id">Подробнее</a></td>
                         </tr>
-                        @for (int i = 0; i < Model.Users.Count; i++)
-                        {
-                            <tr>
-                                <input type="hidden" asp-for="@Model.Users[i].IdentityUserInfo.Id"/>
-                                <td class="align_left">@Model.Users[i].IdentityUserInfo.UserName</td>
-                                <td class="align_left">@Model.Users[i].IdentityUserInfo.Email</td>
-                                <td class="align_left">
-                                    @if (@Model.Users[i].Role != "Admin")
-                                    {
-                                        <select class="mc_text_input_space mc_form_font_standart wide_element labeled_element"
-                                                asp-for="@Model.Users[i].Role"
-                                                asp-items="@Model.RolesSelectListToSet">
-                                        </select>
-                                    }
-                                    else
-                                    {
-                                        @Model.Users[i].Role
-                                    }
-                                </td>
-                                <!--
-                                <td class="align_center">
-                                    <span class="mc_checkbox_container">
-                                        <input type="checkbox" checked="@Model.Users[i].IdentityUserInfo.EmailConfirmed" readonly /><br>
-                                        <span class="mc_checkbox"></span>
-                                    </span>
-                                </td>
-                                -->
-                                <td><a asp-action="RemoveUser" asp-route-userId="@Model.Users[i].IdentityUserInfo.Id" onclick="confirmRemove(event)">Удалить</a></td>
-                            </tr>
-                        }
-                    </table>
-                </div>
-                <div class="form_part_center_aligment form_next_block">
-                    <button class="mc_button wide_element" type="submit">
-                        <span class="mc_button_title mc_form_font_standart">Сохранить роли</span>
-                    </button>
-                </div>
-            </form>
-            <div class="form_next_block">
-                <a asp-area="Admin" asp-controller="Home" asp-action="Index" class="white mc_form_font_standart">Назад</a>
+                    }
+                </table>
             </div>
+
+            <p class="back-link">
+                <a asp-area="Admin" asp-controller="Home" asp-action="Index">Назад</a>
+            </p>
         </div>
     </div>
 </div>
