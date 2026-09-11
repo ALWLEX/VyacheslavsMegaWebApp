@@ -421,9 +421,6 @@ namespace VyacheslavsMegaWebApp.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("varchar(256)");
 
-                    b.Property<byte[]>("EmailConfirmCodeHash")
-                        .HasColumnType("longblob");
-
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("tinyint(1)");
 
@@ -479,16 +476,16 @@ namespace VyacheslavsMegaWebApp.Migrations
                         {
                             Id = "d4bc75a9-ca48-45aa-a3f2-2ea5886ce303",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "0a5df9ab-ea23-47a5-a702-59928042621c",
+                            ConcurrencyStamp = "7e29b993-73c5-4a32-8cdd-e8dc0c7892ca",
                             Email = "vya4slav4617@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "VYA4SLAV4617@GMAIL.COM",
                             NormalizedUserName = "EVRAY",
-                            PasswordHash = "AQAAAAIAAYagAAAAEDDHhAPFdwjUltGX7G+ni4hfGrHg94Ix40YsEf7wg3CuEoMyZd7P037qzk9lf40f0Q==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEPRGyNKDSt55tJNbfSuvdpIaHPcUzOARUsPC/Ra9tRDxPf2hdHkz+COm81Jp00iUcA==",
                             PhoneNumber = "+7 (705) 806 3101",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "f521e49e-682a-4801-a6d6-6dcb47a44b80",
+                            SecurityStamp = "d48502c4-c8e3-4535-be3e-673c4dd5d5a7",
                             TwoFactorEnabled = false,
                             UserName = "Evray"
                         });
