@@ -5,7 +5,7 @@
 
 @{
     VmsIdentityUser? user = await _userManager.GetUserAsync(User);
-    bool isAdmin = user is null ? false : await _userManager.IsInRoleAsync(user, IdentityRepository.ADMIN_ROLE);
+    bool isAdmin = user is null ? false : await _userManager.IsInRoleAsync(user, "Admin");
 }
 
 <div class="header">
@@ -44,7 +44,7 @@
                             {
                                 <tr>
                                     <td><span class="warning-blink">⚠️</span></td>
-                                    <td class="dropdown__menu-link"><a class="header__menu-link" asp-area="" asp-controller="Account" asp-action="ConfirmEmail">Подтвердите e-mail</a></td>
+                                        <td class="dropdown__menu-link"><a class="header__menu-link" asp-area="" asp-controller="Account" asp-action="SendEmailConfirmationToken">Подтвердите e-mail</a></td>
                                 </tr>
                             }
                             <tr> 

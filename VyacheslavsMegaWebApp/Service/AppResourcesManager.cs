@@ -1,4 +1,4 @@
-﻿namespace VyacheslavsMegaWebApp.AppResources
+﻿namespace VyacheslavsMegaWebApp.Service
 {
     public static class AppResourcesManager
     {
@@ -27,9 +27,9 @@
         public static async Task<string> GetEmailTemplate(string templateName, EmailMessageFormat format)
         {
             return await File.ReadAllTextAsync(Path.Combine(
-                AppResourcesFolder, 
+                AppResourcesFolder,
                 "EmailTemplates",
-                templateName, 
+                templateName,
                 string.Concat("Template", format == EmailMessageFormat.Html ? ".html" : ".txt")));
         }
     }

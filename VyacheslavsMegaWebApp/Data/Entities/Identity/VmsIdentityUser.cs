@@ -7,8 +7,6 @@ namespace VyacheslavsMegaWebApp.Data.Entities.Identity
     {
         public VmsIdentityUser() : base() { }
 
-        public byte[]? EmailConfirmCodeHash { get; set; }
-
         public DateTime? EmailConfirmedCodeCreationTime { get; set; }
     }
 }

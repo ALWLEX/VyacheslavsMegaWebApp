@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using VyacheslavsMegaWebApp.Data.Entities.Identity;
-using VyacheslavsMegaWebApp.Data.Repositories;
 using VyacheslavsMegaWebApp.Models;
 using VyacheslavsMegaWebApp.Service;
 
@@ -13,14 +12,12 @@ namespace VyacheslavsMegaWebApp.Controllers
     {
         private readonly UserManager<VmsIdentityUser> _userManager;
         private readonly SignInManager<VmsIdentityUser> _signInManager;
-        private readonly IdentityRepository _identityRepository;
         private readonly EmailService _emailService;
 
-        public AccountController(UserManager<VmsIdentityUser> userManager, SignInManager<VmsIdentityUser> signInManager, IdentityRepository identityRepository, EmailService emailService) 
+        public AccountController(UserManager<VmsIdentityUser> userManager, SignInManager<VmsIdentityUser> signInManager, EmailService emailService) 
         {
             _userManager = userManager;
             _signInManager = signInManager;
-            _identityRepository = identityRepository;
             _emailService = emailService;
         }
 
@@ -73,7 +70,7 @@ namespace VyacheslavsMegaWebApp.Controllers
                 {
                     // установка куки
                     await _signInManager.SignInAsync(user, false);
-                    return RedirectToAction(nameof(ConfirmEmail));
+                    return RedirectToAction(nameof(SendEmailConfirmationToken));
                 }
                 else
                 {
@@ -114,35 +111,46 @@ namespace VyacheslavsMegaWebApp.Controllers
         }
 
         [Authorize]
-        public async Task<IActionResult> ConfirmEmail()
+        public async Task<IActionResult> SendEmailConfirmationToken()
         {
-            VmsIdentityUser user = await _userManager.GetUserAsync(User);
-            if (user.EmailConfirmedCodeCreationTime is null || DateTime.UtcNow - user.EmailConfirmedCodeCreationTime >= new TimeSpan(0, 3, 0))
-                await _emailService.SendEmail(await _emailService.CreateConfirmMessage(user, await _identityRepository.GetEmailConfirmationCode(user.Id)));
-            return View(new EmailConfirmationViewModel() { User = user });
-        }
+            VmsIdentityUser? user = await _userManager.GetUserAsync(User);
 
-        [Authorize]
-        [HttpPost]
-        public async Task<IActionResult> ConfirmEmail(EmailConfirmationViewModel model)
-        {
-            if (!ModelState.IsValid)
+            if (user is null)
+                return Unauthorized();
+
+            if (user.EmailConfirmedCodeCreationTime is null || 
+                DateTime.UtcNow - user.EmailConfirmedCodeCreationTime >= new TimeSpan(0, 3, 0))
             {
-                model.ConfirmationCode = string.Empty;
-                return View(model);
+                //Get values
+                string token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                string userId = user.Id;
+                string url = Url.Action(nameof(ConfirmEmail), "Account", new { userId, token }, Request.Scheme)!;
+
+                await _emailService.SendEmail(await _emailService.CreateConfirmMessage(user, url));
+
+                //Update email creation time
+                user.EmailConfirmedCodeCreationTime = DateTime.UtcNow;
+                await _userManager.UpdateAsync(user);
             }
 
-            VmsIdentityUser user = await _userManager.GetUserAsync(User);
-            IdentityRepository.EmailConfirmationResult result = await _identityRepository.ConfirmEmail(user.Id, model.ConfirmationCode);
-            if ( result == IdentityRepository.EmailConfirmationResult.Success) 
+            TempData["email"] = user.Email;
+            return RedirectToAction(nameof(EmailSent));
+        }
+
+        [AllowAnonymous]
+        public async Task<IActionResult> ConfirmEmail(string userId, string token)
+        {
+            VmsIdentityUser? user = await _userManager.FindByIdAsync(userId);
+
+            if (user is null)
+                return NotFound();
+
+            IdentityResult confirmationResult = await _userManager.ConfirmEmailAsync(user, token);
+
+            if (confirmationResult.Succeeded)
                 return RedirectToAction("Index", "Home");
 
-            string errorMessage = result == IdentityRepository.EmailConfirmationResult.Timeout
-                ? "Время действия кода вышло, запросите новый код"
-                : "Неверный код, попробуйте ещё раз";
-            model.ConfirmationCode = string.Empty;
-            ModelState.AddModelError(string.Empty, errorMessage);
-            return View(model);
+            return BadRequest();
         }
 
         [AllowAnonymous]

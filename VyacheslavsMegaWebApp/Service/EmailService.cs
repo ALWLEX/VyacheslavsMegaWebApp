@@ -2,7 +2,6 @@
 using MailKit.Net.Smtp;
 using MailKit.Security;
 using MimeKit.Utils;
-using VyacheslavsMegaWebApp.AppResources;
 using VyacheslavsMegaWebApp.Data.Entities.Identity;
 using VyacheslavsMegaWebApp.Data.JSON.Configuration.EmailService;
 
@@ -44,7 +43,7 @@ namespace VyacheslavsMegaWebApp.Service
             return emailMessage;
         }
 
-        public async Task<MimeMessage> CreateConfirmMessage(VmsIdentityUser user, string code)
+        public async Task<MimeMessage> CreateConfirmMessage(VmsIdentityUser user, string url)
         {
             MimeMessage emailMessage = new MimeMessage();
             BodyBuilder bodyBuilder = new BodyBuilder();
@@ -58,7 +57,7 @@ namespace VyacheslavsMegaWebApp.Service
                 new Dictionary<string, string>
                 {
                     ["userName"] = user.UserName,
-                    ["code"] = code,
+                    ["confirmEmailUrl"] = url,
                     ["logoCid"] = logoImage.ContentId
                 });
 
@@ -67,7 +66,7 @@ namespace VyacheslavsMegaWebApp.Service
                 new Dictionary<string, string>
                 {
                     ["userName"] = user.UserName,
-                    ["code"] = code
+                    ["confirmEmailUrl"] = url
                 });
 
             emailMessage.From.Add(new MailboxAddress(EmailServiceConfig.SenderName, EmailServiceConfig.Email));

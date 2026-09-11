@@ -57,7 +57,6 @@ internal class Program
         builder.Services.AddTransient<ServerMediaLinksRepository>();
         builder.Services.AddTransient<ImageManager>();
         builder.Services.AddTransient<MCServerStatRepository>();
-        builder.Services.AddTransient<IdentityRepository>();
         builder.Services.AddTransient<FundRepository>();
         builder.Services.AddTransient<GoalRepository>();
         builder.Services.AddTransient<DownloadButtonsRepository>();
