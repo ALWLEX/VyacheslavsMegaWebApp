@@ -35,21 +35,24 @@ namespace VyacheslavsMegaWebApp.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Login(LoginViewModel model, string? returnUrl)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
+                return View(model);
+
+            VmsIdentityUser? user = await _userManager.FindByNameAsync(model.UserName);
+            if (user is null)
             {
-                VmsIdentityUser? user = await _userManager.FindByNameAsync(model.UserName);
-                if (user != null) 
-                {
-                    await _signInManager.SignOutAsync();
-                    Microsoft.AspNetCore.Identity.SignInResult signInResult = await _signInManager.PasswordSignInAsync(user, model.Password, model.RememberMe, false);
-                    if (signInResult.Succeeded)
-                    {
-                        return Redirect(returnUrl ?? "/");
-                    }
-                }
                 ModelState.AddModelError(nameof(LoginViewModel.UserName), "Неверный логин или пароль");
+                return View(model);
             }
-            return View(model);
+
+            await _signInManager.SignOutAsync();
+            Microsoft.AspNetCore.Identity.SignInResult signInResult = await _signInManager.PasswordSignInAsync(user, model.Password, model.RememberMe, false);
+            if (!signInResult.Succeeded)
+            {
+                ModelState.AddModelError(nameof(LoginViewModel.UserName), "Неудачный вход, попробуйте ещё раз");
+                return View(model);
+            }
+            return Redirect(returnUrl ?? "/");
         }
 
         [AllowAnonymous]
