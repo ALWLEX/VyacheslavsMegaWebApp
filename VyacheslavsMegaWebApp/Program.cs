@@ -9,7 +9,6 @@ using VyacheslavsMegaWebApp.Service;
 
 internal class Program
 {
-    private static IConfiguration? _configuration;
     private static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
@@ -21,7 +20,6 @@ internal class Program
             .AddEnvironmentVariables()
             .Build()
             .Bind("Project", new ProjectConfig());
-        _configuration = configurationBuilder.Build();
        
         // Add services to the container.
         builder.Services.AddAuthorization(x =>
@@ -43,7 +41,8 @@ internal class Program
         })
             .AddEntityFrameworkStores<AppDbContext>()
             .AddDefaultTokenProviders()
-            .AddErrorDescriber<VmsIdentityErrorDescriber>();
+            .AddErrorDescriber<VmsIdentityErrorDescriber>()
+            .AddUserValidator<VmsUserValidator>();
 
         builder.Services.ConfigureApplicationCookie(options =>
         {

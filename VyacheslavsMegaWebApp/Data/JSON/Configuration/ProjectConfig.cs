@@ -8,5 +8,6 @@ namespace VyacheslavsMegaWebApp.Data.JSON.Configuration
         public static string ConnectionString { get; set; }
         public static MinecraftServerData MinecraftServerData { get; set; }
         public static EmailServiceConfig EmailServiceConfig { get; set; }
+        public static List<string> AcceptedEmailDomains { get; set; }
     }
 }

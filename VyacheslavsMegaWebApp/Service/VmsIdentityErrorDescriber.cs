@@ -85,5 +85,8 @@ namespace VyacheslavsMegaWebApp.Service
 
         public override IdentityError PasswordTooShort(int length)
             => new() { Code = nameof(PasswordTooShort), Description = GetString(nameof(PasswordTooShort), length) };
+
+        public IdentityError UnallowedEmailDomain(string domain) 
+            => new() { Code = nameof(UnallowedEmailDomain), Description = GetString(nameof(UnallowedEmailDomain), domain) };
     }
 }
