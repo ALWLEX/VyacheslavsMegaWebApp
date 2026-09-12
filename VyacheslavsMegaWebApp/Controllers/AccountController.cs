@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
 using VyacheslavsMegaWebApp.Data.Entities.Identity;
 using VyacheslavsMegaWebApp.Models;
 using VyacheslavsMegaWebApp.Service;
@@ -13,12 +14,26 @@ namespace VyacheslavsMegaWebApp.Controllers
         private readonly UserManager<VmsIdentityUser> _userManager;
         private readonly SignInManager<VmsIdentityUser> _signInManager;
         private readonly EmailService _emailService;
+        private readonly IStringLocalizer<AccountController> _localizer;
 
-        public AccountController(UserManager<VmsIdentityUser> userManager, SignInManager<VmsIdentityUser> signInManager, EmailService emailService) 
+        #region String constants
+
+        private const string UserNotFound = "UserNotFound";
+        private const string UserNameNotFound = "UserNameNotFound";
+        private const string UserIsLockedOut = "UserIsLockedOut";
+        private const string UserIsNotAllowed = "UserIsNotAllowed";
+        private const string NotAuthorized = "NotAuthorized";
+        private const string WrongInput = "WrongInput";
+        private const string WrongLoginOrPassword = "WrongLoginOrPassword";
+
+        #endregion
+
+        public AccountController(UserManager<VmsIdentityUser> userManager, SignInManager<VmsIdentityUser> signInManager, EmailService emailService, IStringLocalizer<AccountController> localizer) 
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _emailService = emailService;
+            _localizer = localizer;
         }
 
         [AllowAnonymous]
@@ -38,18 +53,28 @@ namespace VyacheslavsMegaWebApp.Controllers
             VmsIdentityUser? user = await _userManager.FindByNameAsync(model.UserName);
             if (user is null)
             {
-                ModelState.AddModelError(nameof(LoginViewModel.UserName), "Неверный логин или пароль");
+                ModelState.AddModelError(UserNameNotFound, string.Format(_localizer[UserNameNotFound], model.UserName));
                 return View(model);
             }
 
             await _signInManager.SignOutAsync();
             Microsoft.AspNetCore.Identity.SignInResult signInResult = await _signInManager.PasswordSignInAsync(user, model.Password, model.RememberMe, false);
-            if (!signInResult.Succeeded)
+            if (signInResult.Succeeded)
             {
-                ModelState.AddModelError(nameof(LoginViewModel.UserName), "Неудачный вход, попробуйте ещё раз");
-                return View(model);
+                return Redirect(returnUrl ?? "/");
             }
-            return Redirect(returnUrl ?? "/");
+
+            bool wrongParrwordCheck = !(signInResult.IsLockedOut || signInResult.IsNotAllowed);
+            if (wrongParrwordCheck)
+            {
+                ModelState.AddModelError(WrongLoginOrPassword, _localizer[WrongLoginOrPassword]);
+            }
+
+            if (signInResult.IsLockedOut)
+                ModelState.AddModelError(UserIsLockedOut, string.Format(_localizer[UserIsLockedOut], model.UserName));
+            if (signInResult.IsNotAllowed)
+                ModelState.AddModelError(UserIsNotAllowed, string.Format(_localizer[UserIsNotAllowed], model.UserName));
+            return View(model);
         }
 
         [AllowAnonymous]
@@ -62,24 +87,20 @@ namespace VyacheslavsMegaWebApp.Controllers
         [HttpPost]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
+                return View(model);
+
+            VmsIdentityUser user = new VmsIdentityUser { Email = model.Email, UserName = model.UserName };
+            IdentityResult result = await _userManager.CreateAsync(user, model.Password);
+            if (result.Succeeded)
             {
-                VmsIdentityUser user = new VmsIdentityUser { Email = model.Email, UserName = model.UserName };
-                var result = await _userManager.CreateAsync(user, model.Password);
-                if (result.Succeeded)
-                {
-                    // установка куки
-                    await _signInManager.SignInAsync(user, false);
-                    return RedirectToAction(nameof(SendEmailConfirmationToken));
-                }
-                else
-                {
-                    foreach (var error in result.Errors)
-                    {
-                        ModelState.AddModelError(string.Empty, error.Description);
-                    }
-                }
+                // установка куки
+                await _signInManager.SignInAsync(user, false);
+                return RedirectToAction(nameof(SendEmailConfirmationToken));
             }
+
+            foreach (IdentityError error in result.Errors)
+                ModelState.AddModelError(error.Code, error.Description);
             return View(model);
         }
 
@@ -101,12 +122,19 @@ namespace VyacheslavsMegaWebApp.Controllers
         public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
         {
             if (!ModelState.IsValid)
-            {
-                VmsIdentityUser currentUser = await _userManager.GetUserAsync(User);
-                await _userManager.ChangePasswordAsync(currentUser, model.OldPassword, model.NewPassword);
+                return View(nameof(AccountSettings), model);
+
+            VmsIdentityUser? user = await _userManager.GetUserAsync(User);
+
+            if (user is null)
+                return Unauthorized(_localizer[NotAuthorized]);
+
+            IdentityResult result = await _userManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
+            if (result.Succeeded)
                 return RedirectToAction(nameof(AccountSettings));
-            }
             
+            foreach (IdentityError error in result.Errors)
+                ModelState.AddModelError(error.Code, error.Description);
             return View(nameof(AccountSettings), model);
         }
 
@@ -116,7 +144,7 @@ namespace VyacheslavsMegaWebApp.Controllers
             VmsIdentityUser? user = await _userManager.GetUserAsync(User);
 
             if (user is null)
-                return Unauthorized();
+                return Unauthorized(_localizer[NotAuthorized]);
 
             if (user.EmailConfirmedCodeCreationTime is null || 
                 DateTime.UtcNow - user.EmailConfirmedCodeCreationTime >= new TimeSpan(0, 3, 0))
@@ -150,6 +178,7 @@ namespace VyacheslavsMegaWebApp.Controllers
             if (confirmationResult.Succeeded)
                 return RedirectToAction("Index", "Home");
 
+
             return BadRequest();
         }
 
@@ -177,18 +206,18 @@ namespace VyacheslavsMegaWebApp.Controllers
                     user = await _userManager.FindByEmailAsync(model.UserInput);
                     break;
                 default:
-                    ModelState.AddModelError("", "Недопустимый ввод, попробуйте ещё раз");
+                    ModelState.AddModelError(WrongInput, string.Format(_localizer[WrongInput], model.UserInput));
                     return View(model);
             }
 
             if (user is null)
             {
-                ModelState.AddModelError("", "Пользователь не найден, попробуйте ещё раз");
+                ModelState.AddModelError(UserNotFound, _localizer[UserNotFound]);
                 return View(model);
             }
             string token = await _userManager.GeneratePasswordResetTokenAsync(user);
             string userId = user.Id;
-            string url = Url.Action(nameof(ResetPassword), "Account", new { userId, token }, Request.Scheme);
+            string url = Url.Action(nameof(ResetPassword), "Account", new { userId, token }, Request.Scheme)!;
             await _emailService.SendEmail(await _emailService.CreatePasswordResetMessage(user, url));
             TempData["email"] = user.Email;
             return RedirectToAction(nameof(EmailSent));
@@ -204,7 +233,11 @@ namespace VyacheslavsMegaWebApp.Controllers
         [HttpPost]
         public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
         {
-            VmsIdentityUser user = await _userManager.FindByIdAsync(model.UserId);
+            VmsIdentityUser? user = await _userManager.FindByIdAsync(model.UserId);
+
+            if (user is null)
+                return NotFound(_localizer[UserNotFound]);
+
             IdentityResult result = await _userManager.ResetPasswordAsync(user, model.Token, model.NewPassword);
 
             if (result.Succeeded)
@@ -213,7 +246,8 @@ namespace VyacheslavsMegaWebApp.Controllers
                 return RedirectToAction(nameof(HomeController.Index), "Home");
             }
 
-            ModelState.AddModelError("", "Не удалось сбросить пароль, попробуйте ещё раз");
+            foreach (IdentityError error in result.Errors)
+                ModelState.AddModelError(error.Code, error.Description);
             return View(model);
         }
 
