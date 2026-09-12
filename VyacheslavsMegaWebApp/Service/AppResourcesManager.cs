@@ -1,7 +1,24 @@
-﻿namespace VyacheslavsMegaWebApp.Service
+﻿using System.Reflection;
+using System.Resources;
+
+namespace VyacheslavsMegaWebApp.Service
 {
-    public static class AppResourcesManager
+    public class AppResourcesManager
     {
+        public AppResourcesManager()
+        {
+            IdentityErrors = new ResourceManager("AppResources.Resx.IdentityErrors", Assembly.GetExecutingAssembly());
+            SharedResources = new ResourceManager("AppResources.Resx.IdentityErrors", Assembly.GetExecutingAssembly());
+        }
+
+        #region Resx resousces
+
+        public ResourceManager IdentityErrors { get; private set; }
+
+        public ResourceManager SharedResources { get; private set; }
+
+        #endregion
+
         #region EmailTemplates
 
         public enum EmailMessageFormat { Html, Text }
@@ -17,14 +34,14 @@
 
         #endregion
 
-        public static string AppResourcesFolder => Path.Combine(AppContext.BaseDirectory, "AppResources");
+        public string AppResourcesFolder => Path.Combine(AppContext.BaseDirectory, "AppResources");
 
-        public static string GetImage(string imageName)
+        public string GetImage(string imageName)
         {
             return Path.Combine(AppResourcesFolder, "Images", imageName);
         }
 
-        public static async Task<string> GetEmailTemplate(string templateName, EmailMessageFormat format)
+        public async Task<string> GetEmailTemplate(string templateName, EmailMessageFormat format)
         {
             return await File.ReadAllTextAsync(Path.Combine(
                 AppResourcesFolder,

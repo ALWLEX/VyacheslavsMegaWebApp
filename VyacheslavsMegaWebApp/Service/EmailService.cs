@@ -9,17 +9,24 @@ namespace VyacheslavsMegaWebApp.Service
 {
     public class EmailService
     {
+        private readonly AppResourcesManager _appResources;
+
+        public EmailService(AppResourcesManager appResources) 
+        {
+            _appResources = appResources;
+        }
+
         public async Task<MimeMessage> CreatePasswordResetMessage(VmsIdentityUser user, string url)
         {
             MimeMessage emailMessage = new MimeMessage();
             BodyBuilder bodyBuilder = new BodyBuilder();
 
-            MimeEntity logoImage = bodyBuilder.LinkedResources.Add(AppResourcesManager.GetImage(AppResourcesManager.EmailLogo));
+            MimeEntity logoImage = bodyBuilder.LinkedResources.Add(_appResources.GetImage(AppResourcesManager.EmailLogo));
             logoImage.ContentId = MimeUtils.GenerateMessageId();
 
 
             bodyBuilder.HtmlBody = setEmailParams(
-                await AppResourcesManager.GetEmailTemplate(AppResourcesManager.PasswordReset, AppResourcesManager.EmailMessageFormat.Html),
+                await _appResources.GetEmailTemplate(AppResourcesManager.PasswordReset, AppResourcesManager.EmailMessageFormat.Html),
                 new Dictionary<string, string>
                 {
                     ["userName"] = user.UserName,
@@ -28,7 +35,7 @@ namespace VyacheslavsMegaWebApp.Service
                 });
 
             bodyBuilder.TextBody = setEmailParams(
-                await AppResourcesManager.GetEmailTemplate(AppResourcesManager.PasswordReset, AppResourcesManager.EmailMessageFormat.Text),
+                await _appResources.GetEmailTemplate(AppResourcesManager.PasswordReset, AppResourcesManager.EmailMessageFormat.Text),
                 new Dictionary<string, string>
                 {
                     ["userName"] = user.UserName,
@@ -48,12 +55,12 @@ namespace VyacheslavsMegaWebApp.Service
             MimeMessage emailMessage = new MimeMessage();
             BodyBuilder bodyBuilder = new BodyBuilder();
 
-            MimeEntity logoImage = bodyBuilder.LinkedResources.Add(AppResourcesManager.GetImage(AppResourcesManager.EmailLogo));
+            MimeEntity logoImage = bodyBuilder.LinkedResources.Add(_appResources.GetImage(AppResourcesManager.EmailLogo));
             logoImage.ContentId = MimeUtils.GenerateMessageId();
 
 
             bodyBuilder.HtmlBody = setEmailParams(
-                await AppResourcesManager.GetEmailTemplate(AppResourcesManager.EmailConfirmation, AppResourcesManager.EmailMessageFormat.Html),
+                await _appResources.GetEmailTemplate(AppResourcesManager.EmailConfirmation, AppResourcesManager.EmailMessageFormat.Html),
                 new Dictionary<string, string>
                 {
                     ["userName"] = user.UserName,
@@ -62,7 +69,7 @@ namespace VyacheslavsMegaWebApp.Service
                 });
 
             bodyBuilder.TextBody = setEmailParams(
-                await AppResourcesManager.GetEmailTemplate(AppResourcesManager.EmailConfirmation, AppResourcesManager.EmailMessageFormat.Text),
+                await _appResources.GetEmailTemplate(AppResourcesManager.EmailConfirmation, AppResourcesManager.EmailMessageFormat.Text),
                 new Dictionary<string, string>
                 {
                     ["userName"] = user.UserName,

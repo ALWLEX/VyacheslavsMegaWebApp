@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Identity;
+using System.Globalization;
 using VyacheslavsMegaWebApp.Data;
 using VyacheslavsMegaWebApp.Data.Entities.Identity;
 using VyacheslavsMegaWebApp.Data.JSON.Configuration;
@@ -39,7 +40,10 @@ internal class Program
             options.Password.RequireNonAlphanumeric = false;
             options.Password.RequireLowercase = false;
             options.Password.RequireUppercase = false;
-        }).AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
+        })
+            .AddEntityFrameworkStores<AppDbContext>()
+            .AddDefaultTokenProviders()
+            .AddErrorDescriber<VmsIdentityErrorDescriber>();
 
         builder.Services.ConfigureApplicationCookie(options =>
         {
@@ -47,6 +51,17 @@ internal class Program
             options.Cookie.HttpOnly = true;
             options.LoginPath = "/account/login";
             options.AccessDeniedPath = "/account/denied";
+        });
+
+        builder.Services.AddLocalization(options => options.ResourcesPath = "AppResources/Resx");
+
+        builder.Services.Configure<RequestLocalizationOptions>(options =>
+        {
+            options.SupportedCultures = new[]
+            {
+                new CultureInfo("ru-RU"),
+            };
+            options.DefaultRequestCulture = new Microsoft.AspNetCore.Localization.RequestCulture("ru-RU");
         });
 
         builder.Services.AddTransient<MainPageRepository>();
@@ -61,8 +76,11 @@ internal class Program
         builder.Services.AddTransient<GoalRepository>();
         builder.Services.AddTransient<DownloadButtonsRepository>();
         builder.Services.AddTransient<EmailService>();
+        builder.Services.AddSingleton<AppResourcesManager>();
 
         var app = builder.Build();
+
+        app.UseRequestLocalization();
 
         // Configure the HTTP request pipeline.
         if (app.Environment.IsProduction())
