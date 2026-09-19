@@ -476,19 +476,39 @@ namespace VyacheslavsMegaWebApp.Migrations
                         {
                             Id = "d4bc75a9-ca48-45aa-a3f2-2ea5886ce303",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "7e29b993-73c5-4a32-8cdd-e8dc0c7892ca",
+                            ConcurrencyStamp = "75ea60cd-f90f-45a2-8b5a-2ba3372fd500",
                             Email = "vya4slav4617@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "VYA4SLAV4617@GMAIL.COM",
                             NormalizedUserName = "EVRAY",
-                            PasswordHash = "AQAAAAIAAYagAAAAEPRGyNKDSt55tJNbfSuvdpIaHPcUzOARUsPC/Ra9tRDxPf2hdHkz+COm81Jp00iUcA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAELNLeQYidM0O9aNtQ/QU/Sh0qMgrZqbtcWa97UpitLn3TaKnVXaqcHoybfoUiBarpw==",
                             PhoneNumber = "+7 (705) 806 3101",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "d48502c4-c8e3-4535-be3e-673c4dd5d5a7",
+                            SecurityStamp = "69c467b4-c352-4271-a50b-f78a3cf2b980",
                             TwoFactorEnabled = false,
                             UserName = "Evray"
                         });
+                });
+
+            modelBuilder.Entity("VyacheslavsMegaWebApp.Data.Entities.LauncherSession", b =>
+                {
+                    b.Property<string>("SessionKey")
+                        .HasColumnType("varchar(255)")
+                        .HasColumnOrder(0);
+
+                    b.Property<DateTime>("ExpiresAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.HasKey("SessionKey");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("LauncherSessions");
                 });
 
             modelBuilder.Entity("VyacheslavsMegaWebApp.Data.Entities.MainPageData", b =>
@@ -799,6 +819,17 @@ namespace VyacheslavsMegaWebApp.Migrations
                         .IsRequired();
 
                     b.Navigation("Purpose");
+                });
+
+            modelBuilder.Entity("VyacheslavsMegaWebApp.Data.Entities.LauncherSession", b =>
+                {
+                    b.HasOne("VyacheslavsMegaWebApp.Data.Entities.Identity.VmsIdentityUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("VyacheslavsMegaWebApp.Data.Entities.PartnerLink", b =>

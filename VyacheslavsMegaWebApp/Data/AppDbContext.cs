@@ -30,6 +30,7 @@ namespace VyacheslavsMegaWebApp.Data
         public DbSet<Goal> Goals { get; set; }
         public DbSet<DownloadButton> DownloadButtons { get; set; }
         public DbSet<TransactionPurpose> TransactionPurposes { get; set; }
+        public DbSet<LauncherSession> LauncherSessions { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
