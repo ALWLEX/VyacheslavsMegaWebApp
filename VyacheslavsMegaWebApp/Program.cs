@@ -75,6 +75,7 @@ internal class Program
         builder.Services.AddTransient<GoalRepository>();
         builder.Services.AddTransient<DownloadButtonsRepository>();
         builder.Services.AddTransient<EmailService>();
+        builder.Services.AddTransient<LauncherSessionRepository>();
         builder.Services.AddSingleton<AppResourcesManager>();
 
         var app = builder.Build();
