@@ -123,4 +123,7 @@
   <data name="WrongPassword" xml:space="preserve">
     <value>Неверный пароль</value>
   </data>
+  <data name="WrongSession" xml:space="preserve">
+    <value>Ключ сессии неверен или время действия ключа истекло</value>
+  </data>
 </root>

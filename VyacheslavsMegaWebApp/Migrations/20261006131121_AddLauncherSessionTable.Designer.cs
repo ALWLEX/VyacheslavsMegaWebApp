@@ -11,8 +11,8 @@ using VyacheslavsMegaWebApp.Data;
 namespace VyacheslavsMegaWebApp.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260919194046_LauncherSessionsTable")]
-    partial class LauncherSessionsTable
+    [Migration("20261006131121_AddLauncherSessionTable")]
+    partial class AddLauncherSessionTable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -479,16 +479,16 @@ namespace VyacheslavsMegaWebApp.Migrations
                         {
                             Id = "d4bc75a9-ca48-45aa-a3f2-2ea5886ce303",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "75ea60cd-f90f-45a2-8b5a-2ba3372fd500",
+                            ConcurrencyStamp = "0410d2d9-fb40-45fb-9c70-6626a184e790",
                             Email = "vya4slav4617@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "VYA4SLAV4617@GMAIL.COM",
                             NormalizedUserName = "EVRAY",
-                            PasswordHash = "AQAAAAIAAYagAAAAELNLeQYidM0O9aNtQ/QU/Sh0qMgrZqbtcWa97UpitLn3TaKnVXaqcHoybfoUiBarpw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEPbA2qg+ghHujuDnsow7DE0nmGtPlXjyG9sux5zpKHHu+8GKOWlbnYjsMJmCAsEUlQ==",
                             PhoneNumber = "+7 (705) 806 3101",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "69c467b4-c352-4271-a50b-f78a3cf2b980",
+                            SecurityStamp = "62eba975-9eb1-45b0-949a-9637a9e205b7",
                             TwoFactorEnabled = false,
                             UserName = "Evray"
                         });
@@ -496,18 +496,23 @@ namespace VyacheslavsMegaWebApp.Migrations
 
             modelBuilder.Entity("VyacheslavsMegaWebApp.Data.Entities.LauncherSession", b =>
                 {
-                    b.Property<string>("SessionKey")
-                        .HasColumnType("varchar(255)")
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)")
                         .HasColumnOrder(0);
 
                     b.Property<DateTime>("ExpiresAt")
                         .HasColumnType("datetime(6)");
 
+                    b.Property<byte[]>("SessionKeyHash")
+                        .IsRequired()
+                        .HasColumnType("longblob");
+
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("varchar(255)");
 
-                    b.HasKey("SessionKey");
+                    b.HasKey("Id");
 
                     b.HasIndex("UserId");
 

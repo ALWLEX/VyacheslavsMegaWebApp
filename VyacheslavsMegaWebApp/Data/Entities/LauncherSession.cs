@@ -5,11 +5,9 @@ using VyacheslavsMegaWebApp.Data.Entities.Identity;
 
 namespace VyacheslavsMegaWebApp.Data.Entities
 {
-    public class LauncherSession
+    public class LauncherSession : Base.EntityGuid
     {
-        [Key]
-        [Column(Order = 0)]
-        public string SessionKey { get; set; }
+        public byte[] SessionKeyHash { get; set; }
         public string UserId { get; set; }
         public DateTime ExpiresAt { get; set; }
 
