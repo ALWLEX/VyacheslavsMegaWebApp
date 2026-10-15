@@ -13,11 +13,49 @@ internal class Program
 {
     private static void Main(string[] args)
     {
-        var builder = WebApplication.CreateBuilder(args);
+        var probe = AppContext.BaseDirectory;
+        while (!string.IsNullOrEmpty(probe) && !File.Exists(Path.Combine(probe, "VyacheslavsMegaWebApp.csproj")))
+        {
+            var parent = Directory.GetParent(probe)?.FullName;
+            if (parent == null || parent == probe)
+            {
+                break;
+            }
+            probe = parent;
+        }
+
+        if (string.IsNullOrEmpty(probe) || !File.Exists(Path.Combine(probe, "VyacheslavsMegaWebApp.csproj")))
+        {
+            var fallback = Path.Combine(Directory.GetCurrentDirectory(), "VyacheslavsMegaWebApp-dev", "VyacheslavsMegaWebApp-dev", "VyacheslavsMegaWebApp");
+            if (Directory.Exists(fallback))
+            {
+                probe = fallback;
+            }
+            else
+            {
+                probe = Directory.GetCurrentDirectory();
+            }
+        }
+
+        var webRoot = Path.Combine(probe, "wwwroot");
+        if (!Directory.Exists(webRoot))
+        {
+            Directory.CreateDirectory(webRoot);
+        }
+
+        var options = new WebApplicationOptions
+        {
+            Args = args,
+            ContentRootPath = probe,
+            WebRootPath = webRoot
+        };
+
+        var builder = WebApplication.CreateBuilder(options);
 
         ConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
 
-        configurationBuilder.AddJsonFile("appsettings.json")
+        configurationBuilder.SetBasePath(probe)
+            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
             .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
             .AddEnvironmentVariables()
             .Build()
