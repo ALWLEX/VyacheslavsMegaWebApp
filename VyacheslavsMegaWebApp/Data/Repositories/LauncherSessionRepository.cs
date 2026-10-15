@@ -19,6 +19,7 @@ namespace VyacheslavsMegaWebApp.Data.Repositories
             string sessionKey = Guid.NewGuid().ToString("N");
             DB.LauncherSessions.Add(new LauncherSession 
             { 
+                SessionKey = sessionKey,
                 SessionKeyHash = HashSessionKey(sessionKey),
                 UserId = user.Id,
                 ClientToken = clientToken ?? Guid.NewGuid().ToString("N"),
