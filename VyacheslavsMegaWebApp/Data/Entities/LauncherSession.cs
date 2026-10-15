@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using VyacheslavsMegaWebApp.Data.Entities.Identity;
@@ -9,11 +9,13 @@ namespace VyacheslavsMegaWebApp.Data.Entities
     {
         [Key]
         [Column(Order = 0)]
-        public string SessionKey { get; set; }
-        public string UserId { get; set; }
+        public string SessionKey { get; set; } = string.Empty;
+        public string UserId { get; set; } = string.Empty;
         public DateTime ExpiresAt { get; set; }
+        public string? ClientToken { get; set; }
+        public string? ServerId { get; set; }
 
         [ValidateNever]
-        public virtual VmsIdentityUser User { get; set; }
+        public virtual VmsIdentityUser User { get; set; } = null!;
     }
 }

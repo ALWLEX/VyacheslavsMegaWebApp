@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using VyacheslavsMegaWebApp.Data.Entities;
@@ -31,6 +31,8 @@ namespace VyacheslavsMegaWebApp.Data
         public DbSet<DownloadButton> DownloadButtons { get; set; }
         public DbSet<TransactionPurpose> TransactionPurposes { get; set; }
         public DbSet<LauncherSession> LauncherSessions { get; set; }
+        public DbSet<Friendship> Friendships { get; set; }
+        public DbSet<ClientBuildFile> ClientBuildFiles { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -134,6 +136,19 @@ namespace VyacheslavsMegaWebApp.Data
                 Name = "Покупка комплектующих сервера",
                 Type = TransactionPurpose.TransactionType.Expense
             });
+
+            modelBuilder.Entity<Friendship>().ToTable("Friendships");
+            modelBuilder.Entity<Friendship>()
+                .HasOne(f => f.Requester)
+                .WithMany()
+                .HasForeignKey(f => f.RequesterId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Friendship>()
+                .HasOne(f => f.Addressee)
+                .WithMany()
+                .HasForeignKey(f => f.AddresseeId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

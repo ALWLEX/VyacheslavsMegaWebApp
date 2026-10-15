@@ -1,0 +1,83 @@
+@model VyacheslavsMegaWebApp.Data.Entities.ClientBuildFile
+
+<div class="block block--first">
+    <div class="container">
+        <div class="form-container">
+            <form class="form" asp-area="Admin" asp-controller="ClientBuildsEditor" asp-action="ModDetails" method="post" enctype="multipart/form-data">
+
+                <div class="form__header">
+                    <h2 class="form__title form__title--main">Управление компонентом сборки VEC 1.21.11</h2>
+                </div>
+
+                <input type="hidden" asp-for="Id" readonly />
+
+                <div class="form__body">
+
+                    <div class="form__validation-summary" asp-validation-summary="All"></div>
+
+                    <div class="form-group">
+                        <label class="form-group__label">Файл (.jar для мода, .zip для шейдеров и ресурспаков) @(Model.Id > 0 ? "(оставьте пустым, если не меняется)" : "*")</label>
+                        <div class="form-group__control">
+                            <div class="field">
+                                <input class="field__input" type="file" name="modFile" accept=".jar,.zip" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-group__label" asp-for="DisplayName">Отображаемое название</label>
+                        <div class="form-group__control">
+                            <div class="field">
+                                <input class="field__input" asp-for="DisplayName" required />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-group__label" asp-for="Category">Категория</label>
+                        <div class="form-group__control">
+                            <div class="field">
+                                <select class="field__input" asp-for="Category">
+                                    <option value="Core">Core (Базовые системные моды)</option>
+                                    <option value="Optimization">Optimization (Оптимизация и FPS)</option>
+                                    <option value="Visual">Visual (Визуальные моды, EMF, ETF)</option>
+                                    <option value="Utility">Utility (Интерфейс и утилиты)</option>
+                                    <option value="Shaders">Shaders (Шейдерпаки .zip)</option>
+                                    <option value="Resourcepacks">Resourcepacks (Ресурспаки .zip)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-group__label" asp-for="Description">Краткое описание</label>
+                        <div class="form-group__control">
+                            <div class="field">
+                                <input class="field__input" asp-for="Description" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-group__control">
+                            <label class="mc-checkbox">
+                                <input class="mc-checkbox__input" asp-for="IsRequired" />
+                                <span class="mc-checkbox__box"></span>
+                                <span class="mc-checkbox__label">Обязательный компонент для запуска</span>
+                            </label>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="form__footer">
+                    <button class="mc-button mc-button--wide" type="submit">
+                        <span class="mc-button__title">Сохранить</span>
+                    </button>
+
+                    <p><a asp-area="Admin" asp-controller="ClientBuildsEditor" asp-action="Index">Назад</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
