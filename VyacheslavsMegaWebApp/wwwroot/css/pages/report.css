@@ -1,3 +1,8 @@
+.report-page,
+.report-page * {
+    text-shadow: none !important;
+}
+
 .report-page {
     min-height: 85vh;
     padding: 125px 0 90px 0;
@@ -30,11 +35,13 @@
 .report-header .donation-hero__badge {
     margin-bottom: 10px;
     display: inline-block;
+    text-shadow: none !important;
 }
 
 .report-header .donation-hero__title {
     margin: 0 0 14px 0 !important;
     font-size: 34px !important;
+    text-shadow: none !important;
 }
 
 .report-header .donation-hero__desc {
@@ -42,6 +49,7 @@
     font-size: 16px !important;
     max-width: 620px;
     margin: 0 auto !important;
+    text-shadow: none !important;
 }
 
 .report-card {
@@ -74,7 +82,7 @@
     font-size: 15px;
     font-weight: 700;
     color: #ffffff;
-    text-shadow: 2px 2px #3f3f3f;
+    text-shadow: none !important;
     margin-left: 2px;
 }
 
@@ -88,8 +96,8 @@
     position: relative;
 }
 
-/* Retain authentic Minecraft field style while ensuring sharp focus */
 .report-control .field__input {
+    text-shadow: none !important;
     transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
@@ -115,6 +123,7 @@
     font-family: 'minecraft', sans-serif !important;
     font-size: 13px !important;
     color: #9ca3af;
+    text-shadow: none !important;
     margin-left: auto;
 }
 
@@ -131,6 +140,7 @@
     color: #9ca3af;
     line-height: 1.5;
     margin-top: 6px;
+    text-shadow: none !important;
 }
 
 .report-tips i {
@@ -148,7 +158,10 @@
     gap: 16px;
 }
 
-/* Success Card */
+.report-footer .mc-button__title {
+    text-shadow: none !important;
+}
+
 .report-card--success {
     text-align: center;
     padding: 48px 36px;
@@ -170,6 +183,7 @@
     margin: 14px auto 28px auto !important;
     max-width: 520px;
     line-height: 1.6;
+    text-shadow: none !important;
 }
 
 .report-success-actions {
