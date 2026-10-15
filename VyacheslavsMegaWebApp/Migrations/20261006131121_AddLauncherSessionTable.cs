@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace VyacheslavsMegaWebApp.Migrations
 {
     /// <inheritdoc />
-    public partial class LauncherSessionsTable : Migration
+    public partial class AddLauncherSessionTable : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -15,13 +15,14 @@ namespace VyacheslavsMegaWebApp.Migrations
                 name: "LauncherSessions",
                 columns: table => new
                 {
-                    SessionKey = table.Column<string>(type: "varchar(255)", nullable: false),
+                    Id = table.Column<Guid>(type: "char(36)", nullable: false),
+                    SessionKeyHash = table.Column<byte[]>(type: "longblob", nullable: false),
                     UserId = table.Column<string>(type: "varchar(255)", nullable: false),
                     ExpiresAt = table.Column<DateTime>(type: "datetime(6)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_LauncherSessions", x => x.SessionKey);
+                    table.PrimaryKey("PK_LauncherSessions", x => x.Id);
                     table.ForeignKey(
                         name: "FK_LauncherSessions_AspNetUsers_UserId",
                         column: x => x.UserId,
@@ -36,7 +37,7 @@ namespace VyacheslavsMegaWebApp.Migrations
                 keyColumn: "Id",
                 keyValue: "d4bc75a9-ca48-45aa-a3f2-2ea5886ce303",
                 columns: new[] { "ConcurrencyStamp", "PasswordHash", "SecurityStamp" },
-                values: new object[] { "75ea60cd-f90f-45a2-8b5a-2ba3372fd500", "AQAAAAIAAYagAAAAELNLeQYidM0O9aNtQ/QU/Sh0qMgrZqbtcWa97UpitLn3TaKnVXaqcHoybfoUiBarpw==", "69c467b4-c352-4271-a50b-f78a3cf2b980" });
+                values: new object[] { "0410d2d9-fb40-45fb-9c70-6626a184e790", "AQAAAAIAAYagAAAAEPbA2qg+ghHujuDnsow7DE0nmGtPlXjyG9sux5zpKHHu+8GKOWlbnYjsMJmCAsEUlQ==", "62eba975-9eb1-45b0-949a-9637a9e205b7" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_LauncherSessions_UserId",

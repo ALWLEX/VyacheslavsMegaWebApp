@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using VyacheslavsMegaWebApp.Data.Entities.Identity;
 using VyacheslavsMegaWebApp.Data.Entities;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace VyacheslavsMegaWebApp.Data.Repositories
 {
@@ -8,7 +10,8 @@ namespace VyacheslavsMegaWebApp.Data.Repositories
     {
         public async Task<VmsIdentityUser> GetUserBySessionKey(string sessionKey)
         {
-            return (await DB.LauncherSessions.LastAsync(s => s.SessionKey == sessionKey)).User;
+            byte[] sessionKeyHash = HashSessionKey(sessionKey);
+            return (await DB.LauncherSessions.FirstAsync(s => s.SessionKeyHash == sessionKeyHash)).User;
         }
 
         public async Task<string> CreateSessionKey(VmsIdentityUser user, string? clientToken = null)
@@ -16,7 +19,7 @@ namespace VyacheslavsMegaWebApp.Data.Repositories
             string sessionKey = Guid.NewGuid().ToString("N");
             DB.LauncherSessions.Add(new LauncherSession 
             { 
-                SessionKey = sessionKey,
+                SessionKeyHash = HashSessionKey(sessionKey),
                 UserId = user.Id,
                 ClientToken = clientToken ?? Guid.NewGuid().ToString("N"),
                 ExpiresAt = DateTime.UtcNow + TimeSpan.FromDays(30)
@@ -89,8 +92,29 @@ namespace VyacheslavsMegaWebApp.Data.Repositories
         {
             List<LauncherSession> existingSessions = DB.LauncherSessions.Where(s => s.UserId == user.Id).ToList();
             foreach (LauncherSession session in existingSessions)
-                DB.Entry(session).State = EntityState.Deleted; 
+                DB.Entry(session).State = EntityState.Deleted;
             await DB.SaveChangesAsync();
         }
+
+        #region Private methods
+
+        private byte[] HashSessionKey(string sessionKey)
+        {
+            return SHA256.HashData(Encoding.UTF8.GetBytes(sessionKey));
+        }
+
+        private string GenerateSessionKey()
+        {
+            return Convert.ToBase64String(RandomNumberGenerator.GetBytes(32));
+        }
+
+        private async Task<LauncherSession?> GetSessionByKey(string sessionKey)
+        {
+            byte[] sessionKeyHash = HashSessionKey(sessionKey);
+            return await DB.LauncherSessions.OrderBy(s => s.ExpiresAt).LastOrDefaultAsync(s => s.SessionKeyHash == sessionKeyHash);
+        }
+
+        #endregion
+
     }
 }

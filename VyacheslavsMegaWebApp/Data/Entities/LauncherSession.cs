@@ -5,7 +5,7 @@ using VyacheslavsMegaWebApp.Data.Entities.Identity;
 
 namespace VyacheslavsMegaWebApp.Data.Entities
 {
-    public class LauncherSession
+    public class LauncherSession : Base.EntityGuid
     {
         [Key]
         [Column(Order = 0)]
