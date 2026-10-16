@@ -149,6 +149,9 @@ namespace VyacheslavsMegaWebApp.Data
                 .WithMany()
                 .HasForeignKey(f => f.AddresseeId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<LauncherSession>()
+                .HasIndex(s => s.SessionKeyHash);
         }
     }
 }

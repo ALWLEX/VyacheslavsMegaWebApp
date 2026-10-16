@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -55,7 +56,8 @@ namespace VyacheslavsMegaWebApp.Api.Controllers
 
             if (!string.IsNullOrWhiteSpace(model.SessionKey))
             {
-                var session = await _db.LauncherSessions.FirstOrDefaultAsync(s => s.SessionKey == model.SessionKey);
+                var keyHash = SHA256.HashData(Encoding.UTF8.GetBytes(model.SessionKey));
+                var session = await _db.LauncherSessions.FirstOrDefaultAsync(s => s.SessionKeyHash == keyHash || s.SessionKey == model.SessionKey);
                 if (session == null || session.ExpiresAt < DateTime.UtcNow || session.UserId != user.Id)
                     return Unauthorized(new { error = "Invalid or expired session." });
             }
