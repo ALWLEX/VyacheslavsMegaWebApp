@@ -209,8 +209,50 @@ namespace VyacheslavsMegaWebApp.Service
             catch { }
         }
 
+        public string ResolveUsername(string username)
+        {
+            if (string.IsNullOrWhiteSpace(username)) return username;
+            var clean = username.Trim();
+
+            var directSkin = Path.Combine(WebUploadsSkinDir, $"{clean}.png");
+            var directMeta = Path.Combine(WebUploadsSkinDir, $"{clean}.json");
+            var directProfile = Path.Combine(WebUploadsProfileDir, $"{clean}.json");
+            if (File.Exists(directSkin) || File.Exists(directMeta) || File.Exists(directProfile))
+            {
+                return clean;
+            }
+
+            try
+            {
+                if (Directory.Exists(WebUploadsProfileDir))
+                {
+                    foreach (var file in Directory.EnumerateFiles(WebUploadsProfileDir, "*.json"))
+                    {
+                        try
+                        {
+                            var json = File.ReadAllText(file);
+                            using var doc = JsonDocument.Parse(json);
+                            if (doc.RootElement.TryGetProperty("minecraftUsername", out var m))
+                            {
+                                var mcNick = m.GetString();
+                                if (!string.IsNullOrEmpty(mcNick) && string.Equals(mcNick, clean, StringComparison.OrdinalIgnoreCase))
+                                {
+                                    return Path.GetFileNameWithoutExtension(file);
+                                }
+                            }
+                        }
+                        catch { }
+                    }
+                }
+            }
+            catch { }
+
+            return clean;
+        }
+
         public string? GetSkinHash(string username)
         {
+            username = ResolveUsername(username);
             var metaFile = Path.Combine(WebUploadsSkinDir, $"{username}.json");
             if (File.Exists(metaFile))
             {
@@ -240,6 +282,7 @@ namespace VyacheslavsMegaWebApp.Service
 
         public string? GetCapeHash(string username)
         {
+            username = ResolveUsername(username);
             var metaFile = Path.Combine(WebUploadsSkinDir, $"{username}.json");
             if (File.Exists(metaFile))
             {
@@ -269,6 +312,7 @@ namespace VyacheslavsMegaWebApp.Service
 
         public string GetSkinModel(string username)
         {
+            username = ResolveUsername(username);
             var metaFile = Path.Combine(WebUploadsSkinDir, $"{username}.json");
             if (File.Exists(metaFile))
             {
@@ -310,6 +354,7 @@ namespace VyacheslavsMegaWebApp.Service
 
         public byte[] GetSkinBytes(string username)
         {
+            username = ResolveUsername(username);
             var metaFile = Path.Combine(WebUploadsSkinDir, $"{username}.json");
             if (File.Exists(metaFile))
             {
@@ -435,6 +480,7 @@ namespace VyacheslavsMegaWebApp.Service
 
         public bool HasCape(string username)
         {
+            username = ResolveUsername(username);
             var metaFile = Path.Combine(WebUploadsSkinDir, $"{username}.json");
             if (File.Exists(metaFile))
             {
@@ -465,6 +511,7 @@ namespace VyacheslavsMegaWebApp.Service
 
         public byte[]? GetCapeBytes(string username)
         {
+            username = ResolveUsername(username);
             var metaFile = Path.Combine(WebUploadsSkinDir, $"{username}.json");
             if (File.Exists(metaFile))
             {
@@ -562,27 +609,61 @@ namespace VyacheslavsMegaWebApp.Service
                     return "vec_default";
             }
 
+            var mojangDir = Path.Combine(WebImgCapesDir, "mojang");
+            if (!Directory.Exists(mojangDir))
+            {
+                var fallback = Path.Combine(_env.ContentRootPath, "wwwroot", "img", "capes", "mojang");
+                if (Directory.Exists(fallback)) mojangDir = fallback;
+            }
+
+            if (Directory.Exists(mojangDir))
+            {
+                foreach (var file in Directory.GetFiles(mojangDir, "*.png"))
+                {
+                    try
+                    {
+                        var mcBytes = File.ReadAllBytes(file);
+                        if (userCape.SequenceEqual(mcBytes))
+                        {
+                            var mcId = Path.GetFileNameWithoutExtension(file);
+                            return $"mojang_{mcId}";
+                        }
+                    }
+                    catch { }
+                }
+            }
+
             return "custom";
         }
 
         public bool EquipLauncherCape(string username, string capeId)
         {
             EnsureDirectories();
-            string? templateFile = capeId switch
-            {
-                "vec_default" or "vec" => "cape_vec.png",
-                _ => null
-            };
+            string? srcPath = null;
 
-            if (templateFile == null) return false;
-
-            var srcPath = Path.Combine(WebImgCapesDir, templateFile);
-            if (!File.Exists(srcPath))
+            if (capeId.Equals("vec_default", StringComparison.OrdinalIgnoreCase) || capeId.Equals("vec", StringComparison.OrdinalIgnoreCase))
             {
-                var fallback = Path.Combine(_env.ContentRootPath, "wwwroot", "img", "capes", templateFile);
-                if (File.Exists(fallback)) srcPath = fallback;
-                else return false;
+                var p = Path.Combine(WebImgCapesDir, "cape_vec.png");
+                if (!File.Exists(p))
+                {
+                    var fallback = Path.Combine(_env.ContentRootPath, "wwwroot", "img", "capes", "cape_vec.png");
+                    if (File.Exists(fallback)) p = fallback;
+                }
+                if (File.Exists(p)) srcPath = p;
             }
+            else if (capeId.StartsWith("mojang_", StringComparison.OrdinalIgnoreCase))
+            {
+                var mcId = capeId.Substring(7);
+                var p = Path.Combine(WebImgCapesDir, "mojang", $"{mcId}.png");
+                if (!File.Exists(p))
+                {
+                    var fallback = Path.Combine(_env.ContentRootPath, "wwwroot", "img", "capes", "mojang", $"{mcId}.png");
+                    if (File.Exists(fallback)) p = fallback;
+                }
+                if (File.Exists(p)) srcPath = p;
+            }
+
+            if (srcPath == null || !File.Exists(srcPath)) return false;
 
             var bytes = File.ReadAllBytes(srcPath);
             var hash = SaveTextureBytes(bytes);

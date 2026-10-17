@@ -360,6 +360,9 @@
                                 <button type="button" class="panel-btn panel-btn--secondary" onclick="unlinkMicrosoftAccount()" style="color: #ef4444; border-color: rgba(239, 68, 68, 0.3);">
                                     <span>Отвязать лицензию</span>
                                 </button>
+                                <button type="button" class="panel-btn panel-btn--secondary" onclick="syncOfficialSkin()" id="syncSkinBtn">
+                                    <i class='bx bx-refresh'></i> <span>Синхронизировать скин Mojang</span>
+                                </button>
                                 <button type="button" class="panel-btn panel-btn--primary" onclick="startMicrosoftLink()">
                                     <span>Синхронизировать плащи</span>
                                 </button>
@@ -873,6 +876,42 @@
                         });
                     }
                 } catch (e) {}
+            }
+        }
+
+        async function syncOfficialSkin() {
+            const btn = document.getElementById('syncSkinBtn');
+            if (btn) btn.disabled = true;
+            try {
+                const res = await fetch('/Account/SyncMojangSkin', { method: 'POST' });
+                const data = await res.json();
+                if (data.success) {
+                    if (data.skinUrl && skinViewer) {
+                        skinViewer.loadSkin(data.skinUrl, { model: data.model || 'classic' });
+                        currentSkinModel = data.model || 'classic';
+                        const modelSwitch = document.getElementById('modelSwitch');
+                        if (modelSwitch) modelSwitch.checked = (currentSkinModel === 'slim');
+                        const statusVal = document.getElementById('modelStatusVal');
+                        if (statusVal) statusVal.textContent = currentSkinModel === 'slim' ? 'Slim' : 'Classic';
+                    }
+                    if (data.minecraftUsername) {
+                        const mcInput = document.getElementById('mcNameInput');
+                        if (mcInput) mcInput.value = data.minecraftUsername;
+                        const metaItems = document.querySelectorAll('.profile-header__meta .meta-item');
+                        metaItems.forEach(item => {
+                            if (item.textContent.trim().startsWith('Minecraft:')) {
+                                item.textContent = 'Minecraft: ' + data.minecraftUsername;
+                            }
+                        });
+                    }
+                    alert(data.message || 'Официальный скин Mojang успешно установлен!');
+                } else {
+                    alert(data.error || 'Не удалось синхронизировать скин.');
+                }
+            } catch (err) {
+                alert('Ошибка сети при синхронизации скина.');
+            } finally {
+                if (btn) btn.disabled = false;
             }
         }
 

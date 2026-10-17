@@ -335,5 +335,71 @@ namespace VyacheslavsMegaWebApp.Service
             }
             return "Плащ Mojang";
         }
+
+        public async Task<byte[]?> DownloadSkinBytesAsync(string url, CancellationToken ct = default)
+        {
+            try
+            {
+                return await _http.GetByteArrayAsync(url, ct);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public async Task<(byte[]? skinBytes, string model, string? skinUrl)> FetchSkinByMojangUuidAsync(string uuid, CancellationToken ct = default)
+        {
+            try
+            {
+                var cleanUuid = uuid.Replace("-", "").Trim();
+                using var req = new HttpRequestMessage(HttpMethod.Get, $"https://sessionserver.mojang.com/session/minecraft/profile/{cleanUuid}");
+                using var resp = await _http.SendAsync(req, ct);
+                if (!resp.IsSuccessStatusCode) return (null, "classic", null);
+
+                var body = await resp.Content.ReadAsStringAsync(ct);
+                using var doc = JsonDocument.Parse(body);
+                if (doc.RootElement.TryGetProperty("properties", out var props))
+                {
+                    foreach (var prop in props.EnumerateArray())
+                    {
+                        var name = prop.TryGetProperty("name", out var n) ? n.GetString() : null;
+                        if (name == "textures")
+                        {
+                            var b64 = prop.TryGetProperty("value", out var v) ? v.GetString() : null;
+                            if (!string.IsNullOrEmpty(b64))
+                            {
+                                var jsonStr = Encoding.UTF8.GetString(Convert.FromBase64String(b64));
+                                using var texDoc = JsonDocument.Parse(jsonStr);
+                                if (texDoc.RootElement.TryGetProperty("textures", out var texs) &&
+                                    texs.TryGetProperty("SKIN", out var skinObj))
+                                {
+                                    var skinUrl = skinObj.TryGetProperty("url", out var su) ? su.GetString() : null;
+                                    var model = "classic";
+                                    if (skinObj.TryGetProperty("metadata", out var meta) &&
+                                        meta.TryGetProperty("model", out var m) &&
+                                        m.GetString() == "slim")
+                                    {
+                                        model = "slim";
+                                    }
+
+                                    if (!string.IsNullOrEmpty(skinUrl))
+                                    {
+                                        var bytes = await _http.GetByteArrayAsync(skinUrl, ct);
+                                        return (bytes, model, skinUrl);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[MOJANG-SKIN] Error fetching skin for {uuid}: {ex.Message}");
+            }
+
+            return (null, "classic", null);
+        }
     }
 }

@@ -742,6 +742,35 @@ namespace VyacheslavsMegaWebApp.Controllers
                     return StatusCode(500, new { error = "Не удалось сохранить привязку в базе данных." });
                 }
 
+                if (!string.IsNullOrWhiteSpace(licResult.Gamertag))
+                {
+                    try
+                    {
+                        var prof = _skinStorage.GetUserProfileData(user.UserName);
+                        _skinStorage.SaveUserProfileData(user.UserName, prof.siteName, licResult.Gamertag, prof.createdAt);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"[PROFILE-SYNC] Error updating Minecraft username to gamertag: {ex.Message}");
+                    }
+                }
+
+                if (!string.IsNullOrWhiteSpace(licResult.SkinUrl))
+                {
+                    try
+                    {
+                        var skinBytes = await _licenseService.DownloadSkinBytesAsync(licResult.SkinUrl);
+                        if (skinBytes != null && skinBytes.Length > 0)
+                        {
+                            await _skinStorage.SaveSkinBytesAsync(user.UserName, skinBytes, licResult.SkinModel ?? "classic");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"[SKIN-SYNC] Error importing skin during link: {ex.Message}");
+                    }
+                }
+
                 return Ok(new
                 {
                     status = "success",
@@ -749,6 +778,7 @@ namespace VyacheslavsMegaWebApp.Controllers
                     uuid = licResult.Uuid,
                     capes = licResult.Capes,
                     skinUrl = licResult.SkinUrl,
+                    minecraftUsername = licResult.Gamertag,
                     message = $"Лицензия Minecraft ({licResult.Gamertag}) успешно привязана! Найдено официальных плащей: {licResult.Capes.Count}."
                 });
             }
@@ -756,6 +786,54 @@ namespace VyacheslavsMegaWebApp.Controllers
             {
                 return BadRequest(new { status = "error", error = ex.Message });
             }
+        }
+
+        [Authorize]
+        [HttpPost]
+        [IgnoreAntiforgeryToken]
+        public async Task<IActionResult> SyncMojangSkin()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user is null) return Unauthorized();
+
+            if (!user.HasMinecraftLicense || string.IsNullOrWhiteSpace(user.MicrosoftUuid))
+            {
+                return BadRequest(new { error = "У вас не привязана официальная лицензия Microsoft / Xbox." });
+            }
+
+            var (skinBytes, model, skinUrl) = await _licenseService.FetchSkinByMojangUuidAsync(user.MicrosoftUuid);
+            if (skinBytes == null || skinBytes.Length == 0)
+            {
+                return BadRequest(new { error = "Не удалось загрузить официальный скин с серверов Mojang." });
+            }
+
+            var ok = await _skinStorage.SaveSkinBytesAsync(user.UserName, skinBytes, model);
+            if (!ok)
+            {
+                return BadRequest(new { error = "Не удалось сохранить скин в профиле." });
+            }
+
+            if (!string.IsNullOrWhiteSpace(user.MicrosoftGamertag))
+            {
+                try
+                {
+                    var prof = _skinStorage.GetUserProfileData(user.UserName);
+                    _skinStorage.SaveUserProfileData(user.UserName, prof.siteName, user.MicrosoftGamertag, prof.createdAt);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"[PROFILE-SYNC] Error updating Minecraft username to gamertag: {ex.Message}");
+                }
+            }
+
+            return Ok(new
+            {
+                success = true,
+                message = "Официальный скин, модель Mojang и игровой ник успешно синхронизированы!",
+                skinUrl = _skinStorage.GetSkinUrl(user.UserName),
+                model = model,
+                minecraftUsername = user.MicrosoftGamertag
+            });
         }
 
         [Authorize]
