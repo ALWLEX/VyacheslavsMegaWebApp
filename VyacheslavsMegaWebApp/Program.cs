@@ -122,6 +122,7 @@ internal class Program
         builder.Services.AddSingleton<LaunchTicketService>();
         builder.Services.AddSingleton<YggdrasilService>();
         builder.Services.AddSingleton<AppResourcesManager>();
+        builder.Services.AddSingleton<ModrinthService>();
 
         var app = builder.Build();
 
@@ -170,6 +171,9 @@ internal class Program
                         `Category` varchar(64) NULL,
                         `DisplayName` varchar(255) NULL,
                         `Description` varchar(1024) NULL,
+                        `IconUrl` varchar(1024) NULL,
+                        `SourceType` varchar(32) NULL,
+                        `ModrinthSlug` varchar(128) NULL,
                         PRIMARY KEY (`Id`),
                         KEY `IX_ClientBuildFiles_BuildSlug` (`BuildSlug`)
                     );
@@ -187,6 +191,9 @@ internal class Program
                         `Category` varchar(64) NULL,
                         `DisplayName` varchar(255) NULL,
                         `Description` varchar(1024) NULL,
+                        `IconUrl` varchar(1024) NULL,
+                        `SourceType` varchar(32) NULL,
+                        `ModrinthSlug` varchar(128) NULL,
                         PRIMARY KEY (`Id`),
                         KEY `IX_clientbuildfiles_BuildSlug` (`BuildSlug`)
                     );
@@ -219,6 +226,31 @@ internal class Program
                 {
                     cmd.CommandText = "ALTER TABLE `LauncherSessions` ADD COLUMN `ServerId` varchar(128) NULL;";
                     cmd.ExecuteNonQuery();
+                }
+
+                cmd.CommandText = @"
+                    SELECT TABLE_NAME, COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS 
+                    WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME IN ('ClientBuildFiles', 'clientbuildfiles') AND COLUMN_NAME IN ('IconUrl', 'SourceType', 'ModrinthSlug');";
+                var buildCols = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read()) buildCols.Add($"{reader.GetString(0)}.{reader.GetString(1)}");
+                }
+
+                foreach (var tName in new[] { "ClientBuildFiles", "clientbuildfiles" })
+                {
+                    if (!buildCols.Contains($"{tName}.IconUrl"))
+                    {
+                        try { cmd.CommandText = $"ALTER TABLE `{tName}` ADD COLUMN `IconUrl` varchar(1024) NULL;"; cmd.ExecuteNonQuery(); } catch { }
+                    }
+                    if (!buildCols.Contains($"{tName}.SourceType"))
+                    {
+                        try { cmd.CommandText = $"ALTER TABLE `{tName}` ADD COLUMN `SourceType` varchar(32) NULL;"; cmd.ExecuteNonQuery(); } catch { }
+                    }
+                    if (!buildCols.Contains($"{tName}.ModrinthSlug"))
+                    {
+                        try { cmd.CommandText = $"ALTER TABLE `{tName}` ADD COLUMN `ModrinthSlug` varchar(128) NULL;"; cmd.ExecuteNonQuery(); } catch { }
+                    }
                 }
             }
             catch { }

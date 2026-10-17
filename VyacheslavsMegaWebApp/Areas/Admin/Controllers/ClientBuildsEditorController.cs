@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using VyacheslavsMegaWebApp.Data;
 using VyacheslavsMegaWebApp.Data.Entities;
+using VyacheslavsMegaWebApp.Service;
 
 namespace VyacheslavsMegaWebApp.Areas.Admin.Controllers
 {
@@ -19,11 +20,13 @@ namespace VyacheslavsMegaWebApp.Areas.Admin.Controllers
     {
         private readonly AppDbContext _db;
         private readonly IWebHostEnvironment _env;
+        private readonly ModrinthService _modrinth;
 
-        public ClientBuildsEditorController(AppDbContext db, IWebHostEnvironment env)
+        public ClientBuildsEditorController(AppDbContext db, IWebHostEnvironment env, ModrinthService modrinth)
         {
             _db = db;
             _env = env;
+            _modrinth = modrinth;
         }
 
         private string GetBuildsDir(string slug, string folder = "mods")
@@ -46,6 +49,35 @@ namespace VyacheslavsMegaWebApp.Areas.Admin.Controllers
             return View(files);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> LookupModrinth(string query, string? category)
+        {
+            if (string.IsNullOrWhiteSpace(query))
+            {
+                return BadRequest(new { error = "Укажите ссылку или ID мода на Modrinth" });
+            }
+
+            var info = await _modrinth.FetchModrinthInfoAsync(query, category ?? "Core");
+            if (info == null)
+            {
+                return NotFound(new { error = "Проект не найден на Modrinth или не содержит подходящих файлов для Fabric" });
+            }
+
+            return Ok(new
+            {
+                slug = info.Slug,
+                title = info.Title,
+                description = info.Description,
+                iconUrl = info.IconUrl,
+                category = info.Category,
+                fileName = info.FileName,
+                downloadUrl = info.DownloadUrl,
+                fileSizeBytes = info.FileSizeBytes,
+                sha256 = info.Sha256,
+                relativePath = info.RelativePath
+            });
+        }
+
         public async Task<IActionResult> ModDetails(int? id, string slug = "vec-fabric-1-21-11")
         {
             ViewBag.Slug = slug;
@@ -55,7 +87,8 @@ namespace VyacheslavsMegaWebApp.Areas.Admin.Controllers
                 {
                     BuildSlug = slug,
                     IsRequired = true,
-                    Category = "Optimization"
+                    Category = "Optimization",
+                    SourceType = "Local"
                 });
             }
 
@@ -63,6 +96,11 @@ namespace VyacheslavsMegaWebApp.Areas.Admin.Controllers
             if (item == null)
             {
                 return NotFound();
+            }
+
+            if (string.IsNullOrEmpty(item.SourceType))
+            {
+                item.SourceType = item.DownloadUrl?.StartsWith("http", StringComparison.OrdinalIgnoreCase) == true ? "Modrinth" : "Local";
             }
 
             return View(item);
@@ -73,11 +111,7 @@ namespace VyacheslavsMegaWebApp.Areas.Admin.Controllers
         {
             ViewBag.Slug = slug;
 
-            if (model.Id == 0 && (modFile == null || modFile.Length == 0))
-            {
-                ModelState.AddModelError("", "Для добавления компонента необходимо выбрать файл (.jar или .zip).");
-                return View(model);
-            }
+            var isModrinth = string.Equals(model.SourceType, "Modrinth", StringComparison.OrdinalIgnoreCase);
 
             if (string.IsNullOrWhiteSpace(model.Category))
             {
@@ -94,36 +128,87 @@ namespace VyacheslavsMegaWebApp.Areas.Admin.Controllers
                 subFolder = "resourcepacks";
             }
 
-            if (modFile != null && modFile.Length > 0)
+            if (isModrinth)
             {
-                var ext = Path.GetExtension(modFile.FileName);
-                if (!string.Equals(ext, ".jar", StringComparison.OrdinalIgnoreCase) && !string.Equals(ext, ".zip", StringComparison.OrdinalIgnoreCase))
+                if (string.IsNullOrWhiteSpace(model.ModrinthSlug) && string.IsNullOrWhiteSpace(model.DownloadUrl))
                 {
-                    ModelState.AddModelError("", "Разрешена загрузка только файлов с расширением .jar или .zip.");
+                    ModelState.AddModelError("", "Для компонента из Modrinth необходимо указать ID или ссылку на проект.");
                     return View(model);
                 }
 
-                var cleanFileName = Path.GetFileName(modFile.FileName);
-                var targetDir = GetBuildsDir(slug, subFolder);
-                var targetPath = Path.Combine(targetDir, cleanFileName);
-
-                using (var fileStream = new FileStream(targetPath, FileMode.Create, FileAccess.Write))
+                if (!string.IsNullOrWhiteSpace(model.ModrinthSlug) && (string.IsNullOrWhiteSpace(model.DownloadUrl) || model.Id == 0))
                 {
-                    await modFile.CopyToAsync(fileStream);
+                    var info = await _modrinth.FetchModrinthInfoAsync(model.ModrinthSlug, model.Category);
+                    if (info == null && string.IsNullOrWhiteSpace(model.DownloadUrl))
+                    {
+                        ModelState.AddModelError("", "Не удалось получить данные с Modrinth API. Проверьте ID/ссылку.");
+                        return View(model);
+                    }
+
+                    if (info != null)
+                    {
+                        model.DownloadUrl = info.DownloadUrl;
+                        model.FileName = info.FileName;
+                        model.RelativePath = info.RelativePath;
+                        model.Sha256 = info.Sha256;
+                        model.FileSizeBytes = info.FileSizeBytes;
+                        if (string.IsNullOrEmpty(model.IconUrl)) model.IconUrl = info.IconUrl;
+                        if (string.IsNullOrWhiteSpace(model.DisplayName)) model.DisplayName = info.Title;
+                        if (string.IsNullOrWhiteSpace(model.Description)) model.Description = info.Description;
+                    }
                 }
 
-                byte[] fileBytes = await System.IO.File.ReadAllBytesAsync(targetPath);
-                string sha256;
-                using (var sha = SHA256.Create())
+                if (string.IsNullOrWhiteSpace(model.FileName))
                 {
-                    sha256 = Convert.ToHexString(sha.ComputeHash(fileBytes)).ToLowerInvariant();
+                    model.FileName = $"{ModrinthService.ExtractSlug(model.ModrinthSlug ?? "component") ?? "component"}.jar";
                 }
 
-                model.FileName = cleanFileName;
-                model.RelativePath = $"{subFolder}/{cleanFileName}";
-                model.Sha256 = sha256;
-                model.FileSizeBytes = fileBytes.LongLength;
-                model.DownloadUrl = $"/api/builds/{slug}/file/{subFolder}/{cleanFileName}";
+                if (string.IsNullOrWhiteSpace(model.RelativePath))
+                {
+                    model.RelativePath = $"{subFolder}/{model.FileName}";
+                }
+            }
+            else
+            {
+                model.SourceType = "Local";
+
+                if (model.Id == 0 && (modFile == null || modFile.Length == 0))
+                {
+                    ModelState.AddModelError("", "Для добавления локального компонента необходимо выбрать файл (.jar или .zip).");
+                    return View(model);
+                }
+
+                if (modFile != null && modFile.Length > 0)
+                {
+                    var ext = Path.GetExtension(modFile.FileName);
+                    if (!string.Equals(ext, ".jar", StringComparison.OrdinalIgnoreCase) && !string.Equals(ext, ".zip", StringComparison.OrdinalIgnoreCase))
+                    {
+                        ModelState.AddModelError("", "Разрешена загрузка только файлов с расширением .jar или .zip.");
+                        return View(model);
+                    }
+
+                    var cleanFileName = Path.GetFileName(modFile.FileName);
+                    var targetDir = GetBuildsDir(slug, subFolder);
+                    var targetPath = Path.Combine(targetDir, cleanFileName);
+
+                    using (var fileStream = new FileStream(targetPath, FileMode.Create, FileAccess.Write))
+                    {
+                        await modFile.CopyToAsync(fileStream);
+                    }
+
+                    byte[] fileBytes = await System.IO.File.ReadAllBytesAsync(targetPath);
+                    string sha256;
+                    using (var sha = SHA256.Create())
+                    {
+                        sha256 = Convert.ToHexString(sha.ComputeHash(fileBytes)).ToLowerInvariant();
+                    }
+
+                    model.FileName = cleanFileName;
+                    model.RelativePath = $"{subFolder}/{cleanFileName}";
+                    model.Sha256 = sha256;
+                    model.FileSizeBytes = fileBytes.LongLength;
+                    model.DownloadUrl = $"/api/builds/{slug}/file/{subFolder}/{cleanFileName}";
+                }
             }
 
             model.BuildSlug = slug;
@@ -148,6 +233,9 @@ namespace VyacheslavsMegaWebApp.Areas.Admin.Controllers
                 existing.Description = model.Description ?? string.Empty;
                 existing.Category = model.Category;
                 existing.IsRequired = model.IsRequired;
+                existing.SourceType = model.SourceType;
+                existing.ModrinthSlug = model.ModrinthSlug;
+                existing.IconUrl = model.IconUrl;
 
                 if (!string.IsNullOrEmpty(model.FileName))
                 {
@@ -169,12 +257,15 @@ namespace VyacheslavsMegaWebApp.Areas.Admin.Controllers
             var item = await _db.ClientBuildFiles.FindAsync(id);
             if (item != null)
             {
-                var root = _env.WebRootPath ?? Path.Combine(_env.ContentRootPath, "wwwroot");
-                var rel = item.RelativePath.Replace('/', Path.DirectorySeparatorChar);
-                var targetPath = Path.Combine(root, "builds", item.BuildSlug, rel);
-                if (System.IO.File.Exists(targetPath))
+                if (item.DownloadUrl == null || !item.DownloadUrl.StartsWith("http", StringComparison.OrdinalIgnoreCase))
                 {
-                    try { System.IO.File.Delete(targetPath); } catch { }
+                    var root = _env.WebRootPath ?? Path.Combine(_env.ContentRootPath, "wwwroot");
+                    var rel = item.RelativePath.Replace('/', Path.DirectorySeparatorChar);
+                    var targetPath = Path.Combine(root, "builds", item.BuildSlug, rel);
+                    if (System.IO.File.Exists(targetPath))
+                    {
+                        try { System.IO.File.Delete(targetPath); } catch { }
+                    }
                 }
 
                 _db.ClientBuildFiles.Remove(item);

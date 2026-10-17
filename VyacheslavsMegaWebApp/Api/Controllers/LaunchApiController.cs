@@ -121,6 +121,8 @@ namespace VyacheslavsMegaWebApp.Api.Controllers
             public string Category { get; set; } = "Core";
             public string DisplayName { get; set; } = string.Empty;
             public string Description { get; set; } = string.Empty;
+            public string? IconUrl { get; set; }
+            public string? Source { get; set; }
         }
 
         [HttpGet("api/builds/{slug}/manifest")]
@@ -153,12 +155,12 @@ namespace VyacheslavsMegaWebApp.Api.Controllers
             {
                 var defaults = new List<ClientBuildFile>
                 {
-                    new() { BuildSlug = cleanSlug, RelativePath = "mods/fabric-api.jar", FileName = "fabric-api.jar", Sha256 = "", FileSizeBytes = 0, IsRequired = true, Category = "Core", DisplayName = "Fabric API", Description = "Базовый модуль хуков и событий Fabric 1.21.11" },
-                    new() { BuildSlug = cleanSlug, RelativePath = "mods/voicechat-fabric.jar", FileName = "voicechat-fabric.jar", Sha256 = "", FileSizeBytes = 0, IsRequired = true, Category = "Core", DisplayName = "Simple Voice Chat", Description = "Позиционный голосовой 3D чат сервера VEC" },
-                    new() { BuildSlug = cleanSlug, RelativePath = "mods/sodium-fabric.jar", FileName = "sodium-fabric.jar", Sha256 = "", FileSizeBytes = 0, IsRequired = true, Category = "Optimization", DisplayName = "Sodium", Description = "Движок рендеринга и многократного повышения FPS" },
-                    new() { BuildSlug = cleanSlug, RelativePath = "mods/iris-fabric.jar", FileName = "iris-fabric.jar", Sha256 = "", FileSizeBytes = 0, IsRequired = false, Category = "Visual", DisplayName = "Iris Shaders", Description = "Современный движок ультра-шейдеров" },
-                    new() { BuildSlug = cleanSlug, RelativePath = "mods/modmenu-fabric.jar", FileName = "modmenu-fabric.jar", Sha256 = "", FileSizeBytes = 0, IsRequired = false, Category = "Utility", DisplayName = "Mod Menu", Description = "Удобный список и настройки модов в главном меню" },
-                    new() { BuildSlug = cleanSlug, RelativePath = "mods/appleskin-fabric.jar", FileName = "appleskin-fabric.jar", Sha256 = "", FileSizeBytes = 0, IsRequired = false, Category = "Utility", DisplayName = "AppleSkin", Description = "Показ насыщения еды и очков голода" }
+                    new() { BuildSlug = cleanSlug, RelativePath = "mods/fabric-api.jar", FileName = "fabric-api.jar", Sha256 = "", FileSizeBytes = 0, IsRequired = true, Category = "Core", DisplayName = "Fabric API", Description = "Базовый модуль хуков и событий Fabric 1.21.11", SourceType = "Local" },
+                    new() { BuildSlug = cleanSlug, RelativePath = "mods/voicechat-fabric.jar", FileName = "voicechat-fabric.jar", Sha256 = "", FileSizeBytes = 0, IsRequired = true, Category = "Core", DisplayName = "Simple Voice Chat", Description = "Позиционный голосовой 3D чат сервера VEC", SourceType = "Local" },
+                    new() { BuildSlug = cleanSlug, RelativePath = "mods/sodium-fabric.jar", FileName = "sodium-fabric.jar", Sha256 = "", FileSizeBytes = 0, IsRequired = true, Category = "Optimization", DisplayName = "Sodium", Description = "Движок рендеринга и многократного повышения FPS", SourceType = "Local" },
+                    new() { BuildSlug = cleanSlug, RelativePath = "mods/iris-fabric.jar", FileName = "iris-fabric.jar", Sha256 = "", FileSizeBytes = 0, IsRequired = false, Category = "Visual", DisplayName = "Iris Shaders", Description = "Современный движок ультра-шейдеров", SourceType = "Local" },
+                    new() { BuildSlug = cleanSlug, RelativePath = "mods/modmenu-fabric.jar", FileName = "modmenu-fabric.jar", Sha256 = "", FileSizeBytes = 0, IsRequired = false, Category = "Utility", DisplayName = "Mod Menu", Description = "Удобный список и настройки модов в главном меню", SourceType = "Local" },
+                    new() { BuildSlug = cleanSlug, RelativePath = "mods/appleskin-fabric.jar", FileName = "appleskin-fabric.jar", Sha256 = "", FileSizeBytes = 0, IsRequired = false, Category = "Utility", DisplayName = "AppleSkin", Description = "Показ насыщения еды и очков голода", SourceType = "Local" }
                 };
 
                 _db.ClientBuildFiles.AddRange(defaults);
@@ -196,7 +198,9 @@ namespace VyacheslavsMegaWebApp.Api.Controllers
                     DownloadUrl = !string.IsNullOrWhiteSpace(dbf.DownloadUrl) ? dbf.DownloadUrl : $"/api/builds/{cleanSlug}/file/{dbf.RelativePath.Replace('\\', '/')}",
                     Category = dbf.Category ?? "Core",
                     DisplayName = dbf.DisplayName ?? Path.GetFileNameWithoutExtension(dbf.RelativePath),
-                    Description = dbf.Description ?? string.Empty
+                    Description = dbf.Description ?? string.Empty,
+                    IconUrl = dbf.IconUrl,
+                    Source = dbf.SourceType ?? (dbf.DownloadUrl?.StartsWith("http", StringComparison.OrdinalIgnoreCase) == true ? "Modrinth" : "Local")
                 });
             }
 

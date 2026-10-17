@@ -13,5 +13,8 @@ namespace VyacheslavsMegaWebApp.Data.Entities
         public string? Category { get; set; }
         public string? DisplayName { get; set; }
         public string? Description { get; set; }
+        public string? IconUrl { get; set; }
+        public string? SourceType { get; set; } = "Local";
+        public string? ModrinthSlug { get; set; }
     }
 }
