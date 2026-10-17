@@ -6,16 +6,19 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace VyacheslavsMegaWebApp.Service
 {
     public class SkinStorageService
     {
         private readonly IWebHostEnvironment _env;
+        private readonly IServiceProvider _serviceProvider;
 
-        public SkinStorageService(IWebHostEnvironment env)
+        public SkinStorageService(IWebHostEnvironment env, IServiceProvider serviceProvider)
         {
             _env = env;
+            _serviceProvider = serviceProvider;
             EnsureDirectories();
         }
 
@@ -633,6 +636,22 @@ namespace VyacheslavsMegaWebApp.Service
                 }
             }
 
+            try
+            {
+                var userCapeHash = GetCapeHash(username);
+                if (!string.IsNullOrEmpty(userCapeHash))
+                {
+                    using var scope = _serviceProvider.CreateScope();
+                    var db = scope.ServiceProvider.GetRequiredService<Data.AppDbContext>();
+                    var custom = db.CustomCapes.FirstOrDefault(c => c.TextureHash == userCapeHash);
+                    if (custom != null)
+                    {
+                        return custom.Slug == "vec" ? "vec_default" : $"custom_{custom.Id}";
+                    }
+                }
+            }
+            catch { }
+
             return "custom";
         }
 
@@ -640,6 +659,7 @@ namespace VyacheslavsMegaWebApp.Service
         {
             EnsureDirectories();
             string? srcPath = null;
+            byte[]? directBytes = null;
 
             if (capeId.Equals("vec_default", StringComparison.OrdinalIgnoreCase) || capeId.Equals("vec", StringComparison.OrdinalIgnoreCase))
             {
@@ -662,10 +682,31 @@ namespace VyacheslavsMegaWebApp.Service
                 }
                 if (File.Exists(p)) srcPath = p;
             }
+            else if (capeId.StartsWith("custom_", StringComparison.OrdinalIgnoreCase))
+            {
+                var idStr = capeId.Substring(7);
+                try
+                {
+                    using var scope = _serviceProvider.CreateScope();
+                    var db = scope.ServiceProvider.GetRequiredService<Data.AppDbContext>();
+                    int.TryParse(idStr, out var cId);
+                    var cape = db.CustomCapes.FirstOrDefault(c => c.Id == cId || c.Slug == idStr);
+                    if (cape != null)
+                    {
+                        directBytes = GetTextureBytesByHash(cape.TextureHash);
+                    }
+                }
+                catch { }
+            }
 
-            if (srcPath == null || !File.Exists(srcPath)) return false;
+            byte[]? bytes = directBytes;
+            if (bytes == null && srcPath != null && File.Exists(srcPath))
+            {
+                bytes = File.ReadAllBytes(srcPath);
+            }
 
-            var bytes = File.ReadAllBytes(srcPath);
+            if (bytes == null || bytes.Length == 0) return false;
+
             var hash = SaveTextureBytes(bytes);
             UpdateUserSkinMeta(username, capeHash: hash);
 
@@ -699,6 +740,24 @@ namespace VyacheslavsMegaWebApp.Service
                     url = $"/textures/{hash}"
                 });
             }
+
+            try
+            {
+                using var scope = _serviceProvider.CreateScope();
+                var db = scope.ServiceProvider.GetRequiredService<Data.AppDbContext>();
+                var publicCapes = db.CustomCapes.Where(c => c.IsPublic).ToList();
+                foreach (var c in publicCapes)
+                {
+                    if (c.Slug == "vec") continue;
+                    list.Add(new
+                    {
+                        id = $"custom_{c.Id}",
+                        name = c.Name,
+                        url = $"/textures/{c.TextureHash}"
+                    });
+                }
+            }
+            catch { }
 
             return list;
         }

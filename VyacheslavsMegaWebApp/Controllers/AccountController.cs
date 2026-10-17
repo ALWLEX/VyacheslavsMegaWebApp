@@ -249,21 +249,49 @@ namespace VyacheslavsMegaWebApp.Controllers
 
             var equippedCapeId = _skinStorage.DetectEquippedCapeId(user.UserName);
 
-            var availableCapes = new List<CapeItemViewModel>
+            var availableCapes = new List<CapeItemViewModel>();
+            var mojangCapes = new List<MojangCapeInfo>();
+            try
             {
-                new CapeItemViewModel
+                var publicCapes = await _db.CustomCapes.Where(c => c.IsPublic).ToListAsync();
+                var ownedCapes = await _db.UserCapeOwnerships
+                    .Where(o => o.UserId == user.Id && o.Cape != null)
+                    .Select(o => o.Cape!)
+                    .ToListAsync();
+
+                var customCapes = publicCapes.Concat(ownedCapes).DistinctBy(c => c.Id).ToList();
+
+                var vecCape = customCapes.FirstOrDefault(c => c.Slug == "vec");
+                var isVecEquipped = equippedCapeId == "vec_default" || (vecCape != null && equippedCapeId == $"custom_{vecCape.Id}");
+
+                availableCapes.Add(new CapeItemViewModel
                 {
                     Id = "vec_default",
-                    Name = "Плащ VEC",
-                    Description = "Официальный плащ проекта VEC.",
-                    PreviewUrl = "/img/capes/cape_vec.png",
-                    DownloadUrl = "/img/capes/cape_vec.png",
+                    Name = vecCape?.Name ?? "Плащ VEC",
+                    Description = vecCape?.Description ?? "Официальный плащ проекта VEC.",
+                    PreviewUrl = vecCape != null ? $"/textures/{vecCape.TextureHash}" : "/img/capes/cape_vec.png",
+                    DownloadUrl = vecCape != null ? $"/textures/{vecCape.TextureHash}" : "/img/capes/cape_vec.png",
                     IsOfficial = true,
-                    IsEquipped = equippedCapeId == "vec_default"
-                }
-            };
+                    IsEquipped = isVecEquipped
+                });
 
-            var mojangCapes = new List<MojangCapeInfo>();
+                foreach (var c in customCapes.Where(c => c.Slug != "vec"))
+                {
+                    var capeId = $"custom_{c.Id}";
+                    availableCapes.Add(new CapeItemViewModel
+                    {
+                        Id = capeId,
+                        Name = c.Name,
+                        Description = c.Description ?? "Эксклюзивный плащ VEC",
+                        PreviewUrl = $"/textures/{c.TextureHash}",
+                        DownloadUrl = $"/textures/{c.TextureHash}",
+                        IsOfficial = true,
+                        IsEquipped = equippedCapeId == capeId
+                    });
+                }
+            }
+            catch { }
+
             if (user.HasMinecraftLicense && !string.IsNullOrWhiteSpace(user.OwnedMojangCapesJson))
             {
                 try
@@ -600,6 +628,20 @@ namespace VyacheslavsMegaWebApp.Controllers
                     return BadRequest(new { error = "У вас нет этого плаща Mojang на привязанном аккаунте Minecraft." });
                 }
             }
+            else if (capeId.StartsWith("custom_", StringComparison.OrdinalIgnoreCase))
+            {
+                var idStr = capeId.Substring(7);
+                if (int.TryParse(idStr, out var cId))
+                {
+                    var custom = await _db.CustomCapes.FindAsync(cId);
+                    if (custom == null) return BadRequest(new { error = "Плащ не найден." });
+                    if (!custom.IsPublic)
+                    {
+                        var isOwned = await _db.UserCapeOwnerships.AnyAsync(o => o.UserId == user.Id && o.CapeId == cId);
+                        if (!isOwned) return BadRequest(new { error = "У вас нет этого эксклюзивного плаща в гардеробе." });
+                    }
+                }
+            }
 
             var ok = _skinStorage.EquipLauncherCape(user.UserName, capeId);
             if (!ok) return BadRequest(new { error = "Плащ не найден." });
@@ -629,6 +671,82 @@ namespace VyacheslavsMegaWebApp.Controllers
                 message = "Плащ снят.",
                 capeUrl = (string?)null,
                 equippedCapeId = (string?)null
+            });
+        }
+
+        public class RedeemCapeCodeModel
+        {
+            public string Code { get; set; } = string.Empty;
+        }
+
+        [Authorize]
+        [HttpPost]
+        [IgnoreAntiforgeryToken]
+        public async Task<IActionResult> RedeemCapeCode([FromBody] RedeemCapeCodeModel model)
+        {
+            if (model == null || string.IsNullOrWhiteSpace(model.Code))
+            {
+                return BadRequest(new { success = false, message = "Введите промокод на плащ." });
+            }
+
+            VmsIdentityUser? user = await _userManager.GetUserAsync(User);
+            if (user is null) return Unauthorized();
+
+            var cleanCode = model.Code.Trim().ToUpperInvariant();
+
+            var codeEntry = await _db.CapeRedeemCodes
+                .Include(r => r.Cape)
+                .FirstOrDefaultAsync(r => r.Code == cleanCode);
+
+            if (codeEntry == null || codeEntry.Cape == null)
+            {
+                return BadRequest(new { success = false, message = "Промокод не найден или введен неверно." });
+            }
+
+            if (codeEntry.IsUsed)
+            {
+                return BadRequest(new { success = false, message = "Этот промокод уже был активирован ранее." });
+            }
+
+            if (codeEntry.ExpiresAt.HasValue && codeEntry.ExpiresAt.Value < DateTime.UtcNow)
+            {
+                return BadRequest(new { success = false, message = "Срок действия этого промокода истек." });
+            }
+
+            var alreadyOwned = await _db.UserCapeOwnerships
+                .AnyAsync(o => o.UserId == user.Id && o.CapeId == codeEntry.CapeId);
+
+            if (alreadyOwned)
+            {
+                return BadRequest(new { success = false, message = $"У вас уже есть плащ «{codeEntry.Cape.Name}» в гардеробе!" });
+            }
+
+            codeEntry.IsUsed = true;
+            codeEntry.RedeemedByUserId = user.Id;
+            codeEntry.RedeemedAt = DateTime.UtcNow;
+
+            var ownership = new UserCapeOwnership
+            {
+                UserId = user.Id,
+                CapeId = codeEntry.CapeId,
+                AcquiredAt = DateTime.UtcNow,
+                AcquiredVia = "RedeemCode"
+            };
+            _db.UserCapeOwnerships.Add(ownership);
+
+            await _db.SaveChangesAsync();
+
+            return Ok(new
+            {
+                success = true,
+                message = $"Поздравляем! Плащ «{codeEntry.Cape.Name}» успешно разблокирован и добавлен в ваш гардероб!",
+                cape = new
+                {
+                    id = $"custom_{codeEntry.Cape.Id}",
+                    name = codeEntry.Cape.Name,
+                    description = codeEntry.Cape.Description ?? "Эксклюзивный плащ VEC",
+                    previewUrl = $"/textures/{codeEntry.Cape.TextureHash}"
+                }
             });
         }
 

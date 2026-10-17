@@ -495,6 +495,21 @@
                                 </div>
                             }
                         </div>
+
+                        <!-- Redeem Promo Code Section -->
+                        <div class="mc-capes-card__header" style="margin-top: 30px; border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 20px;">
+                            <h3 class="mc-capes-card__title">АКТИВАЦИЯ ПРОМОКОДА НА ПЛАЩ</h3>
+                            <p class="mc-capes-card__desc">
+                                Введите полученный промокод для разблокировки и надевания плаща.
+                            </p>
+                            <div style="display: flex; gap: 10px; max-width: 500px; flex-wrap: wrap; margin-top: 12px;">
+                                <input type="text" id="capeRedeemCodeInput" class="field__input-profile" placeholder="VEC-XXXX-XXXX-XXXX" style="flex: 1; min-width: 180px; text-transform: uppercase; font-family: monospace; font-size: 14px; letter-spacing: 1px;" maxlength="40" />
+                                <button type="button" class="panel-btn panel-btn--secondary" id="btnRedeemCape" onclick="submitCapeCode()">
+                                    <span>Активировать</span>
+                                </button>
+                            </div>
+                            <div id="redeemCodeStatusMsg" style="margin-top: 10px; font-size: 13px; display: none;"></div>
+                        </div>
                     </div>
 
                 </div>
@@ -912,6 +927,81 @@
                 alert('Ошибка сети при синхронизации скина.');
             } finally {
                 if (btn) btn.disabled = false;
+            }
+        }
+
+        async function submitCapeCode() {
+            const input = document.getElementById('capeRedeemCodeInput');
+            const btn = document.getElementById('btnRedeemCape');
+            const msg = document.getElementById('redeemCodeStatusMsg');
+            if (!input) return;
+
+            const code = input.value.trim();
+            if (!code) {
+                if (msg) {
+                    msg.style.display = 'block';
+                    msg.style.color = '#c0392b';
+                    msg.textContent = 'Пожалуйста, введите промокод.';
+                }
+                return;
+            }
+
+            btn.disabled = true;
+            if (msg) msg.style.display = 'none';
+
+            try {
+                const res = await fetch('/Account/RedeemCapeCode', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ code: code })
+                });
+
+                const data = await res.json();
+                if (data.success) {
+                    input.value = '';
+                    if (msg) {
+                        msg.style.display = 'block';
+                        msg.style.color = '#27ae60';
+                        msg.textContent = data.message;
+                    }
+
+                    if (data.cape) {
+                        const grid = document.getElementById('mcCapesGrid');
+                        if (grid) {
+                            const newCapeEl = document.createElement('div');
+                            newCapeEl.className = 'mc-cape-item';
+                            newCapeEl.setAttribute('data-cape-id', data.cape.id);
+                            newCapeEl.setAttribute('data-cape-url', data.cape.previewUrl);
+                            newCapeEl.onclick = () => selectCape(data.cape.id);
+                            newCapeEl.innerHTML = `
+                                <div class="mc-cape-item__preview">
+                                    <canvas class="mc-cape-item__canvas" width="44" height="70" data-cape-url="${data.cape.previewUrl}"></canvas>
+                                </div>
+                                <div class="mc-cape-item__footer">
+                                    <span class="mc-radio-circle"></span>
+                                    <span class="mc-cape-item__name" title="${data.cape.name}">${data.cape.name}</span>
+                                </div>
+                            `;
+                            grid.appendChild(newCapeEl);
+                            renderAllCapeCanvases();
+                            selectCape(data.cape.id);
+                        }
+                    }
+                } else {
+                    if (msg) {
+                        msg.style.display = 'block';
+                        msg.style.color = '#c0392b';
+                        msg.textContent = data.message || 'Ошибка активации кода.';
+                    }
+                }
+            } catch {
+                if (msg) {
+                    msg.style.display = 'block';
+                    msg.style.color = '#c0392b';
+                    msg.textContent = 'Ошибка сети. Попробуйте еще раз.';
+                }
+            } finally {
+                btn.disabled = false;
             }
         }
 

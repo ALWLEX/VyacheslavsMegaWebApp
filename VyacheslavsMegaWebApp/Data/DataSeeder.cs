@@ -12,6 +12,7 @@ namespace VyacheslavsMegaWebApp.Data
         {
             SeedClientBuildFiles(db);
             SeedEcosystemData(db);
+            SeedDefaultCapes(db, env);
         }
 
         private static void SeedClientBuildFiles(AppDbContext db)
@@ -370,6 +371,40 @@ namespace VyacheslavsMegaWebApp.Data
             }
 
             db.SaveChanges();
+        }
+
+        public static void SeedDefaultCapes(AppDbContext db, IWebHostEnvironment env)
+        {
+            if (!db.CustomCapes.Any(c => c.Slug == "vec"))
+            {
+                var vecFile = Path.Combine(env.WebRootPath, "img", "capes", "cape_vec.png");
+                string hash = "75c0462e8904da6f38b3b597352cf2e2724b504a567a659db877dc328f9aa4a7";
+                if (File.Exists(vecFile))
+                {
+                    try
+                    {
+                        var bytes = File.ReadAllBytes(vecFile);
+                        using var sha = System.Security.Cryptography.SHA256.Create();
+                        hash = Convert.ToHexString(sha.ComputeHash(bytes)).ToLowerInvariant();
+                        var targetDir = Path.Combine(env.WebRootPath, "uploads", "textures");
+                        Directory.CreateDirectory(targetDir);
+                        var targetFile = Path.Combine(targetDir, $"{hash}.png");
+                        if (!File.Exists(targetFile)) File.WriteAllBytes(targetFile, bytes);
+                    }
+                    catch { }
+                }
+
+                db.CustomCapes.Add(new CustomCape
+                {
+                    Slug = "vec",
+                    Name = "Плащ VEC",
+                    Description = "Официальный плащ проекта VEC",
+                    TextureHash = hash,
+                    IsPublic = true,
+                    CreatedAt = DateTime.UtcNow
+                });
+                db.SaveChanges();
+            }
         }
     }
 }
