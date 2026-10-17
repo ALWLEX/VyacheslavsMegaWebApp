@@ -122,6 +122,8 @@ namespace VyacheslavsMegaWebApp.Api.Controllers
             public string DisplayName { get; set; } = string.Empty;
             public string Description { get; set; } = string.Empty;
             public string? IconUrl { get; set; }
+            public string? BannerUrl { get; set; }
+            public string? ModrinthSlug { get; set; }
             public string? Source { get; set; }
         }
 
@@ -200,6 +202,8 @@ namespace VyacheslavsMegaWebApp.Api.Controllers
                     DisplayName = dbf.DisplayName ?? Path.GetFileNameWithoutExtension(dbf.RelativePath),
                     Description = dbf.Description ?? string.Empty,
                     IconUrl = dbf.IconUrl,
+                    BannerUrl = dbf.BannerUrl,
+                    ModrinthSlug = dbf.ModrinthSlug,
                     Source = dbf.SourceType ?? (dbf.DownloadUrl?.StartsWith("http", StringComparison.OrdinalIgnoreCase) == true ? "Modrinth" : "Local")
                 });
             }

@@ -29,7 +29,8 @@ namespace VyacheslavsMegaWebApp.Data
                     Url = "https://cdn.modrinth.com/data/P7dR8mSH/versions/Mys3P7lK/fabric-api-0.116.17%2B1.21.1.jar",
                     Size = 2452735L,
                     Sha = "79ac44b40780acbd884b34c50be1e39af682847e5f5cb3b1fddeeaa768dce800",
-                    Icon = "https://cdn.modrinth.com/data/P7dR8mSH/icon.png"
+                    Icon = "https://cdn.modrinth.com/data/P7dR8mSH/icon.png",
+                    Banner = (string?)null
                 },
                 new {
                     Slug = "simple-voice-chat",
@@ -42,7 +43,8 @@ namespace VyacheslavsMegaWebApp.Data
                     Url = "https://cdn.modrinth.com/data/9eGKb6K1/versions/MLNG868g/voicechat-fabric-1.21.11-2.6.24.jar",
                     Size = 5608482L,
                     Sha = "07762e88744866f9dce5eb9f255d568e72cf8a6ba02bf464532df04c9221a8fd",
-                    Icon = "https://cdn.modrinth.com/data/9eGKb6K1/icon.png"
+                    Icon = "https://cdn.modrinth.com/data/9eGKb6K1/icon.png",
+                    Banner = "https://cdn.modrinth.com/data/9eGKb6K1/images/95490c1c7cf1be0d2981476efbc6acfe79c8b58b_350.webp"
                 },
                 new {
                     Slug = "sodium",
@@ -55,7 +57,8 @@ namespace VyacheslavsMegaWebApp.Data
                     Url = "https://cdn.modrinth.com/data/AANobbMI/versions/RB7CDjTS/sodium-fabric-0.8.15-beta.1%2Bmc1.21.11.jar",
                     Size = 1914874L,
                     Sha = "f0bd613154a9ed0712d1d8aa62f1de3fb0fc1e76b4edc37f1250679007029775",
-                    Icon = "https://cdn.modrinth.com/data/AANobbMI/295862f4724dc3f78df3447ad6072b2dcd3ef0c9_96.webp"
+                    Icon = "https://cdn.modrinth.com/data/AANobbMI/295862f4724dc3f78df3447ad6072b2dcd3ef0c9_96.webp",
+                    Banner = "https://cdn.modrinth.com/data/AANobbMI/images/d84313e6f57dc9e7896961dbd2dfc2689d482758_350.webp"
                 },
                 new {
                     Slug = "iris",
@@ -68,7 +71,8 @@ namespace VyacheslavsMegaWebApp.Data
                     Url = "https://cdn.modrinth.com/data/YL57xq9U/versions/ka9PDlsN/iris-fabric-1.10.8%2Bmc1.21.11.jar",
                     Size = 2807718L,
                     Sha = "5b6b5124c74407ffe4945f8da61491731cbf697f0bba4b14257e0ff977dac087",
-                    Icon = "https://cdn.modrinth.com/data/YL57xq9U/18d0e7f076d3d6ed5bedd472b853909aac5da202_96.webp"
+                    Icon = "https://cdn.modrinth.com/data/YL57xq9U/18d0e7f076d3d6ed5bedd472b853909aac5da202_96.webp",
+                    Banner = "https://cdn.modrinth.com/data/YL57xq9U/images/f47cea26f135d74c2d69df0a1806751818d705d3_350.webp"
                 },
                 new {
                     Slug = "entity-model-features",
@@ -81,7 +85,8 @@ namespace VyacheslavsMegaWebApp.Data
                     Url = "https://cdn.modrinth.com/data/4I1XuqiY/versions/9Gv6SVe7/entity_model_features-3.3.12-1.21.9-fabric.jar",
                     Size = 668376L,
                     Sha = "b752c15f5339bc7de94a0a1ed7c837e89a3f59b4824766e1fc5ac63c57719711",
-                    Icon = "https://cdn.modrinth.com/data/4I1XuqiY/6e5bbd0d06b1741bfdab6c0cfab6de8fdaf0064c_96.webp"
+                    Icon = "https://cdn.modrinth.com/data/4I1XuqiY/6e5bbd0d06b1741bfdab6c0cfab6de8fdaf0064c_96.webp",
+                    Banner = "https://cdn.modrinth.com/data/4I1XuqiY/images/ba682dbb4d4ff5df8900987e6d8e86f4997fc119_350.webp"
                 },
                 new {
                     Slug = "entitytexturefeatures",
@@ -94,7 +99,8 @@ namespace VyacheslavsMegaWebApp.Data
                     Url = "https://cdn.modrinth.com/data/BVzZfTc1/versions/Y65jA7rB/entity_texture_features-7.2.6-1.21.9-fabric.jar",
                     Size = 803120L,
                     Sha = "93de9a53541f182fa12bf71e2da403028f6ae27770de597a146b48764835e6d5",
-                    Icon = "https://cdn.modrinth.com/data/BVzZfTc1/af683d206d50b05258d865b0d6e4aa2f2cee12f2_96.webp"
+                    Icon = "https://cdn.modrinth.com/data/BVzZfTc1/af683d206d50b05258d865b0d6e4aa2f2cee12f2_96.webp",
+                    Banner = "https://cdn.modrinth.com/data/BVzZfTc1/images/5260909bc44abcade39ce46ec57d0edf6107ffb0_350.webp"
                 },
                 new {
                     Slug = "modmenu",
@@ -107,7 +113,8 @@ namespace VyacheslavsMegaWebApp.Data
                     Url = "https://cdn.modrinth.com/data/mOgUt4GM/versions/cLkYaVuL/modmenu-17.0.1.jar",
                     Size = 960882L,
                     Sha = "2eb2d6db9964fcf2e44e2be1e4d172b8c4e829e385c8f31636de94a1708c2076",
-                    Icon = "https://cdn.modrinth.com/data/mOgUt4GM/5a20ed1450a0e1e79a1fe04e61bb4e5878bf1d20.png"
+                    Icon = "https://cdn.modrinth.com/data/mOgUt4GM/5a20ed1450a0e1e79a1fe04e61bb4e5878bf1d20.png",
+                    Banner = "https://cdn.modrinth.com/data/mOgUt4GM/images/70fd54b0579f2de3ac45fa9650aca2ec8ff0882b_350.webp"
                 },
                 new {
                     Slug = "appleskin",
@@ -120,7 +127,8 @@ namespace VyacheslavsMegaWebApp.Data
                     Url = "https://cdn.modrinth.com/data/EsAfCjCV/versions/59ti1rvg/appleskin-fabric-mc1.21.11-3.0.8.jar",
                     Size = 180107L,
                     Sha = "04fe837be8f10bb5e6b999238594466c59bdb641a54512f19f1e67241d882ae3",
-                    Icon = "https://cdn.modrinth.com/data/EsAfCjCV/icon.png"
+                    Icon = "https://cdn.modrinth.com/data/EsAfCjCV/icon.png",
+                    Banner = (string?)null
                 },
                 new {
                     Slug = "complementary-reimagined",
@@ -133,7 +141,8 @@ namespace VyacheslavsMegaWebApp.Data
                     Url = "https://cdn.modrinth.com/data/HVnmMxH1/versions/Bqen1mJX/ComplementaryReimagined_r5.9.3.zip",
                     Size = 553397L,
                     Sha = "fed6c879e732cf7fc7bc6570ebb1def43235aa7e96f62859fbdbdbfa0b484b38",
-                    Icon = "https://cdn.modrinth.com/data/HVnmMxH1/79cb7c8123bbc54945305b2ebad6b8881efdf5f8_96.webp"
+                    Icon = "https://cdn.modrinth.com/data/HVnmMxH1/79cb7c8123bbc54945305b2ebad6b8881efdf5f8_96.webp",
+                    Banner = "https://cdn.modrinth.com/data/HVnmMxH1/images/111e76bfa966c68b3581a93f7322588e642ce4db_350.webp"
                 },
                 new {
                     Slug = "fresh-animations",
@@ -146,7 +155,8 @@ namespace VyacheslavsMegaWebApp.Data
                     Url = "https://cdn.modrinth.com/data/50dA9Sha/versions/xN57JJts/FreshAnimations_v1.10.4.zip",
                     Size = 850941L,
                     Sha = "8e44b29560d2e7d952c0a4f77f0451e6dcb048f827189bffc712b446be8de7f2",
-                    Icon = "https://cdn.modrinth.com/data/50dA9Sha/3132c10e9e3c73fde9799720fd3da5561071708c_96.webp"
+                    Icon = "https://cdn.modrinth.com/data/50dA9Sha/3132c10e9e3c73fde9799720fd3da5561071708c_96.webp",
+                    Banner = "https://cdn.modrinth.com/data/50dA9Sha/images/c6a5bc8c69dea40a3d6f343390d04f2fc01fb0d6_350.webp"
                 }
             };
 
@@ -180,6 +190,7 @@ namespace VyacheslavsMegaWebApp.Data
                         FileSizeBytes = m.Size,
                         Sha256 = m.Sha,
                         IconUrl = m.Icon,
+                        BannerUrl = m.Banner,
                         SourceType = "Modrinth",
                         ModrinthSlug = m.Slug
                     };
@@ -197,6 +208,7 @@ namespace VyacheslavsMegaWebApp.Data
                     existing.FileSizeBytes = m.Size;
                     existing.Sha256 = m.Sha;
                     existing.IconUrl = m.Icon;
+                    existing.BannerUrl = m.Banner;
                     existing.SourceType = "Modrinth";
                     existing.ModrinthSlug = m.Slug;
                 }

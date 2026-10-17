@@ -14,6 +14,7 @@ namespace VyacheslavsMegaWebApp.Data.Entities
         public string? DisplayName { get; set; }
         public string? Description { get; set; }
         public string? IconUrl { get; set; }
+        public string? BannerUrl { get; set; }
         public string? SourceType { get; set; } = "Local";
         public string? ModrinthSlug { get; set; }
     }

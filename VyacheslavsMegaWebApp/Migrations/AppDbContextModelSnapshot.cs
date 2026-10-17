@@ -51,14 +51,14 @@ namespace VyacheslavsMegaWebApp.Migrations
                         new
                         {
                             Id = "db158bac-48d4-47c3-a6b0-c6d8b5c9ee55",
-                            ConcurrencyStamp = "c9588b0c-4dc7-4b69-8f61-9c5f55491856",
+                            ConcurrencyStamp = "f8cba131-04ed-49e2-a43a-734a8402b508",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
                             Id = "03d4ba1e-afef-4e77-849d-295bd86148db",
-                            ConcurrencyStamp = "9c86397c-1bae-44c0-b1d2-874c7ad39c7d",
+                            ConcurrencyStamp = "79f7f172-0503-48f1-874b-cc89529855e1",
                             Name = "Moderator",
                             NormalizedName = "MODERATOR"
                         });
@@ -178,6 +178,9 @@ namespace VyacheslavsMegaWebApp.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    b.Property<string>("BannerUrl")
+                        .HasColumnType("longtext");
 
                     b.Property<string>("BuildSlug")
                         .IsRequired()
@@ -563,16 +566,16 @@ namespace VyacheslavsMegaWebApp.Migrations
                         {
                             Id = "d4bc75a9-ca48-45aa-a3f2-2ea5886ce303",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "9447ef93-12be-4ed8-89d5-6f2494e37768",
+                            ConcurrencyStamp = "c1e68228-516a-472f-b558-61aa8ddc1988",
                             Email = "vya4slav4617@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "VYA4SLAV4617@GMAIL.COM",
                             NormalizedUserName = "EVRAY",
-                            PasswordHash = "AQAAAAIAAYagAAAAEEal3jbCeWNXppfboyF0FdCzKMVKKH3V9uKDX3H7xDx4EQyDOoDypNsxwAtc2csELg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEEtV3zknA1WxTGxYJBH0ssOE3lm57qe9qiaO22lXYFY7kdZH9XJwCJXBDI6+nW3Law==",
                             PhoneNumber = "+7 (705) 806 3101",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "eac37163-0244-4819-a210-58f0ac900c1a",
+                            SecurityStamp = "4a95bb12-0d11-45b6-9530-7594816da044",
                             TwoFactorEnabled = false,
                             UserName = "Evray"
                         });

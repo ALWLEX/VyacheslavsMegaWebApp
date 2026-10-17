@@ -89,6 +89,7 @@ internal class Program
         {
             var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
             try { db.Database.Migrate(); } catch { }
+            try { db.Database.ExecuteSqlRaw("ALTER TABLE `ClientBuildFiles` ADD COLUMN `BannerUrl` longtext NULL;"); } catch { }
             try { DataSeeder.Seed(db, app.Environment); } catch { }
         }
 
