@@ -51,14 +51,14 @@ namespace VyacheslavsMegaWebApp.Migrations
                         new
                         {
                             Id = "db158bac-48d4-47c3-a6b0-c6d8b5c9ee55",
-                            ConcurrencyStamp = "f8cba131-04ed-49e2-a43a-734a8402b508",
+                            ConcurrencyStamp = "e4630e31-70bf-445c-a63a-676107d81fa2",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
                             Id = "03d4ba1e-afef-4e77-849d-295bd86148db",
-                            ConcurrencyStamp = "79f7f172-0503-48f1-874b-cc89529855e1",
+                            ConcurrencyStamp = "1ca40dc8-422c-428f-b186-336c8bba3e24",
                             Name = "Moderator",
                             NormalizedName = "MODERATOR"
                         });
@@ -517,11 +517,23 @@ namespace VyacheslavsMegaWebApp.Migrations
                     b.Property<DateTime?>("EmailConfirmedCodeCreationTime")
                         .HasColumnType("datetime(6)");
 
+                    b.Property<bool>("HasMinecraftLicense")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("datetime");
+
+                    b.Property<string>("MicrosoftGamertag")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime?>("MicrosoftLicenseLinkedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("MicrosoftUuid")
+                        .HasColumnType("longtext");
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
@@ -530,6 +542,9 @@ namespace VyacheslavsMegaWebApp.Migrations
                     b.Property<string>("NormalizedUserName")
                         .HasMaxLength(256)
                         .HasColumnType("varchar(256)");
+
+                    b.Property<string>("OwnedMojangCapesJson")
+                        .HasColumnType("longtext");
 
                     b.Property<string>("PasswordHash")
                         .HasColumnType("longtext");
@@ -566,16 +581,17 @@ namespace VyacheslavsMegaWebApp.Migrations
                         {
                             Id = "d4bc75a9-ca48-45aa-a3f2-2ea5886ce303",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "c1e68228-516a-472f-b558-61aa8ddc1988",
+                            ConcurrencyStamp = "541233d2-f731-4834-a48a-18558f4f30dd",
                             Email = "vya4slav4617@gmail.com",
                             EmailConfirmed = true,
+                            HasMinecraftLicense = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "VYA4SLAV4617@GMAIL.COM",
                             NormalizedUserName = "EVRAY",
-                            PasswordHash = "AQAAAAIAAYagAAAAEEtV3zknA1WxTGxYJBH0ssOE3lm57qe9qiaO22lXYFY7kdZH9XJwCJXBDI6+nW3Law==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEPxx6suPp5puiqTy6xQjnKhzHZ0/a190bopLFZGWihTjJYzoY1baa2cliJRgZCdaEA==",
                             PhoneNumber = "+7 (705) 806 3101",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "4a95bb12-0d11-45b6-9530-7594816da044",
+                            SecurityStamp = "40278ad1-d87d-41c2-9307-3d528c4fd9fa",
                             TwoFactorEnabled = false,
                             UserName = "Evray"
                         });

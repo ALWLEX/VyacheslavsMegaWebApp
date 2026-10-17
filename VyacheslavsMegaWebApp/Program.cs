@@ -82,6 +82,7 @@ internal class Program
         builder.Services.AddSingleton<YggdrasilService>();
         builder.Services.AddSingleton<AppResourcesManager>();
         builder.Services.AddSingleton<ModrinthService>();
+        builder.Services.AddHttpClient<MinecraftLicenseService>();
 
         var app = builder.Build();
 

@@ -53,6 +53,12 @@ namespace VyacheslavsMegaWebApp.Models
         public List<FriendItemViewModel> IncomingRequests { get; set; } = new();
         public List<FriendItemViewModel> OutgoingRequests { get; set; } = new();
 
+        public bool HasMinecraftLicense { get; set; }
+        public string? MicrosoftGamertag { get; set; }
+        public string? MicrosoftUuid { get; set; }
+        public DateTime? MicrosoftLicenseLinkedAt { get; set; }
+        public List<MojangCapeInfo> MojangCapes { get; set; } = new();
+
         public ChangePasswordViewModel ChangePassword { get; set; } = new();
     }
 }

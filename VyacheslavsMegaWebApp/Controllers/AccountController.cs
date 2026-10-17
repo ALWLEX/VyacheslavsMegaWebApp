@@ -1,5 +1,6 @@
 using System.Collections.Concurrent;
 using System.Security.Cryptography;
+using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -27,6 +28,7 @@ namespace VyacheslavsMegaWebApp.Controllers
         private readonly IStringLocalizer<AccountController> _localizer;
         private readonly SkinStorageService _skinStorage;
         private readonly LauncherSessionRepository _sessionRepository;
+        private readonly MinecraftLicenseService _licenseService;
         private readonly AppDbContext _db;
 
         #region String constants
@@ -48,6 +50,7 @@ namespace VyacheslavsMegaWebApp.Controllers
             IStringLocalizer<AccountController> localizer,
             SkinStorageService skinStorage,
             LauncherSessionRepository sessionRepository,
+            MinecraftLicenseService licenseService,
             AppDbContext db) 
         {
             _userManager = userManager;
@@ -56,6 +59,7 @@ namespace VyacheslavsMegaWebApp.Controllers
             _localizer = localizer;
             _skinStorage = skinStorage;
             _sessionRepository = sessionRepository;
+            _licenseService = licenseService;
             _db = db;
         }
 
@@ -259,6 +263,30 @@ namespace VyacheslavsMegaWebApp.Controllers
                 }
             };
 
+            var mojangCapes = new List<MojangCapeInfo>();
+            if (user.HasMinecraftLicense && !string.IsNullOrWhiteSpace(user.OwnedMojangCapesJson))
+            {
+                try
+                {
+                    mojangCapes = JsonSerializer.Deserialize<List<MojangCapeInfo>>(user.OwnedMojangCapesJson) ?? new();
+                    foreach (var mc in mojangCapes)
+                    {
+                        var capeId = $"mojang_{mc.Id}";
+                        availableCapes.Add(new CapeItemViewModel
+                        {
+                            Id = capeId,
+                            Name = !string.IsNullOrWhiteSpace(mc.Alias) ? mc.Alias : "Плащ Mojang",
+                            Description = "Официальный лицензионный плащ Minecraft (Mojang / Microsoft)",
+                            PreviewUrl = $"/img/capes/mojang/{mc.Id}.png",
+                            DownloadUrl = $"/img/capes/mojang/{mc.Id}.png",
+                            IsOfficial = true,
+                            IsEquipped = equippedCapeId == capeId
+                        });
+                    }
+                }
+                catch { }
+            }
+
             var sessions = _db.LauncherSessions
                 .Where(s => s.UserId == user.Id)
                 .OrderByDescending(s => s.ExpiresAt)
@@ -333,7 +361,12 @@ namespace VyacheslavsMegaWebApp.Controllers
                 LauncherSessions = sessions,
                 Friends = friendsList,
                 IncomingRequests = incomingList,
-                OutgoingRequests = outgoingList
+                OutgoingRequests = outgoingList,
+                HasMinecraftLicense = user.HasMinecraftLicense,
+                MicrosoftGamertag = user.MicrosoftGamertag,
+                MicrosoftUuid = user.MicrosoftUuid,
+                MicrosoftLicenseLinkedAt = user.MicrosoftLicenseLinkedAt,
+                MojangCapes = mojangCapes
             };
 
             return View(model);
@@ -558,6 +591,16 @@ namespace VyacheslavsMegaWebApp.Controllers
             if (string.IsNullOrWhiteSpace(capeId))
                 return BadRequest(new { error = "Плащ не указан." });
 
+            if (capeId.StartsWith("mojang_", StringComparison.OrdinalIgnoreCase))
+            {
+                var mojangCapeKey = capeId.Substring(7);
+                var isOwned = user.HasMinecraftLicense && !string.IsNullOrWhiteSpace(user.OwnedMojangCapesJson) && user.OwnedMojangCapesJson.Contains(mojangCapeKey, StringComparison.OrdinalIgnoreCase);
+                if (!isOwned)
+                {
+                    return BadRequest(new { error = "У вас нет этого плаща Mojang на привязанном аккаунте Minecraft." });
+                }
+            }
+
             var ok = _skinStorage.EquipLauncherCape(user.UserName, capeId);
             if (!ok) return BadRequest(new { error = "Плащ не найден." });
 
@@ -601,6 +644,16 @@ namespace VyacheslavsMegaWebApp.Controllers
             var capeUrl = _skinStorage.GetCapeUrl(user.UserName);
             var skinUrl = _skinStorage.GetSkinUrl(user.UserName);
 
+            var mojangCapes = new List<MojangCapeInfo>();
+            if (user.HasMinecraftLicense && !string.IsNullOrWhiteSpace(user.OwnedMojangCapesJson))
+            {
+                try
+                {
+                    mojangCapes = JsonSerializer.Deserialize<List<MojangCapeInfo>>(user.OwnedMojangCapesJson) ?? new();
+                }
+                catch { }
+            }
+
             return Ok(new
             {
                 success = true,
@@ -608,8 +661,126 @@ namespace VyacheslavsMegaWebApp.Controllers
                 skinUrl,
                 capeUrl,
                 skinModel = model,
-                equippedCapeId
+                equippedCapeId,
+                hasMinecraftLicense = user.HasMinecraftLicense,
+                microsoftGamertag = user.MicrosoftGamertag,
+                microsoftUuid = user.MicrosoftUuid,
+                microsoftLinkedAt = user.MicrosoftLicenseLinkedAt?.ToString("o"),
+                mojangCapes
             });
+        }
+
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> StartMicrosoftDeviceCode()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user is null) return Unauthorized();
+
+            try
+            {
+                var initResult = await _licenseService.RequestDeviceCodeAsync();
+                if (initResult == null || string.IsNullOrEmpty(initResult.DeviceCode))
+                {
+                    return BadRequest(new { error = "Не удалось начать авторизацию через Microsoft. Попробуйте позже." });
+                }
+
+                return Ok(new
+                {
+                    success = true,
+                    deviceCode = initResult.DeviceCode,
+                    userCode = initResult.UserCode,
+                    verificationUri = initResult.VerificationUri,
+                    expiresIn = initResult.ExpiresIn,
+                    interval = initResult.Interval,
+                    message = initResult.Message
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = "Ошибка связи с Microsoft: " + ex.Message });
+            }
+        }
+
+        [Authorize]
+        [HttpPost]
+        [IgnoreAntiforgeryToken]
+        public async Task<IActionResult> PollMicrosoftDeviceCode([FromForm] string deviceCode)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user is null) return Unauthorized();
+
+            if (string.IsNullOrWhiteSpace(deviceCode))
+                return BadRequest(new { error = "deviceCode не передан." });
+
+            try
+            {
+                var licResult = await _licenseService.CheckDeviceCodeAsync(deviceCode);
+                if (licResult == null)
+                {
+                    return Ok(new { status = "pending" });
+                }
+
+                if (!licResult.Success || !licResult.HasMinecraftLicense)
+                {
+                    return BadRequest(new
+                    {
+                        status = "no_license",
+                        error = licResult.ErrorMessage ?? "На этой учетной записи Microsoft не найдена купленная лицензия Minecraft: Java Edition."
+                    });
+                }
+
+                user.HasMinecraftLicense = true;
+                user.MicrosoftGamertag = licResult.Gamertag;
+                user.MicrosoftUuid = licResult.Uuid;
+                user.MicrosoftLicenseLinkedAt = DateTime.UtcNow;
+                user.OwnedMojangCapesJson = JsonSerializer.Serialize(licResult.Capes);
+
+                var updateRes = await _userManager.UpdateAsync(user);
+                if (!updateRes.Succeeded)
+                {
+                    return StatusCode(500, new { error = "Не удалось сохранить привязку в базе данных." });
+                }
+
+                return Ok(new
+                {
+                    status = "success",
+                    gamertag = licResult.Gamertag,
+                    uuid = licResult.Uuid,
+                    capes = licResult.Capes,
+                    skinUrl = licResult.SkinUrl,
+                    message = $"Лицензия Minecraft ({licResult.Gamertag}) успешно привязана! Найдено официальных плащей: {licResult.Capes.Count}."
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { status = "error", error = ex.Message });
+            }
+        }
+
+        [Authorize]
+        [HttpPost]
+        [IgnoreAntiforgeryToken]
+        public async Task<IActionResult> UnlinkMicrosoftLicense()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user is null) return Unauthorized();
+
+            user.HasMinecraftLicense = false;
+            user.MicrosoftGamertag = null;
+            user.MicrosoftUuid = null;
+            user.MicrosoftLicenseLinkedAt = null;
+            user.OwnedMojangCapesJson = null;
+
+            var equipped = _skinStorage.DetectEquippedCapeId(user.UserName);
+            if (equipped != null && equipped.StartsWith("mojang_", StringComparison.OrdinalIgnoreCase))
+            {
+                _skinStorage.RemoveCape(user.UserName);
+            }
+
+            await _userManager.UpdateAsync(user);
+
+            return Ok(new { success = true, message = "Привязка лицензии Microsoft успешно удалена." });
         }
 
         [Authorize]
