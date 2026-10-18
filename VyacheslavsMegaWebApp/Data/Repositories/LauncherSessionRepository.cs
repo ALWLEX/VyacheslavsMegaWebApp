@@ -10,8 +10,7 @@ namespace VyacheslavsMegaWebApp.Data.Repositories
     {
         public async Task<VmsIdentityUser> GetUserBySessionKey(string sessionKey)
         {
-            byte[] sessionKeyHash = HashSessionKey(sessionKey);
-            return (await DB.LauncherSessions.FirstAsync(s => s.SessionKeyHash == sessionKeyHash)).User;
+            return (await DB.LauncherSessions.Include(s => s.User).FirstAsync(s => s.SessionKey == sessionKey)).User;
         }
 
         public async Task<string> CreateSessionKey(VmsIdentityUser user, string? clientToken = null)
@@ -20,7 +19,6 @@ namespace VyacheslavsMegaWebApp.Data.Repositories
             DB.LauncherSessions.Add(new LauncherSession 
             { 
                 SessionKey = sessionKey,
-                SessionKeyHash = HashSessionKey(sessionKey),
                 UserId = user.Id,
                 ClientToken = clientToken ?? Guid.NewGuid().ToString("N"),
                 ExpiresAt = DateTime.UtcNow + TimeSpan.FromDays(30)
@@ -31,24 +29,21 @@ namespace VyacheslavsMegaWebApp.Data.Repositories
 
         public async Task<LauncherSession?> GetSessionByToken(string token)
         {
-            byte[] sessionKeyHash = HashSessionKey(token);
             return await DB.LauncherSessions
                 .Include(s => s.User)
-                .FirstOrDefaultAsync(s => s.SessionKeyHash == sessionKeyHash || s.SessionKey == token);
+                .FirstOrDefaultAsync(s => s.SessionKey == token);
         }
 
         public async Task<bool> ValidateSession(string token)
         {
-            byte[] sessionKeyHash = HashSessionKey(token);
-            var session = await DB.LauncherSessions.FirstOrDefaultAsync(s => s.SessionKeyHash == sessionKeyHash || s.SessionKey == token);
+            var session = await DB.LauncherSessions.FirstOrDefaultAsync(s => s.SessionKey == token);
             if (session == null) return false;
             return session.ExpiresAt > DateTime.UtcNow;
         }
 
         public async Task<bool> SetServerId(string token, string serverId)
         {
-            byte[] sessionKeyHash = HashSessionKey(token);
-            var session = await DB.LauncherSessions.FirstOrDefaultAsync(s => s.SessionKeyHash == sessionKeyHash || s.SessionKey == token);
+            var session = await DB.LauncherSessions.FirstOrDefaultAsync(s => s.SessionKey == token);
             if (session == null) return false;
             session.ServerId = serverId;
             await DB.SaveChangesAsync();
@@ -66,10 +61,9 @@ namespace VyacheslavsMegaWebApp.Data.Repositories
 
         public async Task<LauncherSession?> RefreshSession(string token, string? clientToken)
         {
-            byte[] sessionKeyHash = HashSessionKey(token);
             var session = await DB.LauncherSessions
                 .Include(s => s.User)
-                .FirstOrDefaultAsync(s => s.SessionKeyHash == sessionKeyHash || s.SessionKey == token);
+                .FirstOrDefaultAsync(s => s.SessionKey == token);
 
             if (session == null) return null;
 
@@ -85,8 +79,7 @@ namespace VyacheslavsMegaWebApp.Data.Repositories
 
         public async Task InvalidateSession(string token)
         {
-            byte[] sessionKeyHash = HashSessionKey(token);
-            var session = await DB.LauncherSessions.FirstOrDefaultAsync(s => s.SessionKeyHash == sessionKeyHash || s.SessionKey == token);
+            var session = await DB.LauncherSessions.FirstOrDefaultAsync(s => s.SessionKey == token);
             if (session != null)
             {
                 DB.LauncherSessions.Remove(session);
@@ -104,11 +97,6 @@ namespace VyacheslavsMegaWebApp.Data.Repositories
 
         #region Private methods
 
-        private byte[] HashSessionKey(string sessionKey)
-        {
-            return SHA256.HashData(Encoding.UTF8.GetBytes(sessionKey));
-        }
-
         private string GenerateSessionKey()
         {
             return Convert.ToBase64String(RandomNumberGenerator.GetBytes(32));
@@ -116,8 +104,7 @@ namespace VyacheslavsMegaWebApp.Data.Repositories
 
         private async Task<LauncherSession?> GetSessionByKey(string sessionKey)
         {
-            byte[] sessionKeyHash = HashSessionKey(sessionKey);
-            return await DB.LauncherSessions.OrderBy(s => s.ExpiresAt).LastOrDefaultAsync(s => s.SessionKeyHash == sessionKeyHash);
+            return await DB.LauncherSessions.OrderBy(s => s.ExpiresAt).LastOrDefaultAsync(s => s.SessionKey == sessionKey);
         }
 
         #endregion

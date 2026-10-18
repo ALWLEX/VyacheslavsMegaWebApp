@@ -5,10 +5,15 @@ using VyacheslavsMegaWebApp.Data.Entities.Identity;
 
 namespace VyacheslavsMegaWebApp.Data.Entities
 {
-    public class LauncherSession : Base.EntityGuid
+    public class LauncherSession
     {
+        [Key]
+        [MaxLength(255)]
         public string SessionKey { get; set; } = string.Empty;
+
+        [NotMapped]
         public byte[]? SessionKeyHash { get; set; }
+
         public string UserId { get; set; } = string.Empty;
         public DateTime ExpiresAt { get; set; }
         public string? ClientToken { get; set; }

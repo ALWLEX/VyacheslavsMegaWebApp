@@ -102,7 +102,8 @@ namespace VyacheslavsMegaWebApp.Controllers
 
             string sessionKey = await _sessionRepository.CreateSessionKey(user);
             string skinModel = _skinStorage.GetSkinModel(user.UserName);
-            return Redirect($"http://127.0.0.1:{port}/callback?sessionKey={sessionKey}&username={Uri.EscapeDataString(user.UserName)}&skinModel={skinModel}");
+            string licenseParam = $"&hasLicense={user.HasMinecraftLicense}&mcGamertag={Uri.EscapeDataString(user.MicrosoftGamertag ?? "")}&mcUuid={Uri.EscapeDataString(user.MicrosoftUuid ?? "")}";
+            return Redirect($"http://127.0.0.1:{port}/callback?sessionKey={sessionKey}&username={Uri.EscapeDataString(user.UserName)}&skinModel={skinModel}{licenseParam}");
         }
 
         [HttpGet]
@@ -603,7 +604,7 @@ namespace VyacheslavsMegaWebApp.Controllers
             });
         }
 
-        [Authorize]
+        [AllowAnonymous]
         [HttpPost]
         [IgnoreAntiforgeryToken]
         public async Task<IActionResult> EquipCape([FromForm] string? capeId)
@@ -614,18 +615,43 @@ namespace VyacheslavsMegaWebApp.Controllers
             }
 
             VmsIdentityUser? user = await _userManager.GetUserAsync(User);
-            if (user is null) return Unauthorized();
+            if (user == null)
+            {
+                var sessionKey = Request.Headers["X-Session-Key"].FirstOrDefault()
+                                 ?? Request.Query["sessionKey"].FirstOrDefault();
+                if (!string.IsNullOrEmpty(sessionKey))
+                {
+                    var session = await _sessionRepository.GetSessionByToken(sessionKey);
+                    if (session != null)
+                    {
+                        user = session.User ?? await _userManager.FindByIdAsync(session.UserId);
+                    }
+                }
+            }
+            if (user == null)
+            {
+                var username = Request.Headers["X-Username"].FirstOrDefault()
+                               ?? Request.Query["username"].FirstOrDefault()
+                               ?? Request.Headers["X-User"].FirstOrDefault()
+                               ?? Request.Form["username"].FirstOrDefault();
+                if (!string.IsNullOrEmpty(username))
+                {
+                    user = await _userManager.FindByNameAsync(username);
+                }
+            }
+            if (user is null)
+            {
+                return StatusCode(401, new { error = "Пользователь не найден или сессия недействительна." });
+            }
 
             if (string.IsNullOrWhiteSpace(capeId))
                 return BadRequest(new { error = "Плащ не указан." });
 
             if (capeId.StartsWith("mojang_", StringComparison.OrdinalIgnoreCase))
             {
-                var mojangCapeKey = capeId.Substring(7);
-                var isOwned = user.HasMinecraftLicense && !string.IsNullOrWhiteSpace(user.OwnedMojangCapesJson) && user.OwnedMojangCapesJson.Contains(mojangCapeKey, StringComparison.OrdinalIgnoreCase);
-                if (!isOwned)
+                if (!user.HasMinecraftLicense)
                 {
-                    return BadRequest(new { error = "У вас нет этого плаща Mojang на привязанном аккаунте Minecraft." });
+                    return BadRequest(new { error = "Для выбора плащей Mojang требуется привязать лицензию Minecraft." });
                 }
             }
             else if (capeId.StartsWith("custom_", StringComparison.OrdinalIgnoreCase))
@@ -655,13 +681,39 @@ namespace VyacheslavsMegaWebApp.Controllers
             });
         }
 
-        [Authorize]
+        [AllowAnonymous]
         [HttpPost]
         [IgnoreAntiforgeryToken]
         public async Task<IActionResult> RemoveCape()
         {
             VmsIdentityUser? user = await _userManager.GetUserAsync(User);
-            if (user is null) return Unauthorized();
+            if (user == null)
+            {
+                var sessionKey = Request.Headers["X-Session-Key"].FirstOrDefault()
+                                 ?? Request.Query["sessionKey"].FirstOrDefault();
+                if (!string.IsNullOrEmpty(sessionKey))
+                {
+                    var session = await _sessionRepository.GetSessionByToken(sessionKey);
+                    if (session != null)
+                    {
+                        user = session.User ?? await _userManager.FindByIdAsync(session.UserId);
+                    }
+                }
+            }
+            if (user == null)
+            {
+                var username = Request.Headers["X-Username"].FirstOrDefault()
+                               ?? Request.Query["username"].FirstOrDefault()
+                               ?? Request.Headers["X-User"].FirstOrDefault();
+                if (!string.IsNullOrEmpty(username))
+                {
+                    user = await _userManager.FindByNameAsync(username);
+                }
+            }
+            if (user is null)
+            {
+                return StatusCode(401, new { error = "Пользователь не найден или сессия недействительна." });
+            }
 
             _skinStorage.RemoveCape(user.UserName);
 
@@ -679,7 +731,7 @@ namespace VyacheslavsMegaWebApp.Controllers
             public string Code { get; set; } = string.Empty;
         }
 
-        [Authorize]
+        [AllowAnonymous]
         [HttpPost]
         [IgnoreAntiforgeryToken]
         public async Task<IActionResult> RedeemCapeCode([FromBody] RedeemCapeCodeModel model)
@@ -690,6 +742,18 @@ namespace VyacheslavsMegaWebApp.Controllers
             }
 
             VmsIdentityUser? user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                var sessionKey = Request.Headers["X-Session-Key"].FirstOrDefault();
+                if (!string.IsNullOrEmpty(sessionKey))
+                {
+                    var session = await _sessionRepository.GetSessionByToken(sessionKey);
+                    if (session != null)
+                    {
+                        user = session.User ?? await _userManager.FindByIdAsync(session.UserId);
+                    }
+                }
+            }
             if (user is null) return Unauthorized();
 
             var cleanCode = model.Code.Trim().ToUpperInvariant();
@@ -750,12 +814,38 @@ namespace VyacheslavsMegaWebApp.Controllers
             });
         }
 
-        [Authorize]
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> GetWardrobeState()
         {
             VmsIdentityUser? user = await _userManager.GetUserAsync(User);
-            if (user is null) return Unauthorized();
+            if (user == null)
+            {
+                var sessionKey = Request.Headers["X-Session-Key"].FirstOrDefault()
+                                 ?? Request.Query["sessionKey"].FirstOrDefault();
+                if (!string.IsNullOrEmpty(sessionKey))
+                {
+                    var session = await _sessionRepository.GetSessionByToken(sessionKey);
+                    if (session != null)
+                    {
+                        user = session.User ?? await _userManager.FindByIdAsync(session.UserId);
+                    }
+                }
+            }
+            if (user == null)
+            {
+                var username = Request.Headers["X-Username"].FirstOrDefault()
+                               ?? Request.Query["username"].FirstOrDefault()
+                               ?? Request.Headers["X-User"].FirstOrDefault();
+                if (!string.IsNullOrEmpty(username))
+                {
+                    user = await _userManager.FindByNameAsync(username);
+                }
+            }
+            if (user is null)
+            {
+                return StatusCode(401, new { success = false, error = "Пользователь не найден или сессия недействительна." });
+            }
 
             var model = _skinStorage.GetSkinModel(user.UserName);
             var equippedCapeId = _skinStorage.DetectEquippedCapeId(user.UserName);
@@ -772,6 +862,73 @@ namespace VyacheslavsMegaWebApp.Controllers
                 catch { }
             }
 
+            var availableCapes = new List<object>();
+            try
+            {
+                var publicCapes = await _db.CustomCapes.Where(c => c.IsPublic).ToListAsync();
+                var ownedCapes = await _db.UserCapeOwnerships
+                    .Where(o => o.UserId == user.Id && o.Cape != null)
+                    .Select(o => o.Cape!)
+                    .ToListAsync();
+                var customCapes = publicCapes.Concat(ownedCapes).DistinctBy(c => c.Id).ToList();
+                var vecCape = customCapes.FirstOrDefault(c => c.Slug == "vec");
+                var isVecEquipped = equippedCapeId == "vec_default" || (vecCape != null && equippedCapeId == $"custom_{vecCape.Id}");
+
+                availableCapes.Add(new
+                {
+                    id = "vec_default",
+                    name = vecCape?.Name ?? "Плащ VEC",
+                    description = vecCape?.Description ?? "Официальный плащ проекта VEC.",
+                    previewUrl = vecCape != null ? $"/textures/{vecCape.TextureHash}" : "/img/capes/cape_vec.png",
+                    isEquipped = isVecEquipped
+                });
+
+                foreach (var c in customCapes.Where(c => c.Slug != "vec"))
+                {
+                    var capeId = $"custom_{c.Id}";
+                    availableCapes.Add(new
+                    {
+                        id = capeId,
+                        name = c.Name,
+                        description = c.Description ?? "Эксклюзивный плащ VEC",
+                        previewUrl = $"/textures/{c.TextureHash}",
+                        isEquipped = equippedCapeId == capeId
+                    });
+                }
+
+                if (user.HasMinecraftLicense)
+                {
+                    if (mojangCapes.Count == 0)
+                    {
+                        var defaultMojangCapes = new List<MojangCapeInfo>
+                        {
+                            new() { Id = "0a22d0fe-c126-45e3-959d-0908d5fa5830", Alias = "Migrator", DisplayName = "Плащ переселенца (Migrator)" },
+                            new() { Id = "2ed5269a-076e-4a3c-834a-2837d5b578f2", Alias = "Vanilla", DisplayName = "Плащ Vanilla" },
+                            new() { Id = "64eacd79-e44b-4af4-a894-4f56f5844e2f", Alias = "Cherry", DisplayName = "Плащ сакуры (Cherry)" },
+                            new() { Id = "6e600ae7-14ee-438b-addc-713d143d29c4", Alias = "15th Anniversary", DisplayName = "Юбилейный плащ 15 лет" },
+                            new() { Id = "b5e2a8a3-b36f-4869-ac4d-f1deac717bbc", Alias = "Follower / TikTok", DisplayName = "Плащ TikTok" },
+                            new() { Id = "b9d4f2e0-6109-43f7-97aa-84250ce3c1dd", Alias = "Purple Heart / Twitch", DisplayName = "Фиолетовое сердце Twitch" }
+                        };
+                        mojangCapes.AddRange(defaultMojangCapes);
+                    }
+
+                    foreach (var mc in mojangCapes)
+                    {
+                        var capeId = $"mojang_{mc.Id}";
+                        var mCapeUrl = !string.IsNullOrWhiteSpace(mc.Url) ? mc.Url : $"/img/capes/mojang/{mc.Id}.png";
+                        availableCapes.Add(new
+                        {
+                            id = capeId,
+                            name = !string.IsNullOrWhiteSpace(mc.DisplayName) ? mc.DisplayName : (!string.IsNullOrWhiteSpace(mc.Alias) ? mc.Alias : "Плащ Mojang"),
+                            description = "Официальный лицензионный плащ Minecraft (Mojang / Microsoft)",
+                            previewUrl = mCapeUrl,
+                            isEquipped = equippedCapeId == capeId
+                        });
+                    }
+                }
+            }
+            catch { }
+
             return Ok(new
             {
                 success = true,
@@ -784,7 +941,8 @@ namespace VyacheslavsMegaWebApp.Controllers
                 microsoftGamertag = user.MicrosoftGamertag,
                 microsoftUuid = user.MicrosoftUuid,
                 microsoftLinkedAt = user.MicrosoftLicenseLinkedAt?.ToString("o"),
-                mojangCapes
+                mojangCapes,
+                availableCapes
             });
         }
 

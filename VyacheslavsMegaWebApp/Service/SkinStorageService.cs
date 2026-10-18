@@ -680,7 +680,36 @@ namespace VyacheslavsMegaWebApp.Service
                     var fallback = Path.Combine(_env.ContentRootPath, "wwwroot", "img", "capes", "mojang", $"{mcId}.png");
                     if (File.Exists(fallback)) p = fallback;
                 }
-                if (File.Exists(p)) srcPath = p;
+                if (File.Exists(p))
+                {
+                    srcPath = p;
+                }
+                else
+                {
+                    try
+                    {
+                        using var scope = _serviceProvider.CreateScope();
+                        var userMgr = scope.ServiceProvider.GetRequiredService<Microsoft.AspNetCore.Identity.UserManager<Data.Entities.Identity.VmsIdentityUser>>();
+                        var usr = userMgr.FindByNameAsync(username).GetAwaiter().GetResult();
+                        if (usr != null && !string.IsNullOrWhiteSpace(usr.OwnedMojangCapesJson))
+                        {
+                            var list = JsonSerializer.Deserialize<List<Models.MojangCapeInfo>>(usr.OwnedMojangCapesJson);
+                            var match = list?.FirstOrDefault(c => c.Id.Equals(mcId, StringComparison.OrdinalIgnoreCase) || c.Alias.Equals(mcId, StringComparison.OrdinalIgnoreCase));
+                            if (match != null && !string.IsNullOrEmpty(match.Url))
+                            {
+                                using var http = new HttpClient();
+                                directBytes = http.GetByteArrayAsync(match.Url).GetAwaiter().GetResult();
+                                if (directBytes != null && directBytes.Length > 0)
+                                {
+                                    var dir = Path.Combine(WebImgCapesDir, "mojang");
+                                    Directory.CreateDirectory(dir);
+                                    File.WriteAllBytes(Path.Combine(dir, $"{mcId}.png"), directBytes);
+                                }
+                            }
+                        }
+                    }
+                    catch { }
+                }
             }
             else if (capeId.StartsWith("custom_", StringComparison.OrdinalIgnoreCase))
             {

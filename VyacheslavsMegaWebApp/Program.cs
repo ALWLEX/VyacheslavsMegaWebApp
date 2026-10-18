@@ -100,11 +100,8 @@ internal class Program
         {
             app.UseExceptionHandler("/Home/Error");
             app.UseHsts();
+            app.UseHttpsRedirection();
         }
-
-        app.UseStatusCodePagesWithReExecute("/Home/StatusCode", "?code={0}");
-
-        app.UseHttpsRedirection();
         app.UseStaticFiles();
 
         app.UseRouting();

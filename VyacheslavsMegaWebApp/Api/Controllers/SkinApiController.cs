@@ -39,6 +39,23 @@ namespace VyacheslavsMegaWebApp.Api.Controllers
             return File(bytes, "image/png");
         }
 
+        [HttpGet("api/skin/{username}.json")]
+        public IActionResult GetSkinMeta(string username)
+        {
+            var clean = Path.GetFileNameWithoutExtension(username);
+            var model = _storage.GetSkinModel(clean);
+            var hasCape = _storage.HasCape(clean);
+            return Ok(new
+            {
+                username = clean,
+                model = model,
+                skinUrl = _storage.GetSkinUrl(clean),
+                capeUrl = _storage.GetCapeUrl(clean),
+                hasCape = hasCape,
+                equippedCapeId = _storage.DetectEquippedCapeId(clean)
+            });
+        }
+
         [HttpGet("api/cape/{username}.png")]
         public IActionResult GetCape(string username)
         {

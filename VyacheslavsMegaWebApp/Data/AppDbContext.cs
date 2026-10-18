@@ -153,8 +153,11 @@ namespace VyacheslavsMegaWebApp.Data
                 .HasForeignKey(f => f.AddresseeId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<LauncherSession>()
-                .HasIndex(s => s.SessionKeyHash);
+            modelBuilder.Entity<LauncherSession>(b =>
+            {
+                b.HasKey(s => s.SessionKey);
+                b.Ignore(s => s.SessionKeyHash);
+            });
 
             modelBuilder.Entity<CustomCape>()
                 .HasIndex(c => c.Slug)
