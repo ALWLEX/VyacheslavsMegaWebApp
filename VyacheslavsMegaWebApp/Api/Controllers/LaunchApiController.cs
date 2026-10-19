@@ -98,17 +98,6 @@ namespace VyacheslavsMegaWebApp.Api.Controllers
             return Ok(new { active, username = username.Trim() });
         }
 
-        [HttpGet("api/launcher/version")]
-        public IActionResult GetLauncherVersion()
-        {
-            return Ok(new
-            {
-                version = "3.0.0",
-                minVersion = "2.0.0",
-                downloadUrl = "/downloads/VECLauncher.exe",
-                changelog = "VEC Ecosystem 3.0: Unified Yggdrasil API, Friends Tab, Launch Tickets, Wardrobe Sync."
-            });
-        }
 
         public class ManifestFileEntry
         {
@@ -244,6 +233,49 @@ namespace VyacheslavsMegaWebApp.Api.Controllers
                 return NotFound(new { error = "Launcher binary not found on server." });
             }
             return PhysicalFile(path, "application/vnd.microsoft.portable-executable", "VECLauncher.exe");
+        }
+
+        [HttpGet("api/launcher/version")]
+        public IActionResult GetLauncherVersion()
+        {
+            var root = _env.WebRootPath ?? Path.Combine(_env.ContentRootPath, "wwwroot");
+            var manifestPath = Path.Combine(root, "downloads", "manifest.json");
+
+            if (System.IO.File.Exists(manifestPath))
+            {
+                var content = System.IO.File.ReadAllText(manifestPath, Encoding.UTF8);
+                return Content(content, "application/json");
+            }
+
+            var zipPath = Path.Combine(root, "downloads", "VECLauncher-win-x64.zip");
+            var exePath = Path.Combine(root, "downloads", "VECLauncher.exe");
+
+            string downloadUrl = "/downloads/VECLauncher-win-x64.zip";
+            string targetPath = zipPath;
+            if (!System.IO.File.Exists(zipPath) && System.IO.File.Exists(exePath))
+            {
+                downloadUrl = "/downloads/VECLauncher.exe";
+                targetPath = exePath;
+            }
+
+            if (!System.IO.File.Exists(targetPath))
+            {
+                return NotFound(new { error = "No launcher release payload found." });
+            }
+
+            var fi = new FileInfo(targetPath);
+            using var sha = SHA256.Create();
+            using var stream = System.IO.File.OpenRead(targetPath);
+            var hash = BitConverter.ToString(sha.ComputeHash(stream)).Replace("-", "").ToLowerInvariant();
+
+            return Ok(new
+            {
+                version = "1.0.0",
+                downloadUrl = downloadUrl,
+                sha256 = hash,
+                fileSize = fi.Length,
+                changelog = "VEC Launcher official release"
+            });
         }
     }
 }
