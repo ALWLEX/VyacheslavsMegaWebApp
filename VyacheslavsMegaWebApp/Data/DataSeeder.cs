@@ -235,13 +235,13 @@ namespace VyacheslavsMegaWebApp.Data
                 }
             }
 
-            var launcherBtn = db.DownloadButtons.FirstOrDefault(b => b.Url.Contains("VECLauncher.exe"));
+            var launcherBtn = db.DownloadButtons.FirstOrDefault(b => b.Url.Contains("VEC_Setup.exe") || b.Url.Contains("VECLauncher.exe"));
             if (launcherBtn == null)
             {
                 db.DownloadButtons.Add(new DownloadButton
                 {
                     Title = "Скачать лаунчер",
-                    Url = "/downloads/VECLauncher.exe",
+                    Url = "/downloads/VEC_Setup.exe",
                     ShowButton = true,
                     IsResourceLocal = true
                 });
