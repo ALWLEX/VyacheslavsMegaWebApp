@@ -105,7 +105,7 @@ namespace VyacheslavsMegaWebApp.Api.Controllers
             {
                 version = "3.0.0",
                 minVersion = "2.0.0",
-                downloadUrl = "/downloads/VEC_Launcher.exe",
+                downloadUrl = "/downloads/VECLauncher.exe",
                 changelog = "VEC Ecosystem 3.0: Unified Yggdrasil API, Friends Tab, Launch Tickets, Wardrobe Sync."
             });
         }
