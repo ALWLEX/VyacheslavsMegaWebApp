@@ -1,8 +1,9 @@
+using VyacheslavsMegaWebApp.Data.Entities.Base;
+
 namespace VyacheslavsMegaWebApp.Data.Entities
 {
-    public class ClientBuildFile
+    public class ClientBuildFile : EntityBase
     {
-        public int Id { get; set; }
         public string BuildSlug { get; set; } = "vec-fabric-1-21-11";
         public string RelativePath { get; set; } = string.Empty;
         public string FileName { get; set; } = string.Empty;

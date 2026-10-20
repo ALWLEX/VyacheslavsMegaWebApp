@@ -2,16 +2,14 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
-using System.Text;
 using System.Threading.Tasks;
-using VyacheslavsMegaWebApp.Data;
 using VyacheslavsMegaWebApp.Data.Entities;
+using VyacheslavsMegaWebApp.Data.Repositories;
 using VyacheslavsMegaWebApp.Service;
 
 namespace VyacheslavsMegaWebApp.Areas.Admin.Controllers
@@ -20,31 +18,21 @@ namespace VyacheslavsMegaWebApp.Areas.Admin.Controllers
     [Authorize(Roles = "Admin")]
     public class CapesEditorController : Controller
     {
-        private readonly AppDbContext _db;
+        private readonly CapesRepository _capesRepo;
         private readonly SkinStorageService _skinStorage;
         private readonly IWebHostEnvironment _env;
 
-        public CapesEditorController(AppDbContext db, SkinStorageService skinStorage, IWebHostEnvironment env)
+        public CapesEditorController(CapesRepository capesRepo, SkinStorageService skinStorage, IWebHostEnvironment env)
         {
-            _db = db;
+            _capesRepo = capesRepo;
             _skinStorage = skinStorage;
             _env = env;
         }
 
         public async Task<IActionResult> Index()
         {
-            if (!await _db.CustomCapes.AnyAsync(c => c.Slug == "vec"))
-            {
-                DataSeeder.SeedDefaultCapes(_db, _env);
-            }
-
-            var capes = await _db.CustomCapes
-                .Include(c => c.Codes)
-                .Include(c => c.Ownerships)
-                .OrderBy(c => c.Slug == "vec" ? 0 : 1)
-                .ThenByDescending(c => c.CreatedAt)
-                .ToListAsync();
-
+            _capesRepo.SeedDefaultCapesIfNeeded(_env);
+            List<CustomCape> capes = await _capesRepo.GetAllCapesWithDetailsAsync();
             return View(capes);
         }
 
@@ -89,22 +77,22 @@ namespace VyacheslavsMegaWebApp.Areas.Admin.Controllers
                 }
             }
 
-            if (await _db.CustomCapes.AnyAsync(c => c.Slug == cleanSlug))
+            if (await _capesRepo.AnyCapeWithSlugAsync(cleanSlug))
             {
                 TempData["Error"] = $"Плащ с идентификатором «{cleanSlug}» уже существует.";
                 return View();
             }
 
             byte[] bytes;
-            using (var ms = new MemoryStream())
+            using (MemoryStream ms = new MemoryStream())
             {
                 await capeImage.CopyToAsync(ms);
                 bytes = ms.ToArray();
             }
 
-            var hash = _skinStorage.SaveTextureBytes(bytes);
+            string hash = _skinStorage.SaveTextureBytes(bytes);
 
-            var cape = new CustomCape
+            CustomCape cape = new CustomCape
             {
                 Name = name.Trim(),
                 Slug = cleanSlug,
@@ -114,8 +102,7 @@ namespace VyacheslavsMegaWebApp.Areas.Admin.Controllers
                 CreatedAt = DateTime.UtcNow
             };
 
-            _db.CustomCapes.Add(cape);
-            await _db.SaveChangesAsync();
+            await _capesRepo.AddCapeAsync(cape);
 
             TempData["Success"] = $"Плащ «{cape.Name}» успешно добавлен.";
             return RedirectToAction(nameof(Index));
@@ -124,7 +111,7 @@ namespace VyacheslavsMegaWebApp.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            var cape = await _db.CustomCapes.FindAsync(id);
+            CustomCape? cape = await _capesRepo.GetCapeByIdAsync(id);
             if (cape == null)
             {
                 TempData["Error"] = "Плащ не найден.";
@@ -137,7 +124,7 @@ namespace VyacheslavsMegaWebApp.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(int id, string name, string? slug, string? description, bool isPublic, IFormFile? newImage)
         {
-            var cape = await _db.CustomCapes.FindAsync(id);
+            CustomCape? cape = await _capesRepo.GetCapeByIdAsync(id);
             if (cape == null)
             {
                 TempData["Error"] = "Плащ не найден.";
@@ -152,10 +139,10 @@ namespace VyacheslavsMegaWebApp.Areas.Admin.Controllers
 
             if (!string.IsNullOrWhiteSpace(slug))
             {
-                var cleanSlug = new string(slug.Trim().ToLowerInvariant().Where(ch => char.IsLetterOrDigit(ch) || ch == '_' || ch == '-').ToArray());
+                string cleanSlug = new string(slug.Trim().ToLowerInvariant().Where(ch => char.IsLetterOrDigit(ch) || ch == '_' || ch == '-').ToArray());
                 if (!string.IsNullOrEmpty(cleanSlug) && cleanSlug != cape.Slug)
                 {
-                    if (await _db.CustomCapes.AnyAsync(c => c.Slug == cleanSlug && c.Id != id))
+                    if (await _capesRepo.AnyCapeWithSlugExceptIdAsync(cleanSlug, id))
                     {
                         TempData["Error"] = $"Идентификатор «{cleanSlug}» уже используется другим плащом.";
                         return View(cape);
@@ -177,17 +164,17 @@ namespace VyacheslavsMegaWebApp.Areas.Admin.Controllers
                 }
 
                 byte[] bytes;
-                using (var ms = new MemoryStream())
+                using (MemoryStream ms = new MemoryStream())
                 {
                     await newImage.CopyToAsync(ms);
                     bytes = ms.ToArray();
                 }
 
-                var hash = _skinStorage.SaveTextureBytes(bytes);
+                string hash = _skinStorage.SaveTextureBytes(bytes);
                 cape.TextureHash = hash;
             }
 
-            await _db.SaveChangesAsync();
+            await _capesRepo.UpdateCapeAsync(cape);
 
             TempData["Success"] = $"Плащ «{cape.Name}» успешно обновлен.";
             return RedirectToAction(nameof(Index));
@@ -196,9 +183,7 @@ namespace VyacheslavsMegaWebApp.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> Codes(int id)
         {
-            var cape = await _db.CustomCapes
-                .Include(c => c.Codes)
-                .FirstOrDefaultAsync(c => c.Id == id);
+            CustomCape? cape = await _capesRepo.GetCapeWithCodesByIdAsync(id);
 
             if (cape == null)
             {
@@ -206,14 +191,12 @@ namespace VyacheslavsMegaWebApp.Areas.Admin.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            var userIds = cape.Codes.Where(c => c.IsUsed && !string.IsNullOrEmpty(c.RedeemedByUserId))
+            List<string> userIds = cape.Codes.Where(c => c.IsUsed && !string.IsNullOrEmpty(c.RedeemedByUserId))
                 .Select(c => c.RedeemedByUserId!)
                 .Distinct()
                 .ToList();
 
-            var usersMap = await _db.Users
-                .Where(u => userIds.Contains(u.Id))
-                .ToDictionaryAsync(u => u.Id, u => u.UserName);
+            Dictionary<string, string?> usersMap = await _capesRepo.GetUsersMapAsync(userIds);
 
             ViewBag.UsersMap = usersMap;
 
@@ -223,7 +206,7 @@ namespace VyacheslavsMegaWebApp.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> GenerateCodes(int capeId, int count, string? prefix)
         {
-            var cape = await _db.CustomCapes.FindAsync(capeId);
+            CustomCape? cape = await _capesRepo.GetCapeByIdAsync(capeId);
             if (cape == null)
             {
                 TempData["Error"] = "Плащ не найден.";
@@ -231,11 +214,11 @@ namespace VyacheslavsMegaWebApp.Areas.Admin.Controllers
             }
 
             count = Math.Clamp(count, 1, 500);
-            var cleanPrefix = string.IsNullOrWhiteSpace(prefix) ? "VEC" : prefix.Trim().ToUpperInvariant();
+            string cleanPrefix = string.IsNullOrWhiteSpace(prefix) ? "VMS" : prefix.Trim().ToUpperInvariant();
 
             const string chars = "23456789ABCDEFGHJKLMNPQRSTUVWXYZ";
-            var codes = new List<CapeRedeemCode>();
-            var existingCodes = (await _db.CapeRedeemCodes.Select(c => c.Code).ToListAsync()).ToHashSet();
+            List<CapeRedeemCode> codes = new List<CapeRedeemCode>();
+            HashSet<string> existingCodes = await _capesRepo.GetExistingCodesHashSetAsync();
 
             for (int i = 0; i < count; i++)
             {
@@ -257,8 +240,7 @@ namespace VyacheslavsMegaWebApp.Areas.Admin.Controllers
                 });
             }
 
-            await _db.CapeRedeemCodes.AddRangeAsync(codes);
-            await _db.SaveChangesAsync();
+            await _capesRepo.AddCodesRangeAsync(codes);
 
             TempData["Success"] = $"Сгенерировано промокодов: {codes.Count}.";
             return RedirectToAction(nameof(Codes), new { id = capeId });
@@ -267,11 +249,9 @@ namespace VyacheslavsMegaWebApp.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteCode(int id, int capeId)
         {
-            var code = await _db.CapeRedeemCodes.FirstOrDefaultAsync(c => c.Id == id && c.CapeId == capeId);
-            if (code != null)
+            bool deleted = await _capesRepo.DeleteCodeAsync(id, capeId);
+            if (deleted)
             {
-                _db.CapeRedeemCodes.Remove(code);
-                await _db.SaveChangesAsync();
                 TempData["Success"] = "Промокод удален.";
             }
 
@@ -281,7 +261,7 @@ namespace VyacheslavsMegaWebApp.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteCape(int id)
         {
-            var cape = await _db.CustomCapes.FindAsync(id);
+            CustomCape? cape = await _capesRepo.GetCapeByIdAsync(id);
             if (cape == null)
             {
                 TempData["Error"] = "Плащ не найден.";
@@ -294,8 +274,7 @@ namespace VyacheslavsMegaWebApp.Areas.Admin.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            _db.CustomCapes.Remove(cape);
-            await _db.SaveChangesAsync();
+            await _capesRepo.DeleteCapeAsync(id);
 
             TempData["Success"] = $"Плащ «{cape.Name}» удален.";
             return RedirectToAction(nameof(Index));
@@ -303,13 +282,15 @@ namespace VyacheslavsMegaWebApp.Areas.Admin.Controllers
 
         private static string RandomString(string chars, int length)
         {
-            var res = new char[length];
-            using var rng = RandomNumberGenerator.Create();
-            var bytes = new byte[length];
-            rng.GetBytes(bytes);
-            for (int i = 0; i < length; i++)
+            char[] res = new char[length];
+            using (RandomNumberGenerator rng = RandomNumberGenerator.Create())
             {
-                res[i] = chars[bytes[i] % chars.Length];
+                byte[] bytes = new byte[length];
+                rng.GetBytes(bytes);
+                for (int i = 0; i < length; i++)
+                {
+                    res[i] = chars[bytes[i] % chars.Length];
+                }
             }
             return new string(res);
         }

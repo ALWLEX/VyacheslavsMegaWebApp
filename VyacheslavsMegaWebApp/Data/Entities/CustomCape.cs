@@ -1,14 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using VyacheslavsMegaWebApp.Data.Entities.Base;
 
 namespace VyacheslavsMegaWebApp.Data.Entities
 {
-    public class CustomCape
+    public class CustomCape : EntityBase
     {
-        [Key]
-        public int Id { get; set; }
-
         [Required]
         [MaxLength(64)]
         public string Slug { get; set; } = string.Empty;

@@ -29,7 +29,8 @@ namespace VyacheslavsMegaWebApp.Controllers
         private readonly SkinStorageService _skinStorage;
         private readonly LauncherSessionRepository _sessionRepository;
         private readonly MinecraftLicenseService _licenseService;
-        private readonly AppDbContext _db;
+        private readonly FriendshipsRepository _friendshipsRepository;
+        private readonly CapesRepository _capesRepository;
 
         #region String constants
 
@@ -51,7 +52,8 @@ namespace VyacheslavsMegaWebApp.Controllers
             SkinStorageService skinStorage,
             LauncherSessionRepository sessionRepository,
             MinecraftLicenseService licenseService,
-            AppDbContext db) 
+            FriendshipsRepository friendshipsRepository,
+            CapesRepository capesRepository) 
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -60,7 +62,8 @@ namespace VyacheslavsMegaWebApp.Controllers
             _skinStorage = skinStorage;
             _sessionRepository = sessionRepository;
             _licenseService = licenseService;
-            _db = db;
+            _friendshipsRepository = friendshipsRepository;
+            _capesRepository = capesRepository;
         }
 
         [HttpGet]
@@ -215,9 +218,8 @@ namespace VyacheslavsMegaWebApp.Controllers
             var roles = await _userManager.GetRolesAsync(user);
             string roleBadge = roles.Contains("Admin") ? "Администратор" : (roles.Contains("Moderator") ? "Модератор" : "Игрок VEC");
 
-            var sessions = _db.LauncherSessions
-                .Where(s => s.UserId == user.Id)
-                .OrderByDescending(s => s.ExpiresAt)
+            List<LauncherSession> userSessions = await _sessionRepository.GetSessionsForUserAsync(user.Id);
+            List<LauncherSessionInfo> sessions = userSessions
                 .Select(s => new LauncherSessionInfo
                 {
                     SessionKey = s.SessionKey,
@@ -254,11 +256,12 @@ namespace VyacheslavsMegaWebApp.Controllers
             var mojangCapes = new List<MojangCapeInfo>();
             try
             {
-                var publicCapes = await _db.CustomCapes.Where(c => c.IsPublic).ToListAsync();
-                var ownedCapes = await _db.UserCapeOwnerships
-                    .Where(o => o.UserId == user.Id && o.Cape != null)
+                List<CustomCape> publicCapes = await _capesRepository.GetPublicCapesAsync();
+                List<UserCapeOwnership> userOwnerships = await _capesRepository.GetUserCapeOwnershipsAsync(user.Id);
+                List<CustomCape> ownedCapes = userOwnerships
+                    .Where(o => o.Cape != null)
                     .Select(o => o.Cape!)
-                    .ToListAsync();
+                    .ToList();
 
                 var customCapes = publicCapes.Concat(ownedCapes).DistinctBy(c => c.Id).ToList();
 
@@ -316,9 +319,8 @@ namespace VyacheslavsMegaWebApp.Controllers
                 catch { }
             }
 
-            var sessions = _db.LauncherSessions
-                .Where(s => s.UserId == user.Id)
-                .OrderByDescending(s => s.ExpiresAt)
+            List<LauncherSession> userSessions = await _sessionRepository.GetSessionsForUserAsync(user.Id);
+            List<LauncherSessionInfo> sessions = userSessions
                 .Select(s => new LauncherSessionInfo
                 {
                     SessionKey = s.SessionKey,
@@ -328,22 +330,20 @@ namespace VyacheslavsMegaWebApp.Controllers
 
             var (siteName, mcUser, createdAt) = _skinStorage.GetUserProfileData(user.UserName);
 
-            var friendships = _db.Friendships
-                .Where(f => f.RequesterId == user.Id || f.AddresseeId == user.Id)
-                .ToList();
+            List<Friendship> friendships = await _friendshipsRepository.GetAllFriendshipsForUserAsync(user.Id);
 
-            var accepted = friendships.Where(f => f.Status == FriendshipStatus.Accepted).ToList();
-            var incoming = friendships.Where(f => f.AddresseeId == user.Id && f.Status == FriendshipStatus.Pending).ToList();
-            var outgoing = friendships.Where(f => f.RequesterId == user.Id && f.Status == FriendshipStatus.Pending).ToList();
+            List<Friendship> accepted = friendships.Where(f => f.Status == FriendshipStatus.Accepted).ToList();
+            List<Friendship> incoming = friendships.Where(f => f.AddresseeId == user.Id && f.Status == FriendshipStatus.Pending).ToList();
+            List<Friendship> outgoing = friendships.Where(f => f.RequesterId == user.Id && f.Status == FriendshipStatus.Pending).ToList();
 
-            var userIdsToFetch = friendships
+            List<string> userIdsToFetch = friendships
                 .Select(f => f.RequesterId == user.Id ? f.AddresseeId : f.RequesterId)
                 .Distinct()
                 .ToList();
 
-            var usersMap = _db.Users
+            Dictionary<string, string?> usersMap = await _userManager.Users
                 .Where(u => userIdsToFetch.Contains(u.Id))
-                .ToDictionary(u => u.Id, u => u.UserName);
+                .ToDictionaryAsync(u => u.Id, u => u.UserName);
 
             FriendItemViewModel BuildFriendItem(Friendship f, string otherUserId, bool isIncoming = false)
             {
@@ -659,11 +659,11 @@ namespace VyacheslavsMegaWebApp.Controllers
                 var idStr = capeId.Substring(7);
                 if (int.TryParse(idStr, out var cId))
                 {
-                    var custom = await _db.CustomCapes.FindAsync(cId);
+                    CustomCape? custom = await _capesRepository.GetCapeByIdAsync(cId);
                     if (custom == null) return BadRequest(new { error = "Плащ не найден." });
                     if (!custom.IsPublic)
                     {
-                        var isOwned = await _db.UserCapeOwnerships.AnyAsync(o => o.UserId == user.Id && o.CapeId == cId);
+                        bool isOwned = await _capesRepository.IsCapeOwnedByUserAsync(user.Id, cId);
                         if (!isOwned) return BadRequest(new { error = "У вас нет этого эксклюзивного плаща в гардеробе." });
                     }
                 }
@@ -758,9 +758,7 @@ namespace VyacheslavsMegaWebApp.Controllers
 
             var cleanCode = model.Code.Trim().ToUpperInvariant();
 
-            var codeEntry = await _db.CapeRedeemCodes
-                .Include(r => r.Cape)
-                .FirstOrDefaultAsync(r => r.Code == cleanCode);
+            CapeRedeemCode? codeEntry = await _capesRepository.GetRedeemCodeAsync(cleanCode);
 
             if (codeEntry == null || codeEntry.Cape == null)
             {
@@ -777,8 +775,7 @@ namespace VyacheslavsMegaWebApp.Controllers
                 return BadRequest(new { success = false, message = "Срок действия этого промокода истек." });
             }
 
-            var alreadyOwned = await _db.UserCapeOwnerships
-                .AnyAsync(o => o.UserId == user.Id && o.CapeId == codeEntry.CapeId);
+            bool alreadyOwned = await _capesRepository.IsCapeOwnedByUserAsync(user.Id, codeEntry.CapeId);
 
             if (alreadyOwned)
             {
@@ -789,16 +786,15 @@ namespace VyacheslavsMegaWebApp.Controllers
             codeEntry.RedeemedByUserId = user.Id;
             codeEntry.RedeemedAt = DateTime.UtcNow;
 
-            var ownership = new UserCapeOwnership
+            UserCapeOwnership ownership = new UserCapeOwnership
             {
                 UserId = user.Id,
                 CapeId = codeEntry.CapeId,
                 AcquiredAt = DateTime.UtcNow,
                 AcquiredVia = "RedeemCode"
             };
-            _db.UserCapeOwnerships.Add(ownership);
-
-            await _db.SaveChangesAsync();
+            await _capesRepository.AddOwnershipAsync(ownership);
+            await _capesRepository.UpdateRedeemCodeAsync(codeEntry);
 
             return Ok(new
             {
@@ -865,11 +861,12 @@ namespace VyacheslavsMegaWebApp.Controllers
             var availableCapes = new List<object>();
             try
             {
-                var publicCapes = await _db.CustomCapes.Where(c => c.IsPublic).ToListAsync();
-                var ownedCapes = await _db.UserCapeOwnerships
-                    .Where(o => o.UserId == user.Id && o.Cape != null)
+                List<CustomCape> publicCapes = await _capesRepository.GetPublicCapesAsync();
+                List<UserCapeOwnership> userOwnerships = await _capesRepository.GetUserCapeOwnershipsAsync(user.Id);
+                List<CustomCape> ownedCapes = userOwnerships
+                    .Where(o => o.Cape != null)
                     .Select(o => o.Cape!)
-                    .ToListAsync();
+                    .ToList();
                 var customCapes = publicCapes.Concat(ownedCapes).DistinctBy(c => c.Id).ToList();
                 var vecCape = customCapes.FirstOrDefault(c => c.Slug == "vec");
                 var isVecEquipped = equippedCapeId == "vec_default" || (vecCape != null && equippedCapeId == $"custom_{vecCape.Id}");
@@ -1466,10 +1463,7 @@ namespace VyacheslavsMegaWebApp.Controllers
 
             var matchedIds = matchedUsers.Select(u => u.Id).ToList();
 
-            var friendships = _db.Friendships
-                .Where(f => (f.RequesterId == user.Id && matchedIds.Contains(f.AddresseeId)) ||
-                            (f.AddresseeId == user.Id && matchedIds.Contains(f.RequesterId)))
-                .ToList();
+            List<Friendship> friendships = await _friendshipsRepository.GetFriendshipsBetweenUserAndTargetsAsync(user.Id, matchedIds);
 
             var matched = new List<FriendSearchUserResult>();
 
@@ -1524,9 +1518,7 @@ namespace VyacheslavsMegaWebApp.Controllers
             var target = await _userManager.FindByIdAsync(targetUserId);
             if (target is null) return NotFound(new { error = "Пользователь не найден." });
 
-            var existing = _db.Friendships
-                .FirstOrDefault(f => (f.RequesterId == user.Id && f.AddresseeId == targetUserId) ||
-                                     (f.RequesterId == targetUserId && f.AddresseeId == user.Id));
+            Friendship? existing = await _friendshipsRepository.GetFriendshipBetweenAsync(user.Id, targetUserId);
 
             if (existing != null)
             {
@@ -1539,7 +1531,7 @@ namespace VyacheslavsMegaWebApp.Controllers
                     {
                         existing.Status = FriendshipStatus.Accepted;
                         existing.UpdatedAt = DateTime.UtcNow;
-                        await _db.SaveChangesAsync();
+                        await _friendshipsRepository.UpdateFriendshipAsync(existing);
                         return Ok(new { success = true, status = "Friends", message = "Заявка принята! Теперь вы друзья." });
                     }
                     return BadRequest(new { error = "Заявка уже отправлена." });
@@ -1549,11 +1541,11 @@ namespace VyacheslavsMegaWebApp.Controllers
                 existing.AddresseeId = targetUserId;
                 existing.Status = FriendshipStatus.Pending;
                 existing.UpdatedAt = DateTime.UtcNow;
-                await _db.SaveChangesAsync();
+                await _friendshipsRepository.UpdateFriendshipAsync(existing);
                 return Ok(new { success = true, status = "PendingOutgoing", message = "Заявка в друзья отправлена!", friendshipId = existing.Id });
             }
 
-            var friendship = new Friendship
+            Friendship friendship = new Friendship
             {
                 RequesterId = user.Id,
                 AddresseeId = targetUserId,
@@ -1561,8 +1553,7 @@ namespace VyacheslavsMegaWebApp.Controllers
                 CreatedAt = DateTime.UtcNow
             };
 
-            _db.Friendships.Add(friendship);
-            await _db.SaveChangesAsync();
+            await _friendshipsRepository.AddFriendshipAsync(friendship);
 
             return Ok(new { success = true, status = "PendingOutgoing", message = "Заявка в друзья отправлена!", friendshipId = friendship.Id });
         }
@@ -1574,12 +1565,12 @@ namespace VyacheslavsMegaWebApp.Controllers
             VmsIdentityUser? user = await _userManager.GetUserAsync(User);
             if (user is null) return Unauthorized();
 
-            var f = _db.Friendships.FirstOrDefault(x => x.Id == friendshipId && x.AddresseeId == user.Id);
-            if (f is null) return NotFound(new { error = "Заявка не найдена." });
+            Friendship? f = await _friendshipsRepository.GetFriendshipByIdAsync(friendshipId);
+            if (f is null || f.AddresseeId != user.Id) return NotFound(new { error = "Заявка не найдена." });
 
             f.Status = FriendshipStatus.Accepted;
             f.UpdatedAt = DateTime.UtcNow;
-            await _db.SaveChangesAsync();
+            await _friendshipsRepository.UpdateFriendshipAsync(f);
 
             return Ok(new { success = true, message = "Заявка в друзья принята!" });
         }
@@ -1591,11 +1582,10 @@ namespace VyacheslavsMegaWebApp.Controllers
             VmsIdentityUser? user = await _userManager.GetUserAsync(User);
             if (user is null) return Unauthorized();
 
-            var f = _db.Friendships.FirstOrDefault(x => x.Id == friendshipId && x.AddresseeId == user.Id);
-            if (f is null) return NotFound(new { error = "Заявка не найдена." });
+            Friendship? f = await _friendshipsRepository.GetFriendshipByIdAsync(friendshipId);
+            if (f is null || f.AddresseeId != user.Id) return NotFound(new { error = "Заявка не найдена." });
 
-            _db.Friendships.Remove(f);
-            await _db.SaveChangesAsync();
+            await _friendshipsRepository.RemoveFriendshipAsync(f);
 
             return Ok(new { success = true, message = "Заявка отклонена." });
         }
@@ -1607,11 +1597,10 @@ namespace VyacheslavsMegaWebApp.Controllers
             VmsIdentityUser? user = await _userManager.GetUserAsync(User);
             if (user is null) return Unauthorized();
 
-            var f = _db.Friendships.FirstOrDefault(x => x.Id == friendshipId && (x.RequesterId == user.Id || x.AddresseeId == user.Id));
-            if (f is null) return NotFound(new { error = "Друг не найден." });
+            Friendship? f = await _friendshipsRepository.GetFriendshipByIdAsync(friendshipId);
+            if (f is null || (f.RequesterId != user.Id && f.AddresseeId != user.Id)) return NotFound(new { error = "Друг не найден." });
 
-            _db.Friendships.Remove(f);
-            await _db.SaveChangesAsync();
+            await _friendshipsRepository.RemoveFriendshipAsync(f);
 
             return Ok(new { success = true, message = "Пользователь удален из друзей." });
         }
@@ -1623,11 +1612,10 @@ namespace VyacheslavsMegaWebApp.Controllers
             VmsIdentityUser? user = await _userManager.GetUserAsync(User);
             if (user is null) return Unauthorized();
 
-            var f = _db.Friendships.FirstOrDefault(x => x.Id == friendshipId && x.RequesterId == user.Id);
-            if (f is null) return NotFound(new { error = "Заявка не найдена." });
+            Friendship? f = await _friendshipsRepository.GetFriendshipByIdAsync(friendshipId);
+            if (f is null || f.RequesterId != user.Id) return NotFound(new { error = "Заявка не найдена." });
 
-            _db.Friendships.Remove(f);
-            await _db.SaveChangesAsync();
+            await _friendshipsRepository.RemoveFriendshipAsync(f);
 
             return Ok(new { success = true, message = "Заявка отменена." });
         }
@@ -1639,10 +1627,7 @@ namespace VyacheslavsMegaWebApp.Controllers
             VmsIdentityUser? user = await _userManager.GetUserAsync(User);
             if (user is null) return Unauthorized();
 
-            var incoming = _db.Friendships
-                .Where(f => f.AddresseeId == user.Id && f.Status == FriendshipStatus.Pending)
-                .OrderByDescending(f => f.CreatedAt)
-                .ToList();
+            List<Friendship> incoming = await _friendshipsRepository.GetIncomingPendingRequestsAsync(user.Id);
 
             var list = new List<object>();
             foreach (var f in incoming)
@@ -1707,18 +1692,14 @@ namespace VyacheslavsMegaWebApp.Controllers
 
             var (siteName, mcUser, createdAt) = _skinStorage.GetUserProfileData(targetUser.UserName);
 
-            var friendshipsCount = _db.Friendships
-                .Where(f => (f.RequesterId == targetUser.Id || f.AddresseeId == targetUser.Id) && f.Status == FriendshipStatus.Accepted)
-                .Count();
+            int friendshipsCount = await _friendshipsRepository.GetAcceptedCountAsync(targetUser.Id);
 
             string status = "None";
             int? fId = null;
 
             if (currentUser != null)
             {
-                var relation = _db.Friendships.FirstOrDefault(f =>
-                    (f.RequesterId == currentUser.Id && f.AddresseeId == targetUser.Id) ||
-                    (f.RequesterId == targetUser.Id && f.AddresseeId == currentUser.Id));
+                Friendship? relation = await _friendshipsRepository.GetFriendshipBetweenAsync(currentUser.Id, targetUser.Id);
 
                 if (relation != null)
                 {

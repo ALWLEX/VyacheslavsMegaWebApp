@@ -2,15 +2,6 @@ using System.Collections.Generic;
 
 namespace VyacheslavsMegaWebApp.Models
 {
-    public class MojangCapeInfo
-    {
-        public string Id { get; set; } = string.Empty;
-        public string Alias { get; set; } = string.Empty;
-        public string Url { get; set; } = string.Empty;
-        public string DisplayName { get; set; } = string.Empty;
-        public bool IsActive { get; set; }
-    }
-
     public class MinecraftLicenseResult
     {
         public bool Success { get; set; } = true;

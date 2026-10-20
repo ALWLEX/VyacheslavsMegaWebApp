@@ -59,6 +59,55 @@ namespace VyacheslavsMegaWebApp.Data.Repositories
             return session?.User;
         }
 
+        public async Task<LauncherSession?> FindValidSessionAsync(string sessionKey, string userId)
+        {
+            byte[] keyHash = SHA256.HashData(Encoding.UTF8.GetBytes(sessionKey));
+            LauncherSession? session = await DB.LauncherSessions
+                .FirstOrDefaultAsync(s => (s.SessionKeyHash == keyHash || s.SessionKey == sessionKey) && s.UserId == userId);
+
+            if (session == null || session.ExpiresAt < DateTime.UtcNow)
+                return null;
+
+            return session;
+        }
+
+        public async Task<List<string>> GetActiveSessionUserIdsAsync()
+        {
+            return await DB.LauncherSessions
+                .Where(s => s.ExpiresAt > DateTime.UtcNow)
+                .Select(s => s.UserId)
+                .Distinct()
+                .ToListAsync();
+        }
+
+        public async Task<List<LauncherSession>> GetSessionsForUserAsync(string userId)
+        {
+            return await DB.LauncherSessions
+                .Where(s => s.UserId == userId)
+                .OrderByDescending(s => s.ExpiresAt)
+                .ToListAsync();
+        }
+
+        public async Task<LauncherSession?> GetLastSessionForUserAsync(string userId)
+        {
+            return await DB.LauncherSessions
+                .Where(s => s.UserId == userId)
+                .OrderByDescending(s => s.ExpiresAt)
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task DeleteSessionsForUserAsync(string userId)
+        {
+            List<LauncherSession> sessions = await DB.LauncherSessions
+                .Where(s => s.UserId == userId)
+                .ToListAsync();
+            if (sessions.Count > 0)
+            {
+                DB.LauncherSessions.RemoveRange(sessions);
+                await DB.SaveChangesAsync();
+            }
+        }
+
         public async Task<LauncherSession?> RefreshSession(string token, string? clientToken)
         {
             var session = await DB.LauncherSessions

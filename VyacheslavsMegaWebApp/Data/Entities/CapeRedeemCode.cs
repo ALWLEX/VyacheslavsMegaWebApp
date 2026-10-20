@@ -2,15 +2,13 @@ using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using VyacheslavsMegaWebApp.Data.Entities.Base;
 using VyacheslavsMegaWebApp.Data.Entities.Identity;
 
 namespace VyacheslavsMegaWebApp.Data.Entities
 {
-    public class CapeRedeemCode
+    public class CapeRedeemCode : EntityBase
     {
-        [Key]
-        public int Id { get; set; }
-
         public int CapeId { get; set; }
 
         [Required]

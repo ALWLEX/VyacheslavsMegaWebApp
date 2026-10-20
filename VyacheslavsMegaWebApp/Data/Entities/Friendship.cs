@@ -2,22 +2,13 @@ using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using VyacheslavsMegaWebApp.Data.Entities.Base;
 using VyacheslavsMegaWebApp.Data.Entities.Identity;
 
 namespace VyacheslavsMegaWebApp.Data.Entities
 {
-    public enum FriendshipStatus
+    public class Friendship : EntityBase
     {
-        Pending = 0,
-        Accepted = 1,
-        Rejected = 2
-    }
-
-    public class Friendship
-    {
-        [Key]
-        public int Id { get; set; }
-
         [Required]
         public string RequesterId { get; set; } = string.Empty;
 

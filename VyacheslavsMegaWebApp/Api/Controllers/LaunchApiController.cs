@@ -8,10 +8,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using VyacheslavsMegaWebApp.Data;
+using VyacheslavsMegaWebApp.Api.Models;
 using VyacheslavsMegaWebApp.Data.Entities;
 using VyacheslavsMegaWebApp.Data.Entities.Identity;
+using VyacheslavsMegaWebApp.Data.Repositories;
 using VyacheslavsMegaWebApp.Service;
 
 namespace VyacheslavsMegaWebApp.Api.Controllers
@@ -20,27 +20,23 @@ namespace VyacheslavsMegaWebApp.Api.Controllers
     public class LaunchApiController : ControllerBase
     {
         private readonly LaunchTicketService _ticketService;
-        private readonly AppDbContext _db;
+        private readonly ClientBuildFilesRepository _clientBuildRepo;
+        private readonly LauncherSessionRepository _sessionRepo;
         private readonly UserManager<VmsIdentityUser> _userManager;
         private readonly IWebHostEnvironment _env;
 
         public LaunchApiController(
             LaunchTicketService ticketService,
-            AppDbContext db,
+            ClientBuildFilesRepository clientBuildRepo,
+            LauncherSessionRepository sessionRepo,
             UserManager<VmsIdentityUser> userManager,
             IWebHostEnvironment env)
         {
             _ticketService = ticketService;
-            _db = db;
+            _clientBuildRepo = clientBuildRepo;
+            _sessionRepo = sessionRepo;
             _userManager = userManager;
             _env = env;
-        }
-
-        public class RequestTicketModel
-        {
-            public string Username { get; set; } = string.Empty;
-            public string SessionKey { get; set; } = string.Empty;
-            public string Hwid { get; set; } = string.Empty;
         }
 
         [HttpPost("api/launch/request-ticket")]
@@ -49,20 +45,19 @@ namespace VyacheslavsMegaWebApp.Api.Controllers
             if (string.IsNullOrWhiteSpace(model.Username))
                 return BadRequest(new { error = "Username required." });
 
-            var cleanUser = Path.GetFileNameWithoutExtension(model.Username).Trim();
-            var user = await _userManager.FindByNameAsync(cleanUser);
+            string cleanUser = Path.GetFileNameWithoutExtension(model.Username).Trim();
+            VmsIdentityUser? user = await _userManager.FindByNameAsync(cleanUser);
             if (user == null)
                 return NotFound(new { error = "User not found." });
 
             if (!string.IsNullOrWhiteSpace(model.SessionKey))
             {
-                var keyHash = SHA256.HashData(Encoding.UTF8.GetBytes(model.SessionKey));
-                var session = await _db.LauncherSessions.FirstOrDefaultAsync(s => s.SessionKeyHash == keyHash || s.SessionKey == model.SessionKey);
-                if (session == null || session.ExpiresAt < DateTime.UtcNow || session.UserId != user.Id)
+                LauncherSession? session = await _sessionRepo.FindValidSessionAsync(model.SessionKey, user.Id);
+                if (session == null)
                     return Unauthorized(new { error = "Invalid or expired session." });
             }
 
-            var ticket = _ticketService.CreateTicket(cleanUser, model.Hwid ?? string.Empty);
+            LaunchTicket ticket = _ticketService.CreateTicket(cleanUser, model.Hwid ?? string.Empty);
             return Ok(new
             {
                 success = true,
@@ -72,16 +67,10 @@ namespace VyacheslavsMegaWebApp.Api.Controllers
             });
         }
 
-        public class VerifyTicketModel
-        {
-            public string Ticket { get; set; } = string.Empty;
-            public string Username { get; set; } = string.Empty;
-        }
-
         [HttpPost("api/launch/verify-ticket")]
         public IActionResult VerifyTicket([FromBody] VerifyTicketModel model)
         {
-            var valid = _ticketService.ValidateAndConsumeTicket(model.Ticket, model.Username);
+            bool valid = _ticketService.ValidateAndConsumeTicket(model.Ticket, model.Username);
             if (!valid)
                 return BadRequest(new { valid = false, error = "Invalid or expired ticket." });
 
@@ -94,33 +83,15 @@ namespace VyacheslavsMegaWebApp.Api.Controllers
             if (string.IsNullOrWhiteSpace(username))
                 return BadRequest(new { active = false });
 
-            var active = _ticketService.HasActiveTicketForUser(username.Trim());
+            bool active = _ticketService.HasActiveTicketForUser(username.Trim());
             return Ok(new { active, username = username.Trim() });
-        }
-
-
-        public class ManifestFileEntry
-        {
-            public string Path { get; set; } = string.Empty;
-            public string FileName { get; set; } = string.Empty;
-            public string Sha256 { get; set; } = string.Empty;
-            public long Size { get; set; }
-            public bool IsRequired { get; set; } = true;
-            public string DownloadUrl { get; set; } = string.Empty;
-            public string Category { get; set; } = "Core";
-            public string DisplayName { get; set; } = string.Empty;
-            public string Description { get; set; } = string.Empty;
-            public string? IconUrl { get; set; }
-            public string? BannerUrl { get; set; }
-            public string? ModrinthSlug { get; set; }
-            public string? Source { get; set; }
         }
 
         [HttpGet("api/builds/{slug}/manifest")]
         public async Task<IActionResult> GetBuildManifest(string slug)
         {
-            var cleanSlug = string.IsNullOrWhiteSpace(slug) ? "vec-fabric-1-21-11" : slug.Trim().ToLowerInvariant();
-            var files = await GetManifestDataAsync(cleanSlug);
+            string cleanSlug = string.IsNullOrWhiteSpace(slug) ? "vec-fabric-1-21-11" : slug.Trim().ToLowerInvariant();
+            List<ManifestFileEntry> files = await GetManifestDataAsync(cleanSlug);
             return Ok(new
             {
                 build = cleanSlug,
@@ -132,19 +103,19 @@ namespace VyacheslavsMegaWebApp.Api.Controllers
         [HttpGet("api/builds/{slug}/mods")]
         public async Task<IActionResult> GetBuildMods(string slug)
         {
-            var cleanSlug = string.IsNullOrWhiteSpace(slug) ? "vec-fabric-1-21-11" : slug.Trim().ToLowerInvariant();
-            var files = await GetManifestDataAsync(cleanSlug);
-            var mods = files.Where(f => f.Path.StartsWith("mods/", StringComparison.OrdinalIgnoreCase)).ToList();
+            string cleanSlug = string.IsNullOrWhiteSpace(slug) ? "vec-fabric-1-21-11" : slug.Trim().ToLowerInvariant();
+            List<ManifestFileEntry> files = await GetManifestDataAsync(cleanSlug);
+            List<ManifestFileEntry> mods = files.Where(f => f.Path.StartsWith("mods/", StringComparison.OrdinalIgnoreCase)).ToList();
             return Ok(new { build = cleanSlug, files = files, mods = mods });
         }
 
         private async Task<List<ManifestFileEntry>> GetManifestDataAsync(string cleanSlug)
         {
-            var dbFiles = await _db.ClientBuildFiles.Where(f => f.BuildSlug == cleanSlug).ToListAsync();
+            List<ClientBuildFile> dbFiles = await _clientBuildRepo.GetFilesByBuildSlugAsync(cleanSlug);
 
             if (dbFiles.Count == 0)
             {
-                var defaults = new List<ClientBuildFile>
+                List<ClientBuildFile> defaults = new List<ClientBuildFile>
                 {
                     new() { BuildSlug = cleanSlug, RelativePath = "mods/fabric-api.jar", FileName = "fabric-api.jar", Sha256 = "", FileSizeBytes = 0, IsRequired = true, Category = "Core", DisplayName = "Fabric API", Description = "Базовый модуль хуков и событий Fabric 1.21.11", SourceType = "Local" },
                     new() { BuildSlug = cleanSlug, RelativePath = "mods/voicechat-fabric.jar", FileName = "voicechat-fabric.jar", Sha256 = "", FileSizeBytes = 0, IsRequired = true, Category = "Core", DisplayName = "Simple Voice Chat", Description = "Позиционный голосовой 3D чат сервера VEC", SourceType = "Local" },
@@ -154,28 +125,27 @@ namespace VyacheslavsMegaWebApp.Api.Controllers
                     new() { BuildSlug = cleanSlug, RelativePath = "mods/appleskin-fabric.jar", FileName = "appleskin-fabric.jar", Sha256 = "", FileSizeBytes = 0, IsRequired = false, Category = "Utility", DisplayName = "AppleSkin", Description = "Показ насыщения еды и очков голода", SourceType = "Local" }
                 };
 
-                _db.ClientBuildFiles.AddRange(defaults);
-                await _db.SaveChangesAsync();
+                await _clientBuildRepo.AddRangeAsync(defaults);
                 dbFiles = defaults;
             }
 
-            var root = _env.WebRootPath ?? Path.Combine(_env.ContentRootPath, "wwwroot");
-            var buildDir = Path.Combine(root, "builds", cleanSlug);
+            string root = _env.WebRootPath ?? Path.Combine(_env.ContentRootPath, "wwwroot");
+            string buildDir = Path.Combine(root, "builds", cleanSlug);
 
-            var result = new List<ManifestFileEntry>();
-            using var sha = SHA256.Create();
+            List<ManifestFileEntry> result = new List<ManifestFileEntry>();
+            using SHA256 sha = SHA256.Create();
 
-            foreach (var dbf in dbFiles)
+            foreach (ClientBuildFile dbf in dbFiles)
             {
-                var localFile = Path.Combine(buildDir, dbf.RelativePath.Replace('/', Path.DirectorySeparatorChar));
-                var fileSha = dbf.Sha256;
-                var fileSize = dbf.FileSizeBytes;
+                string localFile = Path.Combine(buildDir, dbf.RelativePath.Replace('/', Path.DirectorySeparatorChar));
+                string fileSha = dbf.Sha256;
+                long fileSize = dbf.FileSizeBytes;
 
                 if (System.IO.File.Exists(localFile))
                 {
-                    var fi = new FileInfo(localFile);
+                    FileInfo fi = new FileInfo(localFile);
                     fileSize = fi.Length;
-                    using var stream = System.IO.File.OpenRead(localFile);
+                    using FileStream stream = System.IO.File.OpenRead(localFile);
                     fileSha = BitConverter.ToString(sha.ComputeHash(stream)).Replace("-", "").ToLowerInvariant();
                 }
 
@@ -206,28 +176,28 @@ namespace VyacheslavsMegaWebApp.Api.Controllers
             if (string.IsNullOrWhiteSpace(slug) || string.IsNullOrWhiteSpace(filePath))
                 return BadRequest();
 
-            var cleanSlug = Path.GetFileName(slug).ToLowerInvariant();
-            var cleanPath = filePath.Replace('\\', '/').TrimStart('/');
+            string cleanSlug = Path.GetFileName(slug).ToLowerInvariant();
+            string cleanPath = filePath.Replace('\\', '/').TrimStart('/');
 
-            var root = _env.WebRootPath ?? Path.Combine(_env.ContentRootPath, "wwwroot");
-            var fullPath = Path.GetFullPath(Path.Combine(root, "builds", cleanSlug, cleanPath));
+            string root = _env.WebRootPath ?? Path.Combine(_env.ContentRootPath, "wwwroot");
+            string fullPath = Path.GetFullPath(Path.Combine(root, "builds", cleanSlug, cleanPath));
 
-            var expectedBase = Path.GetFullPath(Path.Combine(root, "builds", cleanSlug));
+            string expectedBase = Path.GetFullPath(Path.Combine(root, "builds", cleanSlug));
             if (!fullPath.StartsWith(expectedBase, StringComparison.OrdinalIgnoreCase))
                 return Forbid();
 
             if (!System.IO.File.Exists(fullPath))
                 return NotFound(new { error = "Build file not found on server." });
 
-            var fileName = Path.GetFileName(fullPath);
+            string fileName = Path.GetFileName(fullPath);
             return PhysicalFile(fullPath, "application/octet-stream", fileName);
         }
 
         [HttpGet("api/launcher/download")]
         public IActionResult DownloadLauncher()
         {
-            var root = _env.WebRootPath ?? Path.Combine(_env.ContentRootPath, "wwwroot");
-            var path = Path.Combine(root, "downloads", "VECLauncher.exe");
+            string root = _env.WebRootPath ?? Path.Combine(_env.ContentRootPath, "wwwroot");
+            string path = Path.Combine(root, "downloads", "VECLauncher.exe");
             if (!System.IO.File.Exists(path))
             {
                 return NotFound(new { error = "Launcher binary not found on server." });
@@ -238,17 +208,17 @@ namespace VyacheslavsMegaWebApp.Api.Controllers
         [HttpGet("api/launcher/version")]
         public IActionResult GetLauncherVersion()
         {
-            var root = _env.WebRootPath ?? Path.Combine(_env.ContentRootPath, "wwwroot");
-            var manifestPath = Path.Combine(root, "downloads", "manifest.json");
+            string root = _env.WebRootPath ?? Path.Combine(_env.ContentRootPath, "wwwroot");
+            string manifestPath = Path.Combine(root, "downloads", "manifest.json");
 
             if (System.IO.File.Exists(manifestPath))
             {
-                var content = System.IO.File.ReadAllText(manifestPath, Encoding.UTF8);
+                string content = System.IO.File.ReadAllText(manifestPath, Encoding.UTF8);
                 return Content(content, "application/json");
             }
 
-            var zipPath = Path.Combine(root, "downloads", "VECLauncher-win-x64.zip");
-            var exePath = Path.Combine(root, "downloads", "VECLauncher.exe");
+            string zipPath = Path.Combine(root, "downloads", "VECLauncher-win-x64.zip");
+            string exePath = Path.Combine(root, "downloads", "VECLauncher.exe");
 
             string downloadUrl = "/downloads/VECLauncher-win-x64.zip";
             string targetPath = zipPath;
@@ -263,10 +233,10 @@ namespace VyacheslavsMegaWebApp.Api.Controllers
                 return NotFound(new { error = "No launcher release payload found." });
             }
 
-            var fi = new FileInfo(targetPath);
-            using var sha = SHA256.Create();
-            using var stream = System.IO.File.OpenRead(targetPath);
-            var hash = BitConverter.ToString(sha.ComputeHash(stream)).Replace("-", "").ToLowerInvariant();
+            FileInfo fi = new FileInfo(targetPath);
+            using SHA256 sha = SHA256.Create();
+            using FileStream stream = System.IO.File.OpenRead(targetPath);
+            string hash = BitConverter.ToString(sha.ComputeHash(stream)).Replace("-", "").ToLowerInvariant();
 
             return Ok(new
             {

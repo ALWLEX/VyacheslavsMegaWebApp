@@ -1,9 +1,12 @@
+using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 using VyacheslavsMegaWebApp.Api.Models;
+using VyacheslavsMegaWebApp.Data.Entities;
 using VyacheslavsMegaWebApp.Data.Entities.Identity;
 using VyacheslavsMegaWebApp.Data.Repositories;
 using VyacheslavsMegaWebApp.Service;
@@ -48,7 +51,7 @@ namespace VyacheslavsMegaWebApp.Api.Controllers
                     });
                 }
 
-                var cleanName = request.Username.Trim();
+                string cleanName = request.Username.Trim();
                 VmsIdentityUser? user = await _userManager.FindByNameAsync(cleanName);
                 if (user is null)
                 {
@@ -68,16 +71,16 @@ namespace VyacheslavsMegaWebApp.Api.Controllers
                     });
                 }
 
-                var clientToken = string.IsNullOrWhiteSpace(request.ClientToken) ? Guid.NewGuid().ToString("N") : request.ClientToken;
-                var sessionKey = await _sessionRepository.CreateSessionKey(user, clientToken);
-                var cleanId = user.Id.Replace("-", "");
+                string clientToken = string.IsNullOrWhiteSpace(request.ClientToken) ? Guid.NewGuid().ToString("N") : request.ClientToken;
+                string sessionKey = await _sessionRepository.CreateSessionKey(user, clientToken);
+                string cleanId = user.Id.Replace("-", "");
 
-                var model = _skinStorage.GetSkinModel(user.UserName!);
-                var skinUrl = $"{BaseUrl}/api/skin/{Uri.EscapeDataString(user.UserName!)}.png";
-                var capeUrl = _skinStorage.HasCape(user.UserName!) ? $"{BaseUrl}/api/cape/{Uri.EscapeDataString(user.UserName!)}.png" : null;
+                string model = _skinStorage.GetSkinModel(user.UserName!);
+                string skinUrl = $"{BaseUrl}/api/skin/{Uri.EscapeDataString(user.UserName!)}.png";
+                string? capeUrl = _skinStorage.HasCape(user.UserName!) ? $"{BaseUrl}/api/cape/{Uri.EscapeDataString(user.UserName!)}.png" : null;
 
-                var profile = new ProfileDto(cleanId, user.UserName!);
-                var userDto = new UserDto(cleanId, user.UserName!, user.UserName, model, skinUrl, capeUrl);
+                ProfileDto profile = new ProfileDto(cleanId, user.UserName!);
+                UserDto userDto = new UserDto(cleanId, user.UserName!, user.UserName, model, skinUrl, capeUrl);
 
                 return Ok(new LoginResponse 
                 { 
@@ -106,22 +109,22 @@ namespace VyacheslavsMegaWebApp.Api.Controllers
                 return Unauthorized(new { succeeded = false, error = "Invalid token" });
             }
 
-            var isValid = await _sessionRepository.ValidateSession(request.AccessToken);
+            bool isValid = await _sessionRepository.ValidateSession(request.AccessToken);
             if (!isValid)
             {
                 return Unauthorized(new { succeeded = false, error = "Session expired or invalid" });
             }
 
-            var session = await _sessionRepository.GetSessionByToken(request.AccessToken);
+            LauncherSession? session = await _sessionRepository.GetSessionByToken(request.AccessToken);
             if (session == null || session.User == null)
             {
                 return Unauthorized(new { succeeded = false, error = "User not found" });
             }
 
-            var cleanId = session.User.Id.Replace("-", "");
-            var model = _skinStorage.GetSkinModel(session.User.UserName!);
-            var skinUrl = $"{BaseUrl}/api/skin/{Uri.EscapeDataString(session.User.UserName!)}.png";
-            var capeUrl = _skinStorage.HasCape(session.User.UserName!) ? $"{BaseUrl}/api/cape/{Uri.EscapeDataString(session.User.UserName!)}.png" : null;
+            string cleanId = session.User.Id.Replace("-", "");
+            string model = _skinStorage.GetSkinModel(session.User.UserName!);
+            string skinUrl = $"{BaseUrl}/api/skin/{Uri.EscapeDataString(session.User.UserName!)}.png";
+            string? capeUrl = _skinStorage.HasCape(session.User.UserName!) ? $"{BaseUrl}/api/cape/{Uri.EscapeDataString(session.User.UserName!)}.png" : null;
 
             return Ok(new
             {
@@ -133,7 +136,7 @@ namespace VyacheslavsMegaWebApp.Api.Controllers
         [HttpPost(nameof(LoginWithSessionKey))]
         public async Task<IActionResult> LoginWithSessionKey(LoginWithSessionKeyRequest request)
         {
-            var isValid = await _sessionRepository.ValidateSession(request.SessionKey);
+            bool isValid = await _sessionRepository.ValidateSession(request.SessionKey);
             if (!isValid) return Unauthorized();
             return Ok();
         }
